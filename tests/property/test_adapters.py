@@ -9,7 +9,7 @@ from hypothesis import given, strategies as st, settings, HealthCheck
 import pytest
 
 from mudhound.adapters.base import SearchAdapter
-from mudhound.core.result import SearchResult, SearchOptions
+from mudhound.core.result import SearchResult, SearchOptions, SearchSession, SearchStatus
 
 
 # Create a concrete test adapter for testing the interface
@@ -283,3 +283,66 @@ def test_search_result_structure_completeness(query, max_results):
         # Verify metadata field exists and is a dict
         assert hasattr(result, 'metadata')
         assert isinstance(result.metadata, dict)
+
+
+
+# SearchEngine property tests
+
+
+@given(
+    query=st.text(min_size=1, max_size=200),
+    max_results=st.integers(min_value=1, max_value=50)
+)
+@settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
+def test_search_command_initiation(query, max_results):
+    """
+    Feature: mudhound-full-implementation, Property 18: Search command initiation
+    Validates: Requirements 6.1
+    
+    For any query string provided to "mh search", the command should initiate
+    a search with that exact query.
+    """
+    from mudhound.core.engine import SearchEngine
+    
+    # Create a search engine with the test adapter
+    adapter = TestAdapter()
+    engine = SearchEngine(adapter=adapter)
+    
+    # Create search options
+    options = SearchOptions(max_results=max_results)
+    
+    # Execute search
+    session = engine.search(query=query, options=options)
+    
+    # Verify the session was created
+    assert session is not None
+    assert isinstance(session, SearchSession)
+    
+    # Verify the query matches exactly what was provided
+    assert session.query.query == query
+    
+    # Verify the search was initiated (status should be COMPLETE after execution)
+    assert session.query.status == SearchStatus.COMPLETE
+    
+    # Verify the session has results
+    assert isinstance(session.results, list)
+    
+    # Verify the session has timestamps
+    assert session.started_at is not None
+    assert session.completed_at is not None
+    
+    # Verify the session duration is calculated
+    assert session.duration is not None
+    assert session.duration >= 0
+    
+    # Verify the result count matches the number of results
+    assert session.result_count == len(session.results)
+    
+    # Verify we got at most max_results
+    assert len(session.results) <= max_results
+    
+    # Verify the engine name matches the adapter
+    assert session.query.engine == adapter.name
+    
+    # Verify the options were used
+    assert session.query.options.max_results == max_results
