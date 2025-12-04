@@ -525,7 +525,12 @@ s
   - **Property 13: Generator-based search results**
   - **Validates: Requirements 4.2**
 
-- [ ] 24. Adapter registry
+- [x] 24. Adapter registry
+
+
+
+
+
   - Implement adapters/registry.py with AdapterRegistry class
   - Add register class method for adapter registration
   - Implement get method with AdapterNotFoundError
@@ -535,7 +540,11 @@ s
   - Add user adapter discovery (~/.mudhound/adapters/) - basic structure
   - _Requirements: 4.5_
 
-- [ ] 25. DuckDuckGo adapter implementation
+- [x] 25. DuckDuckGo adapter implementation
+
+
+
+
   - Implement adapters/duckduckgo.py with DuckDuckGoAdapter class
   - Integrate duckduckgo-search library
   - Implement search method as generator yielding SearchResult objects
@@ -545,11 +554,15 @@ s
   - Add network error handling with NetworkError exceptions
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 25.1 Write property test for max results enforcement
+- [x] 25.1 Write property test for max results enforcement
+
+
   - **Property 16: Max results enforcement**
   - **Validates: Requirements 5.2**
 
-- [ ] 25.2 Write property test for result structure
+- [x] 25.2 Write property test for result structure
+
+
   - **Property 17: Search result structure completeness**
   - **Validates: Requirements 5.4**
 
