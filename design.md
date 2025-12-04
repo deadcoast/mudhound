@@ -1,4 +1,4 @@
-# MUDHOUND - Design Specification v1.0
+# MUDHOUND - Design Specification v1.1
 
 > Batch URL extraction from keyword searches via terminal interface
 
@@ -22,7 +22,7 @@
 | Attribute       | Value                                           |
 |-----------------|-------------------------------------------------|
 | **Name**        | MudHound                                        |
-| **Binary**      | `qh`                                            |
+| **Binary**      | `mh`                                            |
 | **Version**     | 1.0.0                                           |
 | **Python**      | >=3.10                                          |
 | **License**     | MIT                                             |
@@ -38,9 +38,9 @@
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                              PRESENTATION LAYER                             │
-│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────────────────┐ │
-│ │  UIRenderer │ │ FrameEngine │ │ ThemeEngine │ │     LayoutManager       │ │
-│ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────────────────┘ │
+│ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────────┐   │
+│ │ UIRenderer│ │FrameEngine│ │ThemeEngine│ │LayoutMgr  │ │AnimationEngine│   │
+│ └───────────┘ └───────────┘ └───────────┘ └───────────┘ └───────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────┘
                                       │
                                       ▼
@@ -88,10 +88,10 @@ mudhound/
 │   ├── app.py                  # Typer application root
 │   ├── commands/
 │   │   ├── __init__.py
-│   │   ├── search.py           # qh search <query>
-│   │   ├── config.py           # qh config [get|set|list]
-│   │   ├── export.py           # qh export [json|csv|txt]
-│   │   └── history.py          # qh history [list|clear|replay]
+│   │   ├── search.py           # mh search <query>
+│   │   ├── config.py           # mh config [get|set|list]
+│   │   ├── export.py           # mh export [json|csv|txt]
+│   │   └── history.py          # mh history [list|clear|replay]
 │   └── callbacks.py            # Global option callbacks
 ├── ui/
 │   ├── __init__.py
@@ -99,9 +99,16 @@ mudhound/
 │   ├── frames.py               # Box/border primitives
 │   ├── layout.py               # Terminal dimension management
 │   ├── theme.py                # Color + glyph definitions
+│   ├── animation/
+│   │   ├── __init__.py
+│   │   ├── engine.py           # Animation controller
+│   │   ├── frames.py           # Frame sequence management
+│   │   ├── timing.py           # Timing/easing functions
+│   │   └── schemes.py          # Color scheme definitions
 │   ├── components/
 │   │   ├── __init__.py
-│   │   ├── banner.py           # ASCII art header
+│   │   ├── banner.py           # ASCII art header (animated)
+│   │   ├── logo.py             # Compact logo (animated)
 │   │   ├── menu.py             # Interactive menus
 │   │   ├── prompt.py           # Input prompts
 │   │   ├── table.py            # Data tables
@@ -121,6 +128,23 @@ mudhound/
 │   ├── base.py                 # Abstract adapter interface
 │   ├── duckduckgo.py           # DuckDuckGo implementation
 │   └── registry.py             # Adapter discovery/loading
+├── assets/
+│   ├── __init__.py
+│   ├── manager.py              # Asset loading/caching
+│   ├── animated/
+│   │   ├── rainbow-banner/
+│   │   │   ├── dark-rainbow-banner.ansi
+│   │   │   ├── light-rainbow-banner.ansi
+│   │   │   ├── rainbow-banner.ansi
+│   │   │   └── white-banner.ansi
+│   │   └── rainbow-logo/
+│   │       ├── dark-rainbow-logo.ansi
+│   │       ├── light-rainbow-logo.ansi
+│   │       ├── rainbow-logo.ansi
+│   │       └── white-logo.ansi
+│   └── static/
+│       ├── banner-large.ansi
+│       └── banner-minimal.ansi
 ├── logging/
 │   ├── __init__.py
 │   ├── handler.py              # Custom log handler
@@ -141,13 +165,325 @@ mudhound/
 
 ---
 
-## 3. UI FRAMEWORK SPECIFICATION
+## 3. ANIMATION SYSTEM SPECIFICATION
 
-### 3.1 Frame System
+### 3.1 Animation Engine Architecture
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           ANIMATION ENGINE                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ┌─────────────┐      ┌─────────────┐      ┌─────────────────────────┐     │
+│   │FrameLoader  │─────>│ FrameBuffer │─────>│     RenderController    │     │
+│   └─────────────┘      └─────────────┘      └─────────────────────────┘     │
+│          │                    │                         │                   │
+│          ▼                    ▼                         ▼                   │
+│   ┌─────────────┐      ┌─────────────┐      ┌─────────────────────────┐     │
+│   │ ColorScheme │      │TimingEngine │      │    TerminalOutput       │     │
+│   └─────────────┘      └─────────────┘      └─────────────────────────┘     │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+ANIMATION FLOW:
+1. FrameLoader reads ANSI frame files from assets/animated/
+2. ColorScheme applies color transforms based on active scheme
+3. FrameBuffer holds pre-rendered frames in memory
+4. TimingEngine controls frame timing and transitions
+5. RenderController outputs frames to terminal with cursor management
+```
+
+### 3.2 Color Schemes
+
+```python
+class ColorScheme(Enum):
+    """
+    Defines available color schemes for animated elements.
+    Each scheme maps to a set of ANSI frame files.
+    """
+    RAINBOW = "rainbow"           # Full spectrum cycling
+    DARK_RAINBOW = "dark-rainbow" # Muted/darker rainbow
+    LIGHT_RAINBOW = "light-rainbow" # Bright/pastel rainbow
+    WHITE = "white"               # Monochrome white
+    THEME = "theme"               # Use current theme colors
+
+COLOR_SCHEME_FRAMES = {
+    ColorScheme.RAINBOW: [
+        "rainbow-frame-01.ansi",
+        "rainbow-frame-02.ansi",
+        "rainbow-frame-03.ansi",
+        "rainbow-frame-04.ansi",
+        "rainbow-frame-05.ansi",
+        "rainbow-frame-06.ansi",
+    ],
+    ColorScheme.DARK_RAINBOW: [
+        "dark-rainbow-frame-01.ansi",
+        "dark-rainbow-frame-02.ansi",
+        "dark-rainbow-frame-03.ansi",
+        "dark-rainbow-frame-04.ansi",
+        "dark-rainbow-frame-05.ansi",
+        "dark-rainbow-frame-06.ansi",
+    ],
+    # ... etc
+}
+```
+
+### 3.3 Animation Configuration
+
+```toml
+# Animation settings in config.toml
+
+[animation]
+enabled = true
+default_scheme = "rainbow"        # rainbow | dark-rainbow | light-rainbow | white | theme
+banner_animation = true
+logo_animation = true
+frame_rate = 10                   # FPS for animations
+transition_duration = 0.15        # Seconds between color transitions
+idle_animation = false            # Animate during idle states
+on_completion = "flash"           # none | flash | pulse | fade
+
+[animation.banner]
+style = "animated"                # animated | static | minimal | none
+scheme = "rainbow"                # Override default scheme for banner
+loop = true                       # Continuous loop or single pass
+duration = 0.0                    # 0 = infinite, >0 = seconds to display
+
+[animation.logo]
+style = "animated"
+scheme = "rainbow"
+position = "inline"               # inline | header | footer
+```
+
+### 3.4 Frame Timing System
+
+```python
+class TimingEngine:
+    """
+    Controls animation timing with support for various easing functions.
+    """
+    
+    EASING_FUNCTIONS = {
+        "linear":      lambda t: t,
+        "ease_in":     lambda t: t * t,
+        "ease_out":    lambda t: 1 - (1 - t) ** 2,
+        "ease_in_out": lambda t: 2 * t * t if t < 0.5 else 1 - (-2 * t + 2) ** 2 / 2,
+        "bounce":      lambda t: 1 - abs(math.cos(t * math.pi * 2.5)) * (1 - t),
+    }
+    
+    def __init__(
+        self,
+        frame_rate: int = 10,
+        easing: str = "linear",
+        loop: bool = True
+    ):
+        self.frame_rate = frame_rate
+        self.frame_duration = 1.0 / frame_rate
+        self.easing_fn = self.EASING_FUNCTIONS[easing]
+        self.loop = loop
+        self._running = False
+        self._current_frame = 0
+    
+    def start(self) -> None:
+        """Begin animation playback."""
+        self._running = True
+        self._start_time = time.monotonic()
+    
+    def stop(self) -> None:
+        """Stop animation playback."""
+        self._running = False
+    
+    def get_current_frame(self, total_frames: int) -> int:
+        """Calculate current frame index based on elapsed time."""
+        if not self._running:
+            return 0
+        
+        elapsed = time.monotonic() - self._start_time
+        progress = (elapsed / self.frame_duration) % total_frames
+        
+        if not self.loop and elapsed >= total_frames * self.frame_duration:
+            self._running = False
+            return total_frames - 1
+        
+        return int(progress)
+```
+
+### 3.5 Terminal Animation Rendering
+
+```python
+class AnimationRenderer:
+    """
+    Handles terminal-specific animation rendering with cursor management.
+    """
+    
+    def __init__(self, timing: TimingEngine):
+        self.timing = timing
+        self._last_frame = -1
+        self._frame_height = 0
+    
+    def render_frame(self, frame: str, clear_previous: bool = True) -> None:
+        """
+        Render a single animation frame to terminal.
+        
+        RENDERING STRATEGY:
+        1. Save cursor position
+        2. If clearing: move up by frame height, clear lines
+        3. Print new frame
+        4. Store frame height for next clear
+        """
+        if clear_previous and self._frame_height > 0:
+            # Move cursor up and clear previous frame
+            sys.stdout.write(f"\033[{self._frame_height}A")  # Move up
+            sys.stdout.write("\033[J")  # Clear from cursor down
+        
+        # Render new frame
+        sys.stdout.write(frame)
+        sys.stdout.flush()
+        
+        # Track frame height for next render
+        self._frame_height = frame.count('\n') + 1
+    
+    def animate(
+        self,
+        frames: list[str],
+        duration: float = 0.0,
+        on_complete: Callable[[], None] | None = None
+    ) -> None:
+        """
+        Run animation loop.
+        
+        Args:
+            frames: List of ANSI frame strings
+            duration: Seconds to run (0 = until stopped)
+            on_complete: Callback when animation ends
+        """
+        self.timing.start()
+        start = time.monotonic()
+        
+        try:
+            while self.timing._running:
+                frame_idx = self.timing.get_current_frame(len(frames))
+                
+                if frame_idx != self._last_frame:
+                    self.render_frame(frames[frame_idx])
+                    self._last_frame = frame_idx
+                
+                if duration > 0 and (time.monotonic() - start) >= duration:
+                    break
+                
+                time.sleep(self.timing.frame_duration / 2)
+        
+        except KeyboardInterrupt:
+            pass
+        finally:
+            self.timing.stop()
+            if on_complete:
+                on_complete()
+```
+
+### 3.6 ANSI Frame File Format
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ANSI FRAME FILE SPECIFICATION                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ FILE EXTENSION: .ansi                                                       │
+│ ENCODING: UTF-8                                                             │
+│                                                                             │
+│ STRUCTURE:                                                                  │
+│ ─────────────────────────────────────────────────────────────               │
+│ # MUDHOUND ANSI FRAME                                                       │
+│ # scheme: rainbow                                                           │
+│ # frame: 1                                                                  │
+│ # width: 76                                                                 │
+│ # height: 3                                                                 │
+│ ---                                                                         │
+│ [ANSI escape sequences + ASCII art content]                                 │
+│                                                                             │
+│ EXAMPLE:                                                                    │
+│ ─────────────────────────────────────────────────────────────               │
+│ # MUDHOUND ANSI FRAME                                                       │
+│ # scheme: rainbow                                                           │
+│ # frame: 1                                                                  │
+│ # width: 76                                                                 │
+│ # height: 3                                                                 │
+│ ---                                                                         │
+│ \033[38;5;196m██▄  ▄██\033[38;5;208m ██  ██\033[38;5;226m ████▄ ...         │
+│ \033[38;5;196m██ ▀▀ ██\033[38;5;208m ██  ██\033[38;5;226m ██  ██ ...        │
+│ \033[38;5;196m██    ██\033[38;5;208m ▀████▀\033[38;5;226m ████▀ ...         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 3.7 Rainbow Color Cycling Definition
+
+```python
+RAINBOW_COLORS_256 = [
+    196,  # Red
+    208,  # Orange
+    226,  # Yellow
+    46,   # Green
+    51,   # Cyan
+    21,   # Blue
+    129,  # Purple
+    201,  # Magenta
+]
+
+DARK_RAINBOW_COLORS_256 = [
+    88,   # Dark Red
+    130,  # Dark Orange
+    136,  # Dark Yellow
+    22,   # Dark Green
+    23,   # Dark Cyan
+    18,   # Dark Blue
+    54,   # Dark Purple
+    90,   # Dark Magenta
+]
+
+LIGHT_RAINBOW_COLORS_256 = [
+    210,  # Light Red
+    216,  # Light Orange
+    228,  # Light Yellow
+    120,  # Light Green
+    123,  # Light Cyan
+    111,  # Light Blue
+    183,  # Light Purple
+    219,  # Light Magenta
+]
+
+def generate_rainbow_frame(
+    base_art: str,
+    color_offset: int,
+    scheme: ColorScheme
+) -> str:
+    """
+    Generate a single rainbow frame by applying color offset to base ASCII art.
+    
+    ALGORITHM:
+    1. Parse base ASCII art into character segments
+    2. For each segment, calculate color index: (segment_index + offset) % len(colors)
+    3. Wrap segment with ANSI color escape sequence
+    4. Join segments into complete frame
+    """
+    colors = {
+        ColorScheme.RAINBOW: RAINBOW_COLORS_256,
+        ColorScheme.DARK_RAINBOW: DARK_RAINBOW_COLORS_256,
+        ColorScheme.LIGHT_RAINBOW: LIGHT_RAINBOW_COLORS_256,
+    }.get(scheme, RAINBOW_COLORS_256)
+    
+    # Implementation...
+```
+
+---
+
+## 4. UI FRAMEWORK SPECIFICATION
+
+### 4.1 Frame System
 
 The frame system provides consistent ASCII borders that adapt to terminal width.
 
-#### 3.1.1 Border Character Sets
+#### 4.1.1 Border Character Sets
 
 ```python
 BORDER_SETS = {
@@ -179,7 +515,7 @@ BORDER_SETS = {
 }
 ```
 
-#### 3.1.2 Frame Rendering Protocol
+#### 4.1.2 Frame Rendering Protocol
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -199,7 +535,7 @@ BORDER_SETS = {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-#### 3.1.3 Dynamic Resize Handling
+#### 4.1.3 Dynamic Resize Handling
 
 ```python
 class LayoutManager:
@@ -211,6 +547,7 @@ class LayoutManager:
     2. Compare against cached dimensions
     3. If changed: recalculate all frame widths, re-wrap content
     4. Emit resize event to registered components
+    5. Pause animations during resize, resume after
     
     MINIMUM DIMENSIONS:
     - Width:  60 columns (graceful degradation below)
@@ -222,13 +559,35 @@ class LayoutManager:
     PADDING_H = 2  # Left + right padding inside frames
     PADDING_V = 1  # Top + bottom padding inside frames
     
+    def __init__(self):
+        self._cached_size: tuple[int, int] = (0, 0)
+        self._resize_callbacks: list[Callable] = []
+        self._animation_engine: AnimationEngine | None = None
+    
     def get_content_width(self) -> int:
         """Returns usable width inside frame borders."""
         term_width = shutil.get_terminal_size().columns
-        return max(term_width - 4, self.MIN_WIDTH - 4)  # 2 borders + 2 padding
+        return max(term_width - 4, self.MIN_WIDTH - 4)
+    
+    def on_resize(self) -> None:
+        """Handle terminal resize event."""
+        new_size = shutil.get_terminal_size()
+        if (new_size.columns, new_size.lines) != self._cached_size:
+            # Pause animations during resize
+            if self._animation_engine:
+                self._animation_engine.pause()
+            
+            self._cached_size = (new_size.columns, new_size.lines)
+            
+            for callback in self._resize_callbacks:
+                callback(new_size.columns, new_size.lines)
+            
+            # Resume animations
+            if self._animation_engine:
+                self._animation_engine.resume()
 ```
 
-### 3.2 Glyph Registry (Emoji-Free)
+### 4.2 Glyph Registry (Emoji-Free)
 
 ```python
 GLYPHS = {
@@ -269,9 +628,29 @@ GLYPHS = {
 }
 ```
 
-### 3.3 Theme Engine
+#### 4.2.1 Frame Rendering Protocol
 
-#### 3.3.1 Color Palette Structure
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ FRAME ANATOMY                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ╔═══════════════════════════════════════════════════╗  <- top_border      │
+│   ║ TITLE                                       [TAG] ║  <- header_row      │
+│   ╠═══════════════════════════════════════════════════╣  <- divider         │
+│   ║                                                   ║                     │
+│   ║  Content area with padding                        ║  <- content_rows    │
+│   ║                                                   ║                     │
+│   ╠═══════════════════════════════════════════════════╣  <- divider         │
+│   ║ STATUS: Ready                           [1/10]    ║  <- footer_row      │
+│   ╚═══════════════════════════════════════════════════╝  <- bottom_border   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 4.3 Theme Engine
+
+#### 4.3.1 Color Palette Structure
 
 ```toml
 # themes/default.toml
@@ -304,9 +683,14 @@ text = "white"
 text_dim = "bright_black"
 highlight = "bright_yellow"
 url = "bright_blue"
+
+# Animation colors (overrides default scheme)
+[palette.animation]
+use_scheme = true              # false = use palette colors instead
+scheme = "rainbow"             # Override animation scheme
 ```
 
-#### 3.3.2 Theme Application Protocol
+#### 4.3.2 Theme Application Protocol
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -321,14 +705,67 @@ url = "bright_blue"
 │   FALLBACK CHAIN:                                                           │
 │   Component Style -> Theme Override -> Default Theme -> Raw Text            │
 │                                                                             │
+│   ANIMATION OVERRIDE:                                                       │
+│   If animation.use_scheme = false:                                          │
+│     Animation colors derived from palette.primary/secondary/accent          │
+│   Else:                                                                     │
+│     Animation uses specified color scheme                                   │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 4. COMPONENT SPECIFICATIONS
+## 5. COMPONENT SPECIFICATIONS
 
-### 4.1 Banner Component
+### 5.1 Banner Component (Animated)
+
+```text
+╔══════════════════════════════════════════════════════════════════════════╗
+║                                                                          ║
+║        ██▄  ▄██ ██  ██ ████▄  ██  ██ ▄████▄ ██  ██ ███  ██ ████▄         ║
+║        ██ ▀▀ ██ ██  ██ ██  ██ ██████ ██  ██ ██  ██ ██ ▀▄██ ██  ██        ║
+║        ██    ██ ▀████▀ ████▀  ██  ██ ▀████▀ ▀████▀ ██   ██ ████▀         ║
+║                                                                          ║
+║                 [ Fetch URLs. Filter Noise. Hunt Data. ]                 ║
+║                                                                          ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+VARIANTS:
+- animated:  Rainbow color cycling (default)
+- static:    Single color scheme
+- minimal:   Single-line version name only
+- none:      No banner (headless mode)
+
+ANIMATION BEHAVIOR:
+- Colors cycle horizontally across characters
+- Frame rate: 10 FPS default
+- Scheme: Configurable (rainbow/dark-rainbow/light-rainbow/white)
+- Respects terminal width, scales down if needed
+```
+
+### 5.2 Logo Component (Animated)
+
+```text
+         ▄▄        
+██▄  ▄██ ██ ██  ██ 
+██ ▀▀ ██ ██ ██████ 
+██    ██ ██ ██  ██ 
+         ▀▀        
+
+USAGE:
+- Inline display during operations
+- Header/footer decoration
+- Progress indicator accent
+
+POSITIONS:
+- inline:   Within content flow
+- header:   Fixed at top
+- footer:   Fixed at bottom
+- floating: Absolute positioning
+```
+
+### 5.3 Footer and Goodbye Component
 
 ```text
 ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -336,18 +773,18 @@ url = "bright_blue"
 ║     ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄     ║
 ║     ██  MUDHOUND v1.0.0  ████████████████████████████████████████████████     ║
 ║     ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀     ║
-║                                                                               ║
-║     [ Fetch URLs. Filter Noise. Hunt Data. ]                                  ║
-║                                                                               ║
+║                                                       Closing Application     ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║ > sys::Goodbye!                                                               ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 
 VARIANTS:
-- full:    Complete ASCII art with tagline
-- compact: Single-line version name only
-- minimal: No banner (headless mode)
+- full:    Complete ASCII art with `Closing Application` Confirmation prompt and `sys::Goodbye!`
+- compact: fits as a signoff signature
+- minimal: No Large ASCII Logo Splash
 ```
 
-### 4.2 Menu Component
+### 5.3 Menu Component
 
 ```text
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -373,7 +810,7 @@ BEHAVIOR:
 - Mouse support: optional, off by default
 ```
 
-### 4.3 Prompt Component
+### 5.4 Prompt Component
 
 ```text
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -396,21 +833,21 @@ VARIANTS:
 - confirm:  Y/N binary choice
 ```
 
-### 4.4 Table Component
+### 5.5 Table Component
 
 ```text
 ╔═════════════════════════════════════════════════════════════════════════════╗
 ║  SEARCH RESULTS                                              [47 URLs]      ║
 ╠═════════════════════════════════════════════════════════════════════════════╣
 ║                                                                             ║
-║    #   │ URL                                              │ Source          ║
-║   ─────┼──────────────────────────────────────────────────┼─────────────────║
+║    #   │ URL                                             │ Source           ║
+║   ─────┼─────────────────────────────────────────────────┼──────────────────║
 ║    001 │ https://docs.python.org/3/library/              │ DuckDuckGo       ║
 ║    002 │ https://realpython.com/python-web-scraping/     │ DuckDuckGo       ║
 ║    003 │ https://scrapy.org/                             │ DuckDuckGo       ║
 ║    004 │ https://www.crummy.com/software/BeautifulSo...  │ DuckDuckGo       ║
 ║    005 │ https://selenium-python.readthedocs.io/         │ DuckDuckGo       ║
-║        │                                                  │                 ║
+║        │                                                 │                  ║
 ║    ... │ (42 more results)                               │                  ║
 ║                                                                             ║
 ╠═════════════════════════════════════════════════════════════════════════════╣
@@ -425,7 +862,7 @@ FEATURES:
 - Selection mode for batch operations
 ```
 
-### 4.5 Progress Component
+### 5.6 Progress Component
 
 ```text
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -449,9 +886,10 @@ VARIANTS:
 - spinner:      Indeterminate spinner animation
 - counter:      Numeric counter (X/Y)
 - transfer:     Bytes transferred display
+- rainbow:      Progress bar with rainbow coloring
 ```
 
-### 4.6 Status/Log Component
+### 5.7 Status/Log Component
 
 ```text
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -481,7 +919,7 @@ LOG LEVELS:
 - FATAL:   Unrecoverable errors
 ```
 
-### 4.7 Confirmation Component
+### 5.8 Confirmation Component
 
 ```text
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -509,7 +947,7 @@ VARIANTS:
 - timed:      Auto-cancels after timeout
 ```
 
-### 4.8 Validation Display
+### 5.9 Validation Display
 
 ```text
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -536,12 +974,12 @@ VALIDATION TYPES:
 
 ---
 
-## 5. CLI COMMAND SPECIFICATION
+## 6. CLI COMMAND SPECIFICATION
 
-### 5.1 Command Tree
+### 6.1 Command Tree
 
 ```text
-qh
+mh
 ├── search <query>          # Execute keyword search
 │   ├── --max, -m           # Maximum results (default: 50)
 │   ├── --engine, -e        # Search engine adapter (default: duckduckgo)
@@ -578,41 +1016,43 @@ qh
 └── version                 # Show version information
 ```
 
-### 5.2 Command Examples
+### 6.2 Command Examples
 
 ```bash
 # Basic search
-qh search "python web scraping"
+mh search "python web scraping"
 
 # Search with options
-qh search "machine learning" --max 100 --format json --output results.json
+mh search "machine learning" --max 100 --format json --output results.json
 
 # Quiet mode for scripting
-qh search "api endpoints" -q -f urls > urls.txt
+mh search "api endpoints" -q -f urls > urls.txt
 
 # Interactive mode
-qh search "data science" --interactive
+mh search "data science" --interactive
 
 # Pipe-friendly
-echo "search term" | qh search --stdin
+echo "search term" | mh search --stdin
 
 # Configuration
-qh config set default.max_results 100
-qh config set theme hacker
-qh config list
+mh config set default.max_results 100
+mh config set theme hacker
+mh config set animation.scheme dark-rainbow
+mh config list
 
 # History
-qh history list --limit 10
-qh history replay 42
-qh history clear --confirm
+mh history list --limit 10
+mh history replay 42
+mh history clear --confirm
 ```
 
-### 5.3 Global Options
+### 6.3 Global Options
 
 ```text
 --verbose, -v       Increase output verbosity (stackable: -vvv)
 --quiet, -q         Suppress all non-essential output
 --no-color          Disable ANSI color codes
+--no-animation      Disable all animations
 --theme, -T         Override theme for this session
 --config, -c        Use alternate config file
 --help, -h          Show help for command
@@ -620,9 +1060,9 @@ qh history clear --confirm
 
 ---
 
-## 6. LOGGING SYSTEM SPECIFICATION
+## 7. LOGGING SYSTEM SPECIFICATION
 
-### 6.1 Log Handler Architecture
+### 7.1 Log Handler Architecture
 
 ```python
 class StyledLogHandler(logging.Handler):
@@ -635,6 +1075,7 @@ class StyledLogHandler(logging.Handler):
     - Color coding per level
     - Frame-aware output (respects current UI context)
     - File output mirroring (optional)
+    - Animation-safe (pauses animations during log output)
     """
     
     LEVEL_STYLES = {
@@ -648,7 +1089,7 @@ class StyledLogHandler(logging.Handler):
     }
 ```
 
-### 6.2 Log Output Formats
+### 7.2 Log Output Formats
 
 ```text
 INLINE (default for operations):
@@ -672,7 +1113,7 @@ STREAM (for live operations):
 ...
 ```
 
-### 6.3 Log File Format
+### 7.3 Log File Format
 
 ```text
 # ~/.mudhound/logs/mudhound.log
@@ -681,19 +1122,19 @@ STREAM (for live operations):
 2025-12-03T12:34:56.456Z | DEBUG   | adapter.ddg   | Request: GET https://duckduckgo.com/...
 2025-12-03T12:34:57.001Z | INFO    | engine.search | Page 1 complete: 10 results
 2025-12-03T12:34:57.523Z | WARNING | adapter.ddg   | Rate limit approaching, adding delay
-2025-12-03T12:35:00.001Z | ERROR   | adapter.ddg   | Request failed: ConnectionTimeout
+2025-12-03T12:35:00.001  | ERROR   | adapter.ddg   | Request failed: ConnectionTimeout
 2025-12-03T12:35:00.002Z | INFO    | adapter.ddg   | Retry 1/3 in 2 seconds
 ```
 
 ---
 
-## 7. ADAPTER INTERFACE SPECIFICATION
+## 8. ADAPTER INTERFACE SPECIFICATION
 
-### 7.1 Base Adapter Protocol
+### 8.1 Base Adapter Protocol
 
 ```python
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Iterator, Optional
 
 @dataclass
@@ -765,7 +1206,7 @@ class SearchAdapter(ABC):
         return 2.0
 ```
 
-### 7.2 Adapter Registry
+### 8.2 Adapter Registry
 
 ```python
 class AdapterRegistry:
@@ -801,21 +1242,21 @@ class AdapterRegistry:
 
 ---
 
-## 8. CONFIGURATION SPECIFICATION
+## 9. CONFIGURATION SPECIFICATION
 
-### 8.1 Config File Location
+### 9.1 Config File Location
 
 ```text
 Priority (first found wins):
-1. --config <path>           # CLI override
-2. $MUDHOUND_CONFIG        # Environment variable
-3. ./mudhound.toml         # Current directory
-4. ~/.config/mudhound/config.toml  # XDG standard
-5. ~/.mudhound/config.toml         # Legacy location
-6. (internal defaults)               # Fallback
+1. --config <path>                       # CLI override
+2. $MUDHOUND_CONFIG                      # Environment variable
+3. ./mudhound.toml                       # Current directory
+4. ~/.config/mudhound/config.toml        # XDG standard
+5. ~/.mudhound/config.toml               # Legacy location
+6. (internal defaults)                   # Fallback
 ```
 
-### 8.2 Config Schema
+### 9.2 Config Schema
 
 ```toml
 # mudhound.toml
@@ -829,11 +1270,29 @@ history_max_entries = 100
 
 [ui]
 theme = "default"
-banner = "compact"           # full | compact | minimal
+banner = "animated"          # animated | static | minimal | none
 color_enabled = true
 unicode_enabled = true       # false = ASCII fallback
-animation_enabled = true
 confirm_destructive = true
+
+[animation]
+enabled = true
+default_scheme = "rainbow"   # rainbow | dark-rainbow | light-rainbow | white | theme
+frame_rate = 10              # FPS
+transition_duration = 0.15   # Seconds between color shifts
+idle_animation = false       # Animate during idle states
+on_completion = "flash"      # none | flash | pulse | fade
+
+[animation.banner]
+style = "animated"
+scheme = "rainbow"
+loop = true
+duration = 0.0               # 0 = infinite
+
+[animation.logo]
+style = "animated"
+scheme = "rainbow"
+position = "inline"
 
 [search]
 default_region = "wt-wt"
@@ -855,16 +1314,15 @@ file_max_size = "10MB"
 file_backup_count = 5
 
 [adapters.duckduckgo]
-# Adapter-specific configuration
 backend = "auto"             # auto | html | lite
 proxy = ""
 ```
 
 ---
 
-## 9. DATA MODELS
+## 10. DATA MODELS
 
-### 9.1 Core Models
+### 10.1 Core Models
 
 ```python
 from dataclasses import dataclass, field
@@ -909,7 +1367,7 @@ class SearchSession:
         return len(self.results)
 ```
 
-### 9.2 Storage Schema
+### 10.2 Storage Schema
 
 ```text
 ~/.mudhound/
@@ -920,14 +1378,14 @@ class SearchSession:
 ├── exports/                 # Default export location
 └── logs/
     ├── mudhound.log
-    └── mudhound.log.1     # Rotated logs
+    └── mudhound.log.1       # Rotated logs
 ```
 
 ---
 
-## 10. ERROR HANDLING SPECIFICATION
+## 11. ERROR HANDLING SPECIFICATION
 
-### 10.1 Exception Hierarchy
+### 11.1 Exception Hierarchy
 
 ```python
 class MudHoundError(Exception):
@@ -962,9 +1420,13 @@ class ValidationError(MudHoundError):
 class ExportError(MudHoundError):
     """Export operation failures."""
     pass
+
+class AnimationError(MudHoundError):
+    """Animation system errors."""
+    pass
 ```
 
-### 10.2 Error Display Format
+### 11.2 Error Display Format
 
 ```text
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -987,9 +1449,187 @@ class ExportError(MudHoundError):
 
 ---
 
-## 11. EXTENSION POINTS
+## 12. ASSET MANAGEMENT SPECIFICATION
 
-### 11.1 Plugin System (Future)
+### 12.1 Asset Manager
+
+```python
+class AssetManager:
+    """
+    Manages loading, caching, and serving of static and animated assets.
+    
+    RESPONSIBILITIES:
+    1. Load ANSI frame files from disk
+    2. Cache loaded assets in memory
+    3. Provide frame sequences for animations
+    4. Handle missing asset fallbacks
+    """
+    
+    ASSET_ROOT = Path(__file__).parent / "assets"
+    CACHE: dict[str, list[str]] = {}
+    
+    @classmethod
+    def get_banner_frames(cls, scheme: ColorScheme) -> list[str]:
+        """Load banner frames for given color scheme."""
+        cache_key = f"banner:{scheme.value}"
+        
+        if cache_key not in cls.CACHE:
+            frames = cls._load_animated_asset("rainbow-banner", scheme)
+            cls.CACHE[cache_key] = frames
+        
+        return cls.CACHE[cache_key]
+    
+    @classmethod
+    def get_logo_frames(cls, scheme: ColorScheme) -> list[str]:
+        """Load logo frames for given color scheme."""
+        cache_key = f"logo:{scheme.value}"
+        
+        if cache_key not in cls.CACHE:
+            frames = cls._load_animated_asset("rainbow-logo", scheme)
+            cls.CACHE[cache_key] = frames
+        
+        return cls.CACHE[cache_key]
+    
+    @classmethod
+    def _load_animated_asset(
+        cls, 
+        asset_name: str, 
+        scheme: ColorScheme
+    ) -> list[str]:
+        """Load all frames for an animated asset."""
+        asset_dir = cls.ASSET_ROOT / "animated" / asset_name
+        frames = []
+        
+        # Load frame files in order
+        frame_pattern = f"{scheme.value}-*.ansi"
+        for frame_file in sorted(asset_dir.glob(frame_pattern)):
+            frames.append(cls._parse_ansi_file(frame_file))
+        
+        if not frames:
+            # Fallback to static asset
+            return [cls._get_static_fallback(asset_name)]
+        
+        return frames
+    
+    @classmethod
+    def _parse_ansi_file(cls, path: Path) -> str:
+        """Parse ANSI frame file, stripping header metadata."""
+        content = path.read_text(encoding="utf-8")
+        
+        # Skip header lines until ---
+        lines = content.split("\n")
+        for i, line in enumerate(lines):
+            if line.strip() == "---":
+                return "\n".join(lines[i + 1:])
+        
+        return content
+```
+
+### 12.2 Asset Directory Structure
+
+```text
+mudhound/assets/
+├── __init__.py
+├── manager.py
+├── animated/
+│   ├── rainbow-banner/
+│   │   ├── rainbow-frame-01.ansi
+│   │   ├── rainbow-frame-02.ansi
+│   │   ├── rainbow-frame-03.ansi
+│   │   ├── rainbow-frame-04.ansi
+│   │   ├── rainbow-frame-05.ansi
+│   │   ├── rainbow-frame-06.ansi
+│   │   ├── dark-rainbow-frame-01.ansi
+│   │   ├── dark-rainbow-frame-02.ansi
+│   │   ├── ...
+│   │   ├── light-rainbow-frame-01.ansi
+│   │   ├── ...
+│   │   ├── white-frame-01.ansi
+│   │   └── ...
+│   └── rainbow-logo/
+│       ├── rainbow-frame-01.ansi
+│       ├── ...
+│       ├── dark-rainbow-frame-01.ansi
+│       ├── ...
+│       ├── light-rainbow-frame-01.ansi
+│       ├── ...
+│       └── white-frame-01.ansi
+└── static/
+    ├── banner-large.ansi
+    ├── banner-minimal.ansi
+    └── logo-static.ansi
+```
+
+### 12.3 PNG to ANSI Conversion (Build Tool)
+
+```python
+"""
+Build tool for converting PNG banner assets to ANSI frame files.
+
+USAGE:
+    python -m mudhound.tools.png_to_ansi assets/source/ assets/animated/
+
+CONVERSION PROCESS:
+1. Load PNG image
+2. Sample colors at character grid positions
+3. Map RGB to nearest ANSI 256 color
+4. Generate escape sequences for each character block
+5. Write .ansi frame file with metadata header
+"""
+
+def png_to_ansi(
+    png_path: Path,
+    output_path: Path,
+    scheme: str,
+    frame_number: int
+) -> None:
+    """Convert a single PNG to ANSI frame file."""
+    from PIL import Image
+    
+    img = Image.open(png_path)
+    width, height = img.size
+    
+    # Character block size (adjust based on terminal font aspect ratio)
+    char_width = 2   # pixels per character width
+    char_height = 4  # pixels per character height
+    
+    grid_w = width // char_width
+    grid_h = height // char_height
+    
+    lines = []
+    for y in range(grid_h):
+        line = ""
+        for x in range(grid_w):
+            # Sample center pixel of block
+            px = x * char_width + char_width // 2
+            py = y * char_height + char_height // 2
+            
+            r, g, b, *_ = img.getpixel((px, py))
+            ansi_color = rgb_to_ansi256(r, g, b)
+            
+            # Use block character with foreground color
+            line += f"\033[38;5;{ansi_color}m█"
+        
+        line += "\033[0m"  # Reset at end of line
+        lines.append(line)
+    
+    # Write with metadata header
+    header = f"""# MUDHOUND ANSI FRAME
+# scheme: {scheme}
+# frame: {frame_number}
+# width: {grid_w}
+# height: {grid_h}
+---
+"""
+    
+    output_path.write_text(header + "\n".join(lines), encoding="utf-8")
+```
+
+---
+
+## 13. EXTENSION POINTS
+
+### 13.1 Plugin System (Future)
 
 ```text
 PLUGIN DISCOVERY:
@@ -1003,6 +1643,7 @@ PLUGIN TYPES:
 3. Themes        - UI customization
 4. Commands      - New CLI commands
 5. Processors    - Result transformers
+6. Animations    - Custom animation schemes
 
 PLUGIN LIFECYCLE:
 1. Discovery (on startup)
@@ -1012,7 +1653,7 @@ PLUGIN LIFECYCLE:
 5. Cleanup (on exit)
 ```
 
-### 11.2 Hook System (Future)
+### 13.2 Hook System (Future)
 
 ```python
 AVAILABLE_HOOKS = {
@@ -1024,17 +1665,20 @@ AVAILABLE_HOOKS = {
     "on_error":        "When error occurs",
     "on_startup":      "Application startup",
     "on_shutdown":     "Application shutdown",
+    "on_animation":    "Animation frame rendered",
 }
 ```
 
 ---
 
-## 12. IMPLEMENTATION PHASES
+## 14. IMPLEMENTATION PHASES
 
 ### Phase 1: Foundation
 
 - [ ] Project scaffolding
 - [ ] UI framework (frames, layout, theme)
+- [ ] Animation engine (timing, rendering)
+- [ ] Asset manager and ANSI loader
 - [ ] Core components (banner, prompt, status)
 - [ ] Basic logging system
 - [ ] Configuration management
@@ -1046,6 +1690,7 @@ AVAILABLE_HOOKS = {
 - [ ] Search command
 - [ ] Result display (table)
 - [ ] Basic export (txt, urls)
+- [ ] Animated banner integration
 
 ### Phase 3: Enhanced Features
 
@@ -1054,12 +1699,14 @@ AVAILABLE_HOOKS = {
 - [ ] Progress/spinner components
 - [ ] Menu component
 - [ ] JSON/CSV export
+- [ ] All color scheme variants
 
 ### Phase 4: Polish
 
 - [ ] Multiple themes
 - [ ] Validation refinement
 - [ ] Error handling polish
+- [ ] PNG to ANSI build tool
 - [ ] Documentation
 - [ ] Tests
 
@@ -1069,10 +1716,11 @@ AVAILABLE_HOOKS = {
 - [ ] Additional adapters
 - [ ] Hook system
 - [ ] Custom exporters
+- [ ] Custom animation schemes
 
 ---
 
-## 13. DEPENDENCIES
+## 15. DEPENDENCIES
 
 ```toml
 # pyproject.toml
@@ -1098,7 +1746,11 @@ dev = [
     "pytest-cov>=4.0.0",
     "ruff>=0.4.0",
     "mypy>=1.10.0",
+    "pillow>=10.0.0",            # PNG to ANSI conversion tool
 ]
+
+[project.scripts]
+mh = "mudhound.cli.app:app"
 ```
 
 ---
@@ -1107,28 +1759,26 @@ dev = [
 
 ### A.1 Banner and Logo Variants
 
-#### A.1.1 Animated Banner and Logo
-
-> DEFAULT ANIMATED BANNER:
-PNG ASSETS FOR ANIMATION:
-
-- [Dark Rainbow PNG](C:\Users\ryanf\github\_new\mudhound\assets\default_banner\dark-rainbow-banner.png)
-- [Light Rainbow PNG](C:\Users\ryanf\github\_new\mudhound\assets\default_banner\light-rainbow-banner.png)
-- [Rainbow PNG](C:\Users\ryanf\github\_new\mudhound\assets\default_banner\rainbow-banner.png)
-- [White PNG](C:\Users\ryanf\github\_new\mudhound\assets\default_banner\white-banner.png)
+#### A.1.1 Animated Banner (Default)
 
 ```text
 ██▄  ▄██ ██  ██ ████▄  ██  ██ ▄████▄ ██  ██ ███  ██ ████▄  
 ██ ▀▀ ██ ██  ██ ██  ██ ██████ ██  ██ ██  ██ ██ ▀▄██ ██  ██ 
-██    ██ ▀████▀ ████▀  ██  ██ ▀████▀ ▀████▀ ██   ██ ████▀                                                 
+██    ██ ▀████▀ ████▀  ██  ██ ▀████▀ ▀████▀ ██   ██ ████▀  
+
+COLOR SCHEMES:
+- rainbow:       Full spectrum cycling (196->208->226->46->51->21->129->201)
+- dark-rainbow:  Muted spectrum (88->130->136->22->23->18->54->90)
+- light-rainbow: Bright/pastel (210->216->228->120->123->111->183->219)
+- white:         Monochrome (255)
+
+ANIMATION:
+- Colors shift horizontally by 1 position per frame
+- 6-8 frames per complete cycle
+- 10 FPS default
 ```
 
-> DEFAULT LOGO:
-
-- [Dark Logo PNG](C:\Users\ryanf\github\_new\mudhound\assets\animated\rainbow-logo\dark-rainbow-logo.png)
-- [Light Logo PNG](C:\Users\ryanf\github\_new\mudhound\assets\animated\rainbow-logo\light-rainbow-logo.png)
-- [Rainbow Logo PNG](C:\Users\ryanf\github\_new\mudhound\assets\animated\rainbow-logo\rainbow-logo.png)
-- [White Logo PNG](C:\Users\ryanf\github\_new\mudhound\assets\animated\rainbow-logo\white-logo.png)
+#### A.1.2 Animated Logo (Compact)
 
 ```text
          ▄▄        
@@ -1136,11 +1786,14 @@ PNG ASSETS FOR ANIMATION:
 ██ ▀▀ ██ ██ ██████ 
 ██    ██ ██ ██  ██ 
          ▀▀        
+
+USAGE:
+- Progress indicator decoration
+- Inline status markers
+- Header/footer accents
 ```
 
-#### A.1.2 Static Banners and Logos
-
-> LARGE STYLIZED:
+#### A.1.3 Large Stylized (Static)
 
 ```text
 @@@@@@@@@@   @@@  @@@  @@@@@@@   @@@  @@@   @@@@@@   @@@  @@@  @@@  @@@  @@@@@@@   
@@ -1152,11 +1805,33 @@ PNG ASSETS FOR ANIMATION:
 !!:     !!:  !!:  !!!  !!:  !!!  !!:  !!!  !!:  !!!  !!:  !!!  !!:  !!!  !!:  !!!  
 :!:     :!:  :!:  !:!  :!:  !:!  :!:  !:!  :!:  !:!  :!:  !:!  :!:  !:!  :!:  !:!  
 :::     ::   ::::: ::   :::: ::  ::   :::  ::::: ::  ::::: ::   ::   ::   :::: ::  
- :      :     : :  :   :: :  :    :   : :   : :  :    : :  :   ::    :   :: :  :                                                                                   
+ :      :     : :  :   :: :  :    :   : :   : :  :    : :  :   ::    :   :: :  :   
 ```
 
-> MINIMAL (inline):
-`[ MUDHOUND v1.0.0 ]`
+#### A.1.4 Compact Stylized
+
+```text
+░█▄█░█░█░█▀▄░█░█░█▀█░█░█░█▀█░█▀▄
+░█░█░█░█░█░█░█▀█░█░█░█░█░█░█░█░█
+░▀░▀░▀▀▀░▀▀░░▀░▀░▀▀▀░▀▀▀░▀░▀░▀▀░
+```
+
+#### A.1.5 Minimal (Inline)
+
+```text
+[ MUDHOUND v1.0.0 ]
+```
+
+- can be applied to most ASCII logos, or banners on the bottom left most line.
+
+> EXAMPLE:
+
+```text
+░█▄█░█░█░█▀▄░█░█░█▀█░█░█░█▀█░█▀▄
+░█░█░█░█░█░█░█▀█░█░█░█░█░█░█░█░█
+░▀░▀░▀▀▀░▀▀░░▀░▀░▀▀▀░▀▀▀░▀░▀░▀▀░
+[ MUDHOUND v1.0.0 ]
+```
 
 ### A.2 Decorative Elements
 
@@ -1172,15 +1847,41 @@ Corners:
 ║    ║     │    │     │    │
 ╚═  ═╝     └─  ─┘     ╰─  ─╯
 
-Arrows:
-> **NOTE:** AVOID USING ARROWS THAT BREAK SPACING
-
->>> ─> -> => >> ▶ ► → ➜ ➤
-<<< <─ <- <= << ◀ ◄ ← ➜ ➤
+Arrows (spacing-safe):
+>>> -> => >> 
+<<< <- <= << 
 ```
 
 ---
 
-*Document Version: 1.0.0*
+## APPENDIX B: EXTERNAL ASSET REFERENCES
+
+### B.1 Source PNG Assets (Development Only)
+
+```text
+Location: assets/source/ (not distributed)
+
+rainbow-banner/
+├── dark-rainbow-banner.png
+├── light-rainbow-banner.png
+├── rainbow-banner.png
+└── white-banner.png
+
+rainbow-logo/
+├── dark-rainbow-logo.png
+├── light-rainbow-logo.png
+├── rainbow-logo.png
+└── white-logo.png
+
+BUILD PROCESS:
+1. Source PNGs created in image editor
+2. Build tool converts PNG -> ANSI frames
+3. ANSI files committed to assets/animated/
+4. Source PNGs excluded from distribution
+```
+
+---
+
+*Document Version: 1.1.0*
 *Last Updated: 2025-12-03*
 *Author: MudHound Design Team*
