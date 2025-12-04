@@ -1,0 +1,30 @@
+# MudHound Default Theme
+# A balanced theme with cyan accents and bright colors
+
+name = "default"
+
+[colors]
+# Primary colors
+primary = "bright_cyan"
+secondary = "cyan"
+accent = "bright_magenta"
+
+# Semantic colors
+success = "bright_green"
+error = "bright_red"
+warning = "bright_yellow"
+info = "bright_blue"
+
+# Frame colors
+frame_border = "bright_cyan"
+frame_title = "bright_white"
+frame_content = "white"
+
+# Content colors
+text = "white"
+text_dim = "bright_black"
+highlight = "bright_yellow"
+
+[animation]
+# Optional: override animation color scheme
+# color_scheme = "rainbow"

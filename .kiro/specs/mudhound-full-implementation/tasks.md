@@ -42,7 +42,12 @@
   - **Property 26: Session data completeness**
   - **Validates: Requirements 8.2**
 
-- [ ] 4. Configuration management system
+- [x] 4. Configuration management system
+
+
+
+
+
   - Implement core/config.py with ConfigManager class
   - Create config file priority chain logic (CLI → env → current dir → XDG → legacy → defaults)
   - Implement TOML parsing with tomli
@@ -51,15 +56,24 @@
   - Add config persistence with tomli-w
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 4.1 Write property test for config priority chain
+- [x] 4.1 Write property test for config priority chain
+
+
   - **Property 21: Config file priority chain**
   - **Validates: Requirements 7.1**
 
-- [ ] 4.2 Write property test for config round trip
+- [x] 4.2 Write property test for config round trip
+
+
   - **Property 23: Config set-get round trip**
   - **Validates: Requirements 7.3**
 
-- [ ] 5. Terminal utilities and layout management
+- [x] 5. Terminal utilities and layout management
+
+
+
+
+
   - Implement utils/terminal.py with terminal size detection
   - Create ui/layout.py with LayoutManager class
   - Implement get_content_width() method with border and padding calculations
@@ -68,22 +82,36 @@
   - Add animation engine pause/resume on resize
   - _Requirements: 1.1, 1.2, 1.5_
 
-- [ ] 5.1 Write property test for content width calculation
+- [x] 5.1 Write property test for content width calculation
+
+
   - **Property 2: Content width calculation correctness**
   - **Validates: Requirements 1.2**
 
-- [ ] 5.2 Write property test for resize handling
+- [x] 5.2 Write property test for resize handling
+
+
   - **Property 1: Terminal resize triggers re-render**
   - **Validates: Requirements 1.1**
 
-- [ ] 6. Frame rendering system
+- [x] 6. Frame rendering system
+
+
+
+
+
   - Implement ui/frames.py with border character sets (double, single, bold, rounded, ascii)
   - Create frame rendering functions (top_border, bottom_border, header_row, footer_row, divider, content_rows)
   - Add frame anatomy support (title, tag, status, pagination)
   - Implement dynamic width adjustment based on terminal size
   - _Requirements: 1.3_
 
-- [ ] 7. Theme engine
+- [x] 7. Theme engine
+
+
+
+
+
   - Create ui/theme.py with Theme class
   - Implement TOML theme file loading from data/themes/
   - Create color palette structure (primary, secondary, accent, semantic colors, frame colors, content colors)
@@ -94,19 +122,35 @@
   - Create default, minimal, and hacker themes
   - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5_
 
-- [ ] 7.1 Write property test for theme loading
+- [x] 7.1 Write property test for theme loading
+
+
   - **Property 52: Theme TOML loading**
   - **Validates: Requirements 17.1**
 
-- [ ] 7.2 Write property test for color resolution
+
+
+- [x] 7.2 Write property test for color resolution
+
+
   - **Property 53: Semantic color resolution**
   - **Validates: Requirements 17.2**
 
-- [ ] 7.3 Write property test for theme fallback
+- [x] 7.3 Write property test for theme fallback
+
+
+
+
+
   - **Property 56: Theme fallback behavior**
   - **Validates: Requirements 17.5**
 
-- [ ] 8. Glyph registry
+- [x] 8. Glyph registry
+
+
+
+
+
   - Implement ui/glyphs.py with GLYPHS dictionary
   - Define status indicators ([+], [!], [~], [*], [.], [?])
   - Define progress glyphs (spinner, progress blocks, bullet, arrow, pointer)
@@ -115,7 +159,12 @@
   - Define data flow glyphs (input, output, pipe, chain)
   - _Requirements: 15.1_
 
-- [ ] 9. Core UI renderer
+- [x] 9. Core UI renderer
+
+
+
+
+
   - Implement ui/renderer.py with UIRenderer class
   - Create render methods for frames with theme application
   - Add ANSI escape sequence handling
@@ -124,11 +173,18 @@
   - Integrate with LayoutManager for responsive rendering
   - _Requirements: 1.4_
 
-- [ ] 9.1 Write property test for theme application
+- [x] 9.1 Write property test for theme application
+
+
   - **Property 3: Theme application to frames**
   - **Validates: Requirements 1.4**
 
-- [ ] 10. Animation timing engine
+- [x] 10. Animation timing engine
+
+
+
+
+
   - Implement ui/animation/timing.py with TimingEngine class
   - Create easing functions (linear, ease_in, ease_out, ease_in_out, bounce)
   - Implement frame rate control with configurable FPS
@@ -137,11 +193,15 @@
   - Add loop control (continuous vs single-pass)
   - _Requirements: 2.2, 2.7_
 
-- [ ] 10.1 Write property test for frame rate timing
+- [x] 10.1 Write property test for frame rate timing
+
+
   - **Property 5: Frame rate timing accuracy**
   - **Validates: Requirements 2.2**
 
-- [ ] 10.2 Write property test for infinite loop
+- [x] 10.2 Write property test for infinite loop
+
+
   - **Property 8: Infinite loop with zero duration**
   - **Validates: Requirements 2.7**
 

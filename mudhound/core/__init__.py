@@ -18,6 +18,7 @@ from mudhound.core.result import (
     SearchQuery,
     SearchSession,
 )
+from mudhound.core.config import ConfigManager
 
 __all__ = [
     "MudHoundError",
@@ -34,4 +35,5 @@ __all__ = [
     "SearchStatus",
     "SearchQuery",
     "SearchSession",
+    "ConfigManager",
 ]

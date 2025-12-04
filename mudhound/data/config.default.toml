@@ -1,0 +1,92 @@
+# MudHound Default Configuration
+# This file contains the default configuration values for MudHound.
+# Copy this file to one of the following locations to customize:
+#   - ./mudhound.toml (current directory)
+#   - ~/.config/mudhound/config.toml (XDG standard)
+#   - ~/.mudhound/config.toml (legacy location)
+
+[general]
+# Default search engine adapter to use
+engine = "duckduckgo"
+
+# Maximum number of results to retrieve per search
+max_results = 50
+
+# Region code for search localization (wt-wt = worldwide)
+region = "wt-wt"
+
+# Safe search level: "off", "moderate", or "strict"
+safesearch = "moderate"
+
+[ui]
+# Theme to use for terminal UI
+theme = "default"
+
+# Enable colored output
+color = true
+
+# Enable animations
+animation = true
+
+# Banner display style: "animated", "static", "minimal", or "none"
+banner_style = "animated"
+
+# Logo position: "inline", "header", "footer", or "floating"
+logo_position = "header"
+
+[animation]
+# Enable animation system
+enabled = true
+
+# Frames per second for animations
+fps = 10
+
+# Color scheme: "rainbow", "dark-rainbow", "light-rainbow", "white", or "theme"
+color_scheme = "rainbow"
+
+# Easing function: "linear", "ease-in", "ease-out", "ease-in-out", or "bounce"
+easing = "linear"
+
+[search]
+# Timeout for search operations in seconds
+timeout = 30
+
+# Number of retry attempts for failed searches
+retry_count = 3
+
+# Delay between retries in seconds
+retry_delay = 1.0
+
+# Stream results as they arrive (vs waiting for all results)
+stream_results = true
+
+[export]
+# Default export format: "json", "csv", "txt", or "urls"
+default_format = "json"
+
+# Default directory for exported files
+default_directory = "~/.mudhound/exports"
+
+# Include metadata in exports
+include_metadata = true
+
+[logging]
+# Logging level: "TRACE", "DEBUG", "INFO", "WARNING", "ERROR", or "FATAL"
+level = "INFO"
+
+# Enable logging to file
+file_logging = false
+
+# Path to log file
+log_file = "~/.mudhound/logs/mudhound.log"
+
+# Maximum log file size in bytes (10MB default)
+max_size = 10485760
+
+# Number of backup log files to keep
+backup_count = 5
+
+[adapters.duckduckgo]
+# Enable DuckDuckGo adapter
+enabled = true
+

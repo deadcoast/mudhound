@@ -1,0 +1,30 @@
+# MudHound Hacker Theme
+# A classic green-on-black hacker aesthetic
+
+name = "hacker"
+
+[colors]
+# Primary colors
+primary = "bright_green"
+secondary = "green"
+accent = "bright_green"
+
+# Semantic colors
+success = "bright_green"
+error = "bright_red"
+warning = "bright_yellow"
+info = "green"
+
+# Frame colors
+frame_border = "green"
+frame_title = "bright_green"
+frame_content = "green"
+
+# Content colors
+text = "green"
+text_dim = "bright_black"
+highlight = "bright_green"
+
+[animation]
+# Use dark rainbow for hacker aesthetic
+color_scheme = "dark-rainbow"

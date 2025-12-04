@@ -1,0 +1,30 @@
+# MudHound Minimal Theme
+# A clean, minimal theme with subtle colors
+
+name = "minimal"
+
+[colors]
+# Primary colors
+primary = "white"
+secondary = "bright_black"
+accent = "white"
+
+# Semantic colors
+success = "green"
+error = "red"
+warning = "yellow"
+info = "blue"
+
+# Frame colors
+frame_border = "bright_black"
+frame_title = "white"
+frame_content = "white"
+
+# Content colors
+text = "white"
+text_dim = "bright_black"
+highlight = "white"
+
+[animation]
+# Use white color scheme for minimal aesthetic
+color_scheme = "white"
