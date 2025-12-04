@@ -545,6 +545,7 @@ s
 
 
 
+
   - Implement adapters/duckduckgo.py with DuckDuckGoAdapter class
   - Integrate duckduckgo-search library
   - Implement search method as generator yielding SearchResult objects
