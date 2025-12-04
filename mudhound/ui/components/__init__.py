@@ -7,6 +7,7 @@ from mudhound.ui.components.prompt import Prompt, PromptType
 from mudhound.ui.components.confirm import Confirmation, ConfirmationVariant
 from mudhound.ui.components.menu import Menu
 from mudhound.ui.components.table import Table, ColumnConfig
+from mudhound.ui.components.progress import Progress, ProgressVariant
 
 __all__ = [
     "Banner",
@@ -21,4 +22,6 @@ __all__ = [
     "Menu",
     "Table",
     "ColumnConfig",
+    "Progress",
+    "ProgressVariant",
 ]

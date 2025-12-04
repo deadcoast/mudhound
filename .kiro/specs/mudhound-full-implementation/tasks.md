@@ -476,7 +476,12 @@ s
   - **Property 40: URL truncation with ellipsis**
   - **Validates: Requirements 13.3**
 
-- [ ] 22. Progress component
+- [x] 22. Progress component
+
+
+
+
+
   - Implement ui/components/progress.py with Progress class
   - Add support for bar, spinner, counter, transfer, rainbow variants
   - Implement percentage calculation and display
@@ -485,11 +490,14 @@ s
   - Add CTRL+C cancellation support
   - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5_
 
-- [ ] 22.1 Write property test for progress percentage
+- [x] 22.1 Write property test for progress percentage
+
+
   - **Property 41: Progress percentage display**
   - **Validates: Requirements 14.1**
 
-- [ ] 22.2 Write property test for counter updates
+- [x] 22.2 Write property test for counter updates
+
   - **Property 42: Progress counter updates**
   - **Validates: Requirements 14.3**
 
