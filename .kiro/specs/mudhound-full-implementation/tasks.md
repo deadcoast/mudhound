@@ -525,7 +525,7 @@ s
   - **Property 13: Generator-based search results**
   - **Validates: Requirements 4.2**
 
-- [x] 24. Adapter registry
+- [x] 21  4. Adapter registry
 
 
 
@@ -587,7 +587,12 @@ s
   - **Property 18: Search command initiation**
   - **Validates: Requirements 6.1**
 
-- [ ] 27. Result storage and history
+- [x] 27. Result storage and history
+
+
+
+
+
   - Implement core/store.py with ResultStore class
   - Create SQLite database schema for search history
   - Implement persist method for SearchSession storage
@@ -597,19 +602,30 @@ s
   - Implement delete and clear methods
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 27.1 Write property test for session persistence
+- [x] 27.1 Write property test for session persistence
+
+
   - **Property 25: Search session persistence**
   - **Validates: Requirements 8.1**
 
-- [ ] 27.2 Write property test for history retrieval
+- [x] 27.2 Write property test for history retrieval
+
+
   - **Property 27: History retrieval by ID**
   - **Validates: Requirements 8.4**
 
-- [ ] 27.3 Write property test for replay parameters
+- [x] 27.3 Write property test for replay parameters
+
+
   - **Property 28: History replay parameter preservation**
   - **Validates: Requirements 8.5**
 
-- [ ] 28. Export system
+- [x] 28. Export system
+
+
+
+
+
   - Implement cli/commands/export.py with export command
   - Add JSON export with json.dumps
   - Add CSV export with csv.DictWriter
@@ -619,15 +635,21 @@ s
   - Add ExportError for I/O failures
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 28.1 Write property test for JSON round trip
+- [x] 28.1 Write property test for JSON round trip
+
+
   - **Property 29: JSON export round trip**
   - **Validates: Requirements 9.1**
 
-- [ ] 28.2 Write property test for CSV round trip
+- [x] 28.2 Write property test for CSV round trip
+
+
   - **Property 30: CSV export round trip**
   - **Validates: Requirements 9.2**
 
-- [ ] 28.3 Write property test for URLs format
+- [x] 28.3 Write property test for URLs format
+
+
   - **Property 31: URLs export format**
   - **Validates: Requirements 9.4**
 

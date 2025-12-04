@@ -20,6 +20,7 @@ from mudhound.core.result import (
 )
 from mudhound.core.config import ConfigManager
 from mudhound.core.engine import SearchEngine
+from mudhound.core.store import ResultStore, StoreError
 
 __all__ = [
     "MudHoundError",
@@ -38,4 +39,6 @@ __all__ = [
     "SearchSession",
     "ConfigManager",
     "SearchEngine",
+    "ResultStore",
+    "StoreError",
 ]
