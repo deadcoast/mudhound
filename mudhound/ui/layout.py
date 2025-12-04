@@ -27,9 +27,13 @@ class LayoutManager:
         """
         Get current terminal size.
         
+        Returns cached size if available (for testing), otherwise queries actual terminal.
+        
         Returns:
             Tuple[int, int]: (width, height) in columns and rows
         """
+        if self._cached_size is not None:
+            return self._cached_size
         return get_terminal_size()
     
     def get_content_width(self) -> int:
