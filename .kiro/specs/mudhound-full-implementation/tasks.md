@@ -671,19 +671,39 @@ s
   - Add stdin support with --stdin flag
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 30.1 Write property test for quiet mode
+- [x] 30.1 Write property test for quiet mode
+
+
+
+
+
   - **Property 19: Quiet mode output suppression**
   - **Validates: Requirements 6.3**
 
-- [ ] 30.2 Write property test for output file writing
+- [x] 30.2 Write property test for output file writing
+
+
+
+
+
   - **Property 20: Output file writing**
   - **Validates: Requirements 6.4**
 
-- [ ] 30.3 Write property test for stdin reading
+- [x] 30.3 Write property test for stdin reading
+
+
+
+
+
   - **Property 65: Stdin query reading**
   - **Validates: Requirements 20.5**
 
-- [ ] 31. Config command
+- [x] 31. Config command
+
+
+
+
+
   - Implement cli/commands/config.py with config command
   - Add list subcommand
   - Add get subcommand with key argument
@@ -692,7 +712,12 @@ s
   - Add edit subcommand that opens $EDITOR
   - _Requirements: 7.3, 7.4, 7.5_
 
-- [ ] 32. History command
+- [x] 32. History command
+
+
+
+
+
   - Implement cli/commands/history.py with history command
   - Add list subcommand with limit option
   - Add show subcommand with id argument
@@ -701,7 +726,12 @@ s
   - Add clear subcommand with confirmation
   - _Requirements: 8.3, 8.4, 8.5_
 
-- [ ] 33. Interactive mode
+- [x] 33. Interactive mode
+
+
+
+
+
   - Implement cli/commands/interactive.py with interactive command
   - Create main menu with search, history, export, config, quit options
   - Implement session state management
@@ -710,7 +740,9 @@ s
   - Add CTRL+C handling with exit confirmation
   - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5_
 
-- [ ] 33.1 Write property test for session state preservation
+- [x] 33.1 Write property test for session state preservation
+
+
   - **Property 62: Interactive session state preservation**
   - **Validates: Requirements 19.2**
 

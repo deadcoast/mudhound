@@ -5,11 +5,40 @@ Main CLI application using Typer.
 import typer
 from typing import Optional
 
+from mudhound.cli.commands import config as config_cmd
+from mudhound.cli.commands import history as history_cmd
+from mudhound.cli.commands import interactive as interactive_cmd
+
 app = typer.Typer(
     name="mudhound",
     help="Terminal-based batch URL extraction tool",
     add_completion=False,
 )
+
+# Register subcommands
+app.add_typer(config_cmd.app, name="config")
+app.add_typer(history_cmd.app, name="history")
+
+
+@app.command()
+def interactive(
+    ctx: typer.Context,
+):
+    """
+    Launch interactive mode with menu-driven interface.
+    
+    Interactive mode allows you to perform multiple operations
+    (search, history, export, config) without re-launching the application.
+    """
+    # Get global options from context
+    no_color = ctx.obj.get("no_color", False) if ctx.obj else False
+    no_animation = ctx.obj.get("no_animation", False) if ctx.obj else False
+    
+    # Run interactive mode
+    interactive_cmd.interactive_command(
+        use_color=not no_color,
+        use_animation=not no_animation
+    )
 
 
 @app.callback()
