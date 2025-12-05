@@ -92,9 +92,11 @@ def configure_logging(
     Returns:
         Configured logger instance
     """
+    from mudhound.logging.levels import TRACE
+    
     # Get or create logger
     logger = logging.getLogger("mudhound")
-    logger.setLevel(logging.TRACE if hasattr(logging, 'TRACE') else logging.DEBUG)
+    logger.setLevel(TRACE)  # Set to lowest level, handlers will filter
     
     # Remove existing handlers
     logger.handlers.clear()

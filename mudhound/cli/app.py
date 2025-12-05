@@ -1,13 +1,19 @@
 """
 Main CLI application using Typer.
+
+This module defines the main CLI application structure and global options.
+It integrates with the configuration and logging systems initialized in __main__.py.
 """
 
 import typer
+import logging
 from typing import Optional
+from pathlib import Path
 
 from mudhound.cli.commands import config as config_cmd
 from mudhound.cli.commands import history as history_cmd
 from mudhound.cli.commands import interactive as interactive_cmd
+from mudhound.core.config import ConfigManager
 
 app = typer.Typer(
     name="mudhound",
@@ -18,6 +24,9 @@ app = typer.Typer(
 # Register subcommands
 app.add_typer(config_cmd.app, name="config")
 app.add_typer(history_cmd.app, name="history")
+
+# Note: Export command is typically used as a subcommand of history or search
+# It can be imported and used by other commands as needed
 
 
 @app.command()
@@ -56,8 +65,6 @@ def main(
     
     A modular search tool with animated UI and multiple search engine support.
     """
-    from pathlib import Path
-    
     # Validate conflicting options
     if verbose and quiet:
         typer.echo("Error: Cannot use both --verbose and --quiet options", err=True)
@@ -75,6 +82,29 @@ def main(
             typer.echo(f"Error: Config path is not a file: {config}", err=True)
             raise typer.Exit(1)
     
+    # Reconfigure logging based on CLI arguments
+    from mudhound.logging import configure_logging
+    
+    # Determine log level
+    if quiet:
+        level = logging.ERROR
+    elif verbose:
+        level = logging.DEBUG
+    else:
+        level = logging.INFO
+    
+    # Reconfigure logging with CLI options
+    log_file = Path.home() / '.mudhound' / 'logs' / 'mudhound.log'
+    configure_logging(
+        level=level,
+        use_color=not no_color,
+        log_file=log_file if not quiet else None,
+        file_level=logging.DEBUG,
+    )
+    
+    # Load or reload configuration with CLI override
+    config_manager = ConfigManager(cli_config_path=config)
+    
     # Store global options in context for use by commands
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose
@@ -83,6 +113,19 @@ def main(
     ctx.obj["no_animation"] = no_animation
     ctx.obj["theme"] = theme
     ctx.obj["config"] = config
+    ctx.obj["config_manager"] = config_manager
+    
+    # Get logger
+    logger = logging.getLogger("mudhound")
+    logger.debug(f"MudHound starting with options: verbose={verbose}, quiet={quiet}, no_color={no_color}, no_animation={no_animation}")
+    
+    if config:
+        logger.debug(f"Using config file: {config}")
+    
+    # Log available adapters
+    from mudhound.adapters.registry import AdapterRegistry
+    available_adapters = AdapterRegistry.list_available()
+    logger.debug(f"Available search adapters: {', '.join(available_adapters)}")
 
 
 @app.command()
