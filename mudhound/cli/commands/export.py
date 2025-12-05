@@ -138,14 +138,35 @@ def export(
     - txt: Human-readable formatted text
     - urls: Simple list of URLs (one per line)
     """
+    from rich.console import Console
+    from mudhound.cli.validation import validate_format, validate_output_path
+    
+    console_err = Console(stderr=True)
+    
+    # Validate arguments
+    errors = []
+    
+    # Validate format
+    is_valid_format, format_error = validate_format(format)
+    if not is_valid_format:
+        errors.append(format_error)
+    
+    # Validate output path
+    is_valid_output, output_error = validate_output_path(output)
+    if not is_valid_output:
+        errors.append(output_error)
+    
+    # If there are validation errors, display them and exit
+    if errors:
+        console_err.print("[red]Validation Error(s):[/red]")
+        for error in errors:
+            console_err.print(f"  • {error}")
+        console_err.print("\n[yellow]Tip:[/yellow] Use --help to see valid options")
+        raise typer.Exit(1)
+    
     # This is a placeholder - actual implementation would retrieve session from store
     # For now, we'll focus on the export functions themselves
     typer.echo(f"Exporting session {session_id or 'latest'} to {output} as {format}")
-    
-    # Validate format
-    valid_formats = ["json", "csv", "txt", "urls"]
-    if format not in valid_formats:
-        raise typer.BadParameter(f"Format must be one of: {', '.join(valid_formats)}")
     
     typer.echo("Export functionality will be wired up with search engine in task 38")
 

@@ -56,6 +56,25 @@ def main(
     
     A modular search tool with animated UI and multiple search engine support.
     """
+    from pathlib import Path
+    
+    # Validate conflicting options
+    if verbose and quiet:
+        typer.echo("Error: Cannot use both --verbose and --quiet options", err=True)
+        raise typer.Exit(1)
+    
+    # Validate config path if provided
+    if config:
+        config_path = Path(config)
+        if not config_path.exists():
+            typer.echo(f"Error: Config file not found: {config}", err=True)
+            typer.echo("Tip: Check the file path and try again", err=True)
+            raise typer.Exit(1)
+        
+        if not config_path.is_file():
+            typer.echo(f"Error: Config path is not a file: {config}", err=True)
+            raise typer.Exit(1)
+    
     # Store global options in context for use by commands
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose

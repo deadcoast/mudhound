@@ -99,6 +99,12 @@ def get(
     
     Supports dot notation for nested keys (e.g., 'general.engine').
     """
+    # Validate key is not empty
+    if not key or len(key.strip()) == 0:
+        console_err.print("[red]Error:[/red] Configuration key cannot be empty")
+        console_err.print("[yellow]Tip:[/yellow] Use 'mh config list' to see all available keys")
+        raise typer.Exit(1)
+    
     try:
         config_manager = get_config_manager(ctx)
         value = config_manager.get(key)
@@ -133,6 +139,17 @@ def set(
     Creates intermediate dictionaries as needed.
     The configuration is persisted to disk after setting.
     """
+    # Validate key is not empty
+    if not key or len(key.strip()) == 0:
+        console_err.print("[red]Error:[/red] Configuration key cannot be empty")
+        console_err.print("[yellow]Tip:[/yellow] Use 'mh config list' to see all available keys")
+        raise typer.Exit(1)
+    
+    # Validate value is not empty
+    if not value or len(value.strip()) == 0:
+        console_err.print("[red]Error:[/red] Configuration value cannot be empty")
+        raise typer.Exit(1)
+    
     try:
         config_manager = get_config_manager(ctx)
         

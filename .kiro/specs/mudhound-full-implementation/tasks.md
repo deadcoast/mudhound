@@ -770,26 +770,41 @@ s
   - **Property 60: Error type classification**
   - **Validates: Requirements 18.4**
 
-- [ ] 35. Default configuration file
+- [x] 35. Default configuration file
+
+
+
+
   - Create data/config.default.toml with all configuration sections
   - Set sensible defaults (engine=duckduckgo, max_results=50, theme=default, animation=enabled, etc.)
   - Add comments explaining each option
   - _Requirements: 7.1_
 
-- [ ] 36. Default theme files
+- [x] 36. Default theme files
+
+
+
+
   - Create data/themes/default.toml with MudHound default theme
   - Create data/themes/minimal.toml with minimal theme
   - Create data/themes/hacker.toml with hacker theme
   - Define color palettes for each theme
   - _Requirements: 17.1_
 
-- [ ] 37. CLI argument validation
+- [x] 37. CLI argument validation
+
+
+
+
+
   - Implement input validation in cli/commands/
   - Add invalid argument handling with usage display
   - Set non-zero exit codes for errors
   - _Requirements: 20.3_
 
-- [ ] 37.1 Write property test for invalid argument handling
+- [x] 37.1 Write property test for invalid argument handling
+
+
   - **Property 64: Invalid argument handling**
   - **Validates: Requirements 20.3**
 

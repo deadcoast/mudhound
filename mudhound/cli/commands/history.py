@@ -52,6 +52,15 @@ def list(
     Displays a table of recent searches with ID, query, result count,
     status, and timestamp.
     """
+    from mudhound.cli.validation import validate_limit
+    
+    # Validate limit
+    is_valid, error = validate_limit(limit)
+    if not is_valid:
+        console_err.print(f"[red]Validation Error:[/red] {error}")
+        console_err.print("[yellow]Tip:[/yellow] Limit must be between 1 and 10000")
+        raise typer.Exit(1)
+    
     try:
         store = get_result_store(ctx)
         sessions = store.list(limit=limit)
@@ -129,6 +138,12 @@ def show(
     
     Shows all details including query parameters, results, and metadata.
     """
+    # Validate session_id is not empty
+    if not session_id or len(session_id.strip()) == 0:
+        console_err.print("[red]Error:[/red] Session ID cannot be empty")
+        console_err.print("[yellow]Tip:[/yellow] Use 'mh history list' to see available sessions")
+        raise typer.Exit(1)
+    
     try:
         store = get_result_store(ctx)
         
@@ -226,6 +241,12 @@ def replay(
     Retrieves the original query and options from history and executes
     a new search with the same parameters.
     """
+    # Validate session_id is not empty
+    if not session_id or len(session_id.strip()) == 0:
+        console_err.print("[red]Error:[/red] Session ID cannot be empty")
+        console_err.print("[yellow]Tip:[/yellow] Use 'mh history list' to see available sessions")
+        raise typer.Exit(1)
+    
     try:
         store = get_result_store(ctx)
         
@@ -314,6 +335,12 @@ def delete(
     Removes the session and all associated results from history.
     Requires confirmation unless --yes flag is provided.
     """
+    # Validate session_id is not empty
+    if not session_id or len(session_id.strip()) == 0:
+        console_err.print("[red]Error:[/red] Session ID cannot be empty")
+        console_err.print("[yellow]Tip:[/yellow] Use 'mh history list' to see available sessions")
+        raise typer.Exit(1)
+    
     try:
         store = get_result_store(ctx)
         
