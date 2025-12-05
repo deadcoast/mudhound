@@ -73,14 +73,19 @@ def main(
     # Validate config path if provided
     if config:
         config_path = Path(config)
-        if not config_path.exists():
-            typer.echo(f"Error: Config file not found: {config}", err=True)
-            typer.echo("Tip: Check the file path and try again", err=True)
-            raise typer.Exit(1)
-        
-        if not config_path.is_file():
-            typer.echo(f"Error: Config path is not a file: {config}", err=True)
-            raise typer.Exit(1)
+        # Check if path exists
+        if config_path.exists():
+            # If it exists, it must be a file
+            if not config_path.is_file():
+                typer.echo(f"Error: Config path is not a file: {config}", err=True)
+                raise typer.Exit(1)
+        else:
+            # If it doesn't exist, check if parent directory exists
+            # This allows creating new config files but catches typos in paths
+            if not config_path.parent.exists():
+                typer.echo(f"Error: Config file not found: {config}", err=True)
+                typer.echo("Tip: Check the file path and try again", err=True)
+                raise typer.Exit(1)
     
     # Reconfigure logging based on CLI arguments
     from mudhound.logging import configure_logging

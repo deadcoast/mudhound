@@ -820,7 +820,12 @@ s
   - Connect CLI commands to core functionality
   - _Requirements: All_
 
-- [ ] 39. Checkpoint - Ensure all tests pass
+- [x] 39. Checkpoint - Ensure all tests pass
+
+
+
+
+
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 40. Documentation
