@@ -8,6 +8,7 @@ from mudhound.ui.components.confirm import Confirmation, ConfirmationVariant
 from mudhound.ui.components.menu import Menu
 from mudhound.ui.components.table import Table, ColumnConfig
 from mudhound.ui.components.progress import Progress, ProgressVariant
+from mudhound.ui.components.error import ErrorHandler
 
 __all__ = [
     "Banner",
@@ -24,4 +25,5 @@ __all__ = [
     "ColumnConfig",
     "Progress",
     "ProgressVariant",
+    "ErrorHandler",
 ]
