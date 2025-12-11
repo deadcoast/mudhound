@@ -1,12 +1,13 @@
 """Unit tests for color scheme definitions."""
 
 import pytest
+
 from mudhound.ui.animation.schemes import (
-    ColorScheme,
-    RAINBOW_COLORS_256,
     DARK_RAINBOW_COLORS_256,
     LIGHT_RAINBOW_COLORS_256,
+    RAINBOW_COLORS_256,
     WHITE_COLORS,
+    ColorScheme,
     generate_rainbow_frame,
 )
 
@@ -52,7 +53,7 @@ def test_generate_rainbow_frame_basic():
     """Test basic rainbow frame generation."""
     art = "AB"
     frame = generate_rainbow_frame(art, 0, ColorScheme.RAINBOW)
-    
+
     # Should contain ANSI color codes
     assert "\033[38;5;" in frame
     # Should contain the original characters
@@ -67,7 +68,7 @@ def test_generate_rainbow_frame_offset_changes_colors():
     art = "TEST"
     frame1 = generate_rainbow_frame(art, 0, ColorScheme.RAINBOW)
     frame2 = generate_rainbow_frame(art, 1, ColorScheme.RAINBOW)
-    
+
     # Different offsets should produce different frames
     assert frame1 != frame2
 
@@ -79,7 +80,7 @@ def test_generate_rainbow_frame_different_schemes():
     dark = generate_rainbow_frame(art, 0, ColorScheme.DARK_RAINBOW)
     light = generate_rainbow_frame(art, 0, ColorScheme.LIGHT_RAINBOW)
     white = generate_rainbow_frame(art, 0, ColorScheme.WHITE)
-    
+
     # Different schemes should produce different frames
     assert rainbow != dark
     assert rainbow != light
@@ -91,7 +92,7 @@ def test_generate_rainbow_frame_preserves_whitespace():
     """Test that whitespace is preserved without coloring."""
     art = "A B"
     frame = generate_rainbow_frame(art, 0, ColorScheme.RAINBOW)
-    
+
     # Should contain the space
     assert " " in frame
     # The space should not have color codes around it
@@ -102,7 +103,7 @@ def test_generate_rainbow_frame_multiline():
     """Test rainbow frame generation with multiple lines."""
     art = "AB\nCD"
     frame = generate_rainbow_frame(art, 0, ColorScheme.RAINBOW)
-    
+
     # Should preserve line breaks
     assert "\n" in frame
     # Should have reset codes for each line
@@ -113,7 +114,7 @@ def test_generate_rainbow_frame_empty_string():
     """Test rainbow frame generation with empty string."""
     art = ""
     frame = generate_rainbow_frame(art, 0, ColorScheme.RAINBOW)
-    
+
     # Should return empty string
     assert frame == ""
 
@@ -123,6 +124,6 @@ def test_generate_rainbow_frame_theme_scheme():
     art = "TEST"
     theme_frame = generate_rainbow_frame(art, 0, ColorScheme.THEME)
     rainbow_frame = generate_rainbow_frame(art, 0, ColorScheme.RAINBOW)
-    
+
     # For now, THEME should produce same result as RAINBOW
     assert theme_frame == rainbow_frame
