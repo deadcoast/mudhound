@@ -2,11 +2,11 @@
 """Demo script to visualize color schemes."""
 
 from mudhound.ui.animation.schemes import (
-    ColorScheme,
-    generate_rainbow_frame,
-    RAINBOW_COLORS_256,
     DARK_RAINBOW_COLORS_256,
     LIGHT_RAINBOW_COLORS_256,
+    RAINBOW_COLORS_256,
+    ColorScheme,
+    generate_rainbow_frame,
 )
 
 # Sample ASCII art
