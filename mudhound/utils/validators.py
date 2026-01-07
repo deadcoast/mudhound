@@ -9,13 +9,13 @@ and custom validation functions.
 import re
 import typing
 from pathlib import Path
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, List, Optional, Tuple
 
 
 class Validator:
     """Base validator class."""
 
-    def validate(self, value: Any) -> tuple[bool, Optional[str]]:
+    def validate(self, value: Any) -> typing.Tuple[bool, Optional[str]]:
         """
         Validate a value.
 
@@ -42,7 +42,7 @@ class RangeValidator(Validator):
         self.min_value = min_value
         self.max_value = max_value
 
-    def validate(self, value: Any) -> tuple[bool, Optional[str]]:
+    def validate(self, value: Any) -> Tuple[bool, Optional[str]]:
         """Validate that value is within range."""
         try:
             num_value = float(value)
@@ -72,7 +72,7 @@ class PatternValidator(Validator):
         self.pattern = re.compile(pattern)
         self.error_message = error_message or f"Value must match pattern: {pattern}"
 
-    def validate(self, value: Any) -> tuple[bool, Optional[str]]:
+    def validate(self, value: Any) -> Tuple[bool, Optional[str]]:
         """Validate that value matches pattern."""
         str_value = str(value)
 
@@ -96,7 +96,7 @@ class LengthValidator(Validator):
         self.min_length = min_length
         self.max_length = max_length
 
-    def validate(self, value: Any) -> tuple[bool, Optional[str]]:
+    def validate(self, value: Any) -> Tuple[bool, Optional[str]]:
         """Validate that value length is within bounds."""
         str_value = str(value)
         length = len(str_value)
@@ -124,7 +124,7 @@ class EnumValidator(Validator):
         self.allowed_values = allowed_values
         self.case_sensitive = case_sensitive
 
-    def validate(self, value: Any) -> tuple[bool, Optional[str]]:
+    def validate(self, value: Any) -> Tuple[bool, Optional[str]]:
         """Validate that value is in allowed set."""
         if self.case_sensitive:
             if value in self.allowed_values:
@@ -161,7 +161,7 @@ class PathValidator(Validator):
         self.must_be_file = must_be_file
         self.must_be_dir = must_be_dir
 
-    def validate(self, value: Any) -> tuple[bool, Optional[str]]:
+    def validate(self, value: Any) -> Tuple[bool, Optional[str]]:
         """Validate path."""
         try:
             path = Path(value)
@@ -179,7 +179,7 @@ class PathValidator(Validator):
 
         return True, None
 
-    def validate_output_path(self, value: Any) -> tuple[bool, Optional[str]]:
+    def validate_output_path(self, value: Any) -> Tuple[bool, Optional[str]]:
         """Validate output path."""
         try:
             path = Path(value)
@@ -191,7 +191,7 @@ class PathValidator(Validator):
 
         return True, None
 
-    def validate_input_path(self, value: Any) -> tuple[bool, Optional[str]]:
+    def validate_input_path(self, value: Any) -> Tuple[bool, Optional[str]]:
         """Validate input path."""
         try:
             path = Path(value)
@@ -219,7 +219,7 @@ class CustomValidator(Validator):
         """
         self.func = func
 
-    def validate(self, value: Any) -> tuple[bool, Optional[str]]:
+    def validate(self, value: Any) -> Tuple[bool, Optional[str]]:
         """Validate using custom function."""
         return self.func(value)
 

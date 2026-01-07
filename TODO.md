@@ -134,6 +134,173 @@
 
 ## 0.0.2
 
+- 2026-01-07
+
+- [ ] [A] Fix Mypy type errors in core modules
+- [ ] [B] Add exception chaining (`raise ... from`) throughout codebase
+- [ ] [C] Fix unused variable warnings (Ruff F841/B007)
+- [ ] [D] Fix demo file type annotations
+
+---
+
+### A) Fix Mypy type errors in core modules
+
+  > [!IMPORTANT]
+  > 8 Mypy type errors (severity 8) across core modules requiring type annotation fixes.
+  > Source: [ERRORLOG.md] - Mypy errors section
+  > [VALIDATION.md], [ver:`0.0.6`, sect:`A)`]
+  > [CHANGELOG.md], [ver:`0.0.2`, sect:`A)`]
+
+  **Scope:**
+- `adapters/duckduckgo.py:95` - safesearch parameter type mismatch (int→str)
+- `core/config.py:179` - List[Any] assignment to Dict[str, Any]
+- `core/store.py:407` - Any return type vs int declaration
+- `logging/levels.py:32-33` - Logger missing trace/success attributes
+- `__main__.py:87` - implicit Optional type (PEP 484)
+
+  **Validation:** `mypy mudhound/` returns 0 errors
+
+  ---
+
+### B) Add exception chaining (`raise ... from`) throughout codebase
+
+  > [!IMPORTANT]
+  > ~42 Ruff B904 warnings: "Within an `except` clause, raise exceptions with `raise ... from err`"
+  > This improves debugging by preserving the original exception context.
+  > Source: [ERRORLOG.md] - B904 warnings section
+  > [VALIDATION.md], [ver:`0.0.6`, sect:`B)`]
+  > [CHANGELOG.md], [ver:`0.0.2`, sect:`B)`]
+
+  **Pattern to apply:**
+
+  ```python
+  # Before
+  except SomeException:
+      raise NewException("message")
+
+  # After
+  except SomeException as err:
+      raise NewException("message") from err
+
+  Affected modules (by count):
+  - adapters/duckduckgo.py (7)
+  - core/config.py (10)
+  - core/engine.py (3)
+  - core/store.py (5)
+  - cli/commands/*.py (8)
+  - ui/components/*.py (5)
+  - logging/handler.py (2)
+  - utils/validators.py (2)
+
+  Validation: ruff check mudhound/ --select=B904 returns 0 warnings
+
+  ---
+  C) Fix unused variable warnings (Ruff F841/B007)
+
+  [!IMPORTANT]
+  5 unused variable warnings indicating dead code or loop variable issues.
+  Source: [ERRORLOG.md] - F841/B007 warnings section
+  [VALIDATION.md], [ver:0.0.6, sect:C)]
+  [CHANGELOG.md], [ver:0.0.2, sect:C)]
+
+  Locations:
+  - core/store.py:299 - filename assigned but never used (F841)
+  - core/store.py:318 - filename assigned but never used (F841)
+  - core/config.py:265 - key loop variable not used (B007 - use _)
+  - ui/animation/engine.py:193 - _ loop variable unused (B007)
+  - ui/renderer.py:129 - _ loop variable unused (B007)
+
+  Validation: ruff check mudhound/ --select=F841,B007 returns 0 warnings
+
+  ---
+  D) Fix demo file type annotations
+
+  [!IMPORTANT]
+  2 type annotation issues in demo files.
+  Source: [ERRORLOG.md] - Demo file errors section
+  [VALIDATION.md], [ver:0.0.6, sect:D)]
+  [CHANGELOG.md], [ver:0.0.2, sect:D)]
+
+  Locations:
+  - demo_files/demo_progress.py:36 - Mypy error
+  - demo_files/demo_table.py:24 - Mypy error
+
+  Validation: mypy demo_files/ returns 0 errors
+
+  ---
+
+  ## Corresponding VALIDATION.md Entry
+
+  Add to VALIDATION.md under a new section `0.0.6`:
+
+  ```markdown
+  ## 0.0.6
+
+  ### A) Mypy Type Fixes Validated
+  - [ ] `mypy mudhound/` passes with 0 errors
+  - [ ] Type annotations consistent with runtime behavior
+  - [TODO.md], [ver:`0.0.2`, sect:`A)`]
+
+  ### B) Exception Chaining Complete
+  - [ ] `ruff check mudhound/ --select=B904` returns 0 warnings
+  - [ ] All `except` blocks use `raise ... from err` pattern
+  - [TODO.md], [ver:`0.0.2`, sect:`B)`]
+
+  ### C) Unused Variables Resolved
+  - [ ] `ruff check mudhound/ --select=F841,B007` returns 0 warnings
+  - [ ] No dead code assignments
+  - [TODO.md], [ver:`0.0.2`, sect:`C)`]
+
+  ### D) Demo Files Type-Clean
+  - [ ] `mypy demo_files/` passes with 0 errors
+  - [TODO.md], [ver:`0.0.2`, sect:`D)`]
+
+  ---
+  Corresponding CHANGELOG.md Entry
+
+  Add to CHANGELOG.md under a new section 0.0.2:
+
+  ## 0.0.2
+
+  ### A) Type System Improvements
+  - Fixed Mypy type errors in duckduckgo adapter, config, store, and logging modules  
+  - Added proper Optional type annotations per PEP 484
+  - [TODO.md], [ver:`0.0.2`, sect:`A)`]
+
+  ### B) Exception Handling Improvements
+  - Added exception chaining (`raise ... from err`) throughout codebase
+  - Improved debugging experience with preserved exception context
+  - ~42 exception handlers updated
+  - [TODO.md], [ver:`0.0.2`, sect:`B)`]
+
+  ### C) Code Cleanup
+  - Removed unused variable assignments
+  - Fixed loop variable naming conventions
+  - [TODO.md], [ver:`0.0.2`, sect:`C)`]
+
+  ### D) Demo Files Cleanup
+  - Fixed type annotations in demo files
+  - [TODO.md], [ver:`0.0.2`, sect:`D)`]
+
+  ---
+  ★ Insight ─────────────────────────────────────
+  Crown Cross-Reference Pattern: Each task creates a triad:
+  - TODO.md defines the work (what to do)
+  - CHANGELOG.md documents the outcome (what changed)
+  - VALIDATION.md verifies completion (how to confirm)
+
+  The [DOCUMENT.md], [ver:X, sect:Y] syntax creates navigable links between documents.
+  ─────────────────────────────────────────────────
+
+  ---
+  The spec groups the ~55 individual linter errors into 4 actionable tasks (A-D) with:
+  - Clear scope boundaries
+  - Validation commands that return 0 errors/warnings
+  - Cross-references to maintain crown document synchronization
+  - The ERRORLOG.md JSON dump remains the source of truth for specific line numbers 
+
+## 0.0.3
+
 - YEAR-MM-DD
 
 - [ ] [A] Placeholder

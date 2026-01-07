@@ -71,7 +71,7 @@ def demo_dynamic_width():
             ["Content adapts to frame width"],
             width=width,
             title="Dynamic",
-            status=f"Width: {width}"
+            status=f"Width: {width}",
         )
         for line in frame:
             print(line)
@@ -84,10 +84,7 @@ def demo_truncation():
 
     renderer = FrameRenderer(BorderStyle.DOUBLE, width=40)
 
-    print(renderer.top_border(
-        title="Very Long Title That Should Be Truncated",
-        tag="Tag"
-    ))
+    print(renderer.top_border(title="Very Long Title That Should Be Truncated", tag="Tag"))
 
     long_content = [
         "This is a very long line that will definitely be truncated because it exceeds the frame width"
@@ -96,10 +93,11 @@ def demo_truncation():
     for row in renderer.content_rows(long_content):
         print(row)
 
-    print(renderer.bottom_border(
-        status="Very long status message that should be truncated",
-        pagination="999/999"
-    ))
+    print(
+        renderer.bottom_border(
+            status="Very long status message that should be truncated", pagination="999/999"
+        )
+    )
     print()
 
 
@@ -111,10 +109,7 @@ def demo_convenience_functions():
     # Simple frame
     print("\nSimple Frame:")
     frame = render_simple_frame(
-        ["Line 1", "Line 2", "Line 3"],
-        width=50,
-        title="Simple",
-        status="Complete"
+        ["Line 1", "Line 2", "Line 3"], width=50, title="Simple", status="Complete"
     )
     for line in frame:
         print(line)
@@ -122,10 +117,7 @@ def demo_convenience_functions():
     # Frame with header
     print("\nFrame with Header:")
     frame = render_frame_with_header(
-        "Important Header",
-        ["Content line 1", "Content line 2"],
-        width=50,
-        title="Header Demo"
+        "Important Header", ["Content line 1", "Content line 2"], width=50, title="Header Demo"
     )
     for line in frame:
         print(line)

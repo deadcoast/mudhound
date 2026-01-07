@@ -18,16 +18,16 @@ from mudhound.core.config import ConfigManager
 
 @given(
     config_value=st.text(min_size=1, max_size=50),
-    key_name=st.sampled_from(["engine", "max_results", "theme", "fps", "level"])
+    key_name=st.sampled_from(["engine", "max_results", "theme", "fps", "level"]),
 )
 def test_config_priority_chain(config_value, key_name):
     """
     Feature: mudhound-full-implementation, Property 21: Config file priority chain
-    
+
     For any set of configuration files present, the configuration manager should load
     from the first file found in priority order (CLI override → env var → current dir
     → XDG → legacy → defaults).
-    
+
     Validates: Requirements 7.1
     """
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -83,26 +83,20 @@ def test_config_priority_chain(config_value, key_name):
 
 
 @given(
-    key=st.sampled_from([
-        "general.engine",
-        "ui.theme",
-        "animation.fps",
-        "search.timeout",
-        "logging.level"
-    ]),
+    key=st.sampled_from(
+        ["general.engine", "ui.theme", "animation.fps", "search.timeout", "logging.level"]
+    ),
     value=st.one_of(
-        st.text(min_size=1, max_size=50),
-        st.integers(min_value=1, max_value=1000),
-        st.booleans()
-    )
+        st.text(min_size=1, max_size=50), st.integers(min_value=1, max_value=1000), st.booleans()
+    ),
 )
 def test_config_set_get_round_trip(key, value):
     """
     Feature: mudhound-full-implementation, Property 23: Config set-get round trip
-    
+
     For any key-value pair, setting a config value then getting it should return
     the same value.
-    
+
     Validates: Requirements 7.3
     """
     manager = ConfigManager()
@@ -118,16 +112,17 @@ def test_config_set_get_round_trip(key, value):
 
 
 @given(
-    nested_key=st.text(min_size=1, max_size=20, alphabet=st.characters(
-        whitelist_categories=("Ll", "Lu", "Nd"),
-        whitelist_characters="_"
-    )),
-    value=st.integers(min_value=0, max_value=1000)
+    nested_key=st.text(
+        min_size=1,
+        max_size=20,
+        alphabet=st.characters(whitelist_categories=("Ll", "Lu", "Nd"), whitelist_characters="_"),
+    ),
+    value=st.integers(min_value=0, max_value=1000),
 )
 def test_config_nested_key_creation(nested_key, value):
     """
     Test that setting a nested key creates intermediate dictionaries.
-    
+
     For any nested key path, setting a value should create all intermediate
     dictionaries as needed.
     """
@@ -151,20 +146,21 @@ def test_config_nested_key_creation(nested_key, value):
     config_data=st.dictionaries(
         keys=st.sampled_from(["general", "ui", "animation", "search"]),
         values=st.dictionaries(
-            keys=st.text(min_size=1, max_size=20, alphabet=st.characters(
-                whitelist_categories=("Ll",),
-                whitelist_characters="_"
-            )),
-            values=st.one_of(st.text(min_size=1, max_size=50), st.integers(1, 100))
+            keys=st.text(
+                min_size=1,
+                max_size=20,
+                alphabet=st.characters(whitelist_categories=("Ll",), whitelist_characters="_"),
+            ),
+            values=st.one_of(st.text(min_size=1, max_size=50), st.integers(1, 100)),
         ),
         min_size=1,
-        max_size=4
+        max_size=4,
     )
 )
 def test_config_save_load_round_trip(config_data):
     """
     Test that saving and loading configuration preserves data.
-    
+
     For any configuration data, saving to a file and loading it back should
     produce equivalent configuration.
     """
@@ -187,4 +183,3 @@ def test_config_save_load_round_trip(config_data):
         for section, settings in config_data.items():
             for key, value in settings.items():
                 assert manager2.get(f"{section}.{key}") == value
-

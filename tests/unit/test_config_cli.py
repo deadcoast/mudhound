@@ -61,8 +61,7 @@ def test_config_set_command():
 
         # Set a value
         result = runner.invoke(
-            app,
-            ["--config", str(config_path), "config", "set", "general.max_results", "100"]
+            app, ["--config", str(config_path), "config", "set", "general.max_results", "100"]
         )
 
         assert result.exit_code == 0
@@ -70,8 +69,7 @@ def test_config_set_command():
 
         # Verify the value was set
         result = runner.invoke(
-            app,
-            ["--config", str(config_path), "config", "get", "general.max_results"]
+            app, ["--config", str(config_path), "config", "get", "general.max_results"]
         )
 
         assert result.exit_code == 0
@@ -85,8 +83,7 @@ def test_config_set_boolean_value():
 
         # Set a boolean value
         result = runner.invoke(
-            app,
-            ["--config", str(config_path), "config", "set", "ui.animation", "false"]
+            app, ["--config", str(config_path), "config", "set", "ui.animation", "false"]
         )
 
         assert result.exit_code == 0
@@ -103,23 +100,18 @@ def test_config_reset_command_with_yes():
 
         # Set a custom value
         runner.invoke(
-            app,
-            ["--config", str(config_path), "config", "set", "general.max_results", "200"]
+            app, ["--config", str(config_path), "config", "set", "general.max_results", "200"]
         )
 
         # Reset to defaults
-        result = runner.invoke(
-            app,
-            ["--config", str(config_path), "config", "reset", "--yes"]
-        )
+        result = runner.invoke(app, ["--config", str(config_path), "config", "reset", "--yes"])
 
         assert result.exit_code == 0
         assert "Configuration reset to defaults" in result.stdout
 
         # Verify default value is restored
         result = runner.invoke(
-            app,
-            ["--config", str(config_path), "config", "get", "general.max_results"]
+            app, ["--config", str(config_path), "config", "get", "general.max_results"]
         )
 
         assert "50" in result.stdout
@@ -131,11 +123,7 @@ def test_config_reset_command_without_yes():
         config_path = Path(tmpdir) / "test_config.toml"
 
         # Try to reset without --yes, answer 'n'
-        result = runner.invoke(
-            app,
-            ["--config", str(config_path), "config", "reset"],
-            input="n\n"
-        )
+        result = runner.invoke(app, ["--config", str(config_path), "config", "reset"], input="n\n")
 
         assert result.exit_code == 0
         assert "Reset cancelled" in result.stdout
@@ -150,10 +138,7 @@ def test_config_edit_command_creates_file():
         with patch("mudhound.cli.commands.config.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
 
-            result = runner.invoke(
-                app,
-                ["--config", str(config_path), "config", "edit"]
-            )
+            result = runner.invoke(app, ["--config", str(config_path), "config", "edit"])
 
             assert result.exit_code == 0
             # The file should be created
@@ -174,10 +159,7 @@ def test_config_edit_command_opens_editor():
         with patch("mudhound.cli.commands.config.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
 
-            result = runner.invoke(
-                app,
-                ["--config", str(config_path), "config", "edit"]
-            )
+            result = runner.invoke(app, ["--config", str(config_path), "config", "edit"])
 
             assert result.exit_code == 0
             assert "Configuration file closed" in result.stdout
@@ -199,10 +181,7 @@ def test_config_edit_command_editor_not_found():
         with patch("mudhound.cli.commands.config.subprocess.run") as mock_run:
             mock_run.side_effect = FileNotFoundError()
 
-            result = runner.invoke(
-                app,
-                ["--config", str(config_path), "config", "edit"]
-            )
+            result = runner.invoke(app, ["--config", str(config_path), "config", "edit"])
 
             assert result.exit_code == 1
             # Error messages go to stderr

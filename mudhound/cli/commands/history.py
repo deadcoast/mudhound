@@ -9,7 +9,6 @@ Provides functionality to manage search history:
 - clear: Delete all search history
 """
 
-
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -26,10 +25,10 @@ console_err = Console(stderr=True)
 
 def get_result_store(ctx: typer.Context) -> ResultStore:
     """Get or create a ResultStore instance.
-    
+
     Args:
         ctx: Typer context containing global options
-        
+
     Returns:
         ResultStore instance
     """
@@ -45,7 +44,7 @@ def list(
 ):
     """
     List recent search sessions.
-    
+
     Displays a table of recent searches with ID, query, result count,
     status, and timestamp.
     """
@@ -132,7 +131,7 @@ def show(
 ):
     """
     Display full results for a specific search session.
-    
+
     Shows all details including query parameters, results, and metadata.
     """
     # Validate session_id is not empty
@@ -152,10 +151,14 @@ def show(
             matching = [s for s in all_sessions if s["id"].startswith(session_id)]
 
             if not matching:
-                console_err.print(f"[red]Error:[/red] No session found with ID starting with '{session_id}'")
+                console_err.print(
+                    f"[red]Error:[/red] No session found with ID starting with '{session_id}'"
+                )
                 raise typer.Exit(1)
             elif len(matching) > 1:
-                console_err.print(f"[red]Error:[/red] Ambiguous ID '{session_id}' matches multiple sessions:")
+                console_err.print(
+                    f"[red]Error:[/red] Ambiguous ID '{session_id}' matches multiple sessions:"
+                )
                 for s in matching:
                     console_err.print(f"  - {s['id'][:8]}: {s['query']}")
                 raise typer.Exit(1)
@@ -234,7 +237,7 @@ def replay(
 ):
     """
     Re-execute a search with original parameters.
-    
+
     Retrieves the original query and options from history and executes
     a new search with the same parameters.
     """
@@ -254,10 +257,14 @@ def replay(
             matching = [s for s in all_sessions if s["id"].startswith(session_id)]
 
             if not matching:
-                console_err.print(f"[red]Error:[/red] No session found with ID starting with '{session_id}'")
+                console_err.print(
+                    f"[red]Error:[/red] No session found with ID starting with '{session_id}'"
+                )
                 raise typer.Exit(1)
             elif len(matching) > 1:
-                console_err.print(f"[red]Error:[/red] Ambiguous ID '{session_id}' matches multiple sessions:")
+                console_err.print(
+                    f"[red]Error:[/red] Ambiguous ID '{session_id}' matches multiple sessions:"
+                )
                 for s in matching:
                     console_err.print(f"  - {s['id'][:8]}: {s['query']}")
                 raise typer.Exit(1)
@@ -305,7 +312,9 @@ def replay(
             # Persist the new session
             store.persist(session)
 
-            console.print(f"\n[green]✓[/green] Search completed: {session.result_count} results in {session.duration:.2f}s")
+            console.print(
+                f"\n[green]✓[/green] Search completed: {session.result_count} results in {session.duration:.2f}s"
+            )
             console.print(f"[dim]New session ID: {session.query.id[:8]}[/dim]")
 
         except KeyboardInterrupt:
@@ -328,7 +337,7 @@ def delete(
 ):
     """
     Delete a specific search session.
-    
+
     Removes the session and all associated results from history.
     Requires confirmation unless --yes flag is provided.
     """
@@ -349,10 +358,14 @@ def delete(
             matching = [s for s in all_sessions if s["id"].startswith(session_id)]
 
             if not matching:
-                console_err.print(f"[red]Error:[/red] No session found with ID starting with '{session_id}'")
+                console_err.print(
+                    f"[red]Error:[/red] No session found with ID starting with '{session_id}'"
+                )
                 raise typer.Exit(1)
             elif len(matching) > 1:
-                console_err.print(f"[red]Error:[/red] Ambiguous ID '{session_id}' matches multiple sessions:")
+                console_err.print(
+                    f"[red]Error:[/red] Ambiguous ID '{session_id}' matches multiple sessions:"
+                )
                 for s in matching:
                     console_err.print(f"  - {s['id'][:8]}: {s['query']}")
                 raise typer.Exit(1)
@@ -364,10 +377,7 @@ def delete(
 
         # Confirm destructive action
         if not yes:
-            confirm = typer.confirm(
-                f"Delete session {session_id}?",
-                default=False
-            )
+            confirm = typer.confirm(f"Delete session {session_id}?", default=False)
             if not confirm:
                 console.print("[yellow]Delete cancelled[/yellow]")
                 raise typer.Exit(0)
@@ -393,7 +403,7 @@ def clear(
 ):
     """
     Delete all search history.
-    
+
     Removes all sessions and results from the history database.
     This action cannot be undone. Requires confirmation unless --yes flag is provided.
     """
@@ -403,8 +413,7 @@ def clear(
         # Confirm destructive action
         if not yes:
             confirm = typer.confirm(
-                "This will delete ALL search history. Are you sure?",
-                default=False
+                "This will delete ALL search history. Are you sure?", default=False
             )
             if not confirm:
                 console.print("[yellow]Clear cancelled[/yellow]")

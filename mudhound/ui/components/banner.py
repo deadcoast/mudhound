@@ -16,6 +16,7 @@ from mudhound.ui.animation.timing import TimingEngine
 
 class BannerStyle:
     """Banner display style constants."""
+
     ANIMATED = "animated"
     STATIC = "static"
     MINIMAL = "minimal"
@@ -25,10 +26,10 @@ class BannerStyle:
 class Banner:
     """
     Animated ASCII art banner component.
-    
+
     Displays the MUDHOUND logo with configurable styles and color schemes.
     Supports animated color cycling, static display, minimal text, or no banner.
-    
+
     Attributes:
         style: Display style (animated, static, minimal, none)
         scheme: Color scheme for animation
@@ -45,13 +46,13 @@ class Banner:
         config_manager: Optional[ConfigManager] = None,
         asset_manager: Optional[AssetManager] = None,
         animation_renderer: Optional[AnimationRenderer] = None,
-        output: Optional[TextIO] = None
+        output: Optional[TextIO] = None,
     ):
         """
         Initialize the Banner component.
-        
+
         Args:
-            style: Display style (animated, static, minimal, none). 
+            style: Display style (animated, static, minimal, none).
                    If None, loads from config.
             scheme: Color scheme name. If None, loads from config.
             config_manager: ConfigManager instance for loading preferences
@@ -74,13 +75,9 @@ class Banner:
 
         # Initialize animation renderer if needed
         if animation_renderer is None and style == BannerStyle.ANIMATED:
-            timing_engine = TimingEngine(
-                fps=self.config_manager.get("animation.fps", 10)
-            )
+            timing_engine = TimingEngine(fps=self.config_manager.get("animation.fps", 10))
             self.animation_renderer = AnimationRenderer(
-                timing_engine=timing_engine,
-                asset_manager=self.asset_manager,
-                output=self.output
+                timing_engine=timing_engine, asset_manager=self.asset_manager, output=self.output
             )
         else:
             self.animation_renderer = animation_renderer
@@ -88,12 +85,13 @@ class Banner:
     def _get_terminal_width(self) -> int:
         """
         Get the current terminal width.
-        
+
         Returns:
             Terminal width in columns
         """
         try:
             import shutil
+
             size = shutil.get_terminal_size()
             return size.columns
         except Exception:
@@ -102,17 +100,17 @@ class Banner:
     def _scale_banner(self, banner_content: str, max_width: int) -> str:
         """
         Scale down banner content to fit within max_width.
-        
+
         For narrow terminals, this truncates lines and adds ellipsis.
-        
+
         Args:
             banner_content: Original banner content
             max_width: Maximum width in columns
-            
+
         Returns:
             Scaled banner content
         """
-        lines = banner_content.split('\n')
+        lines = banner_content.split("\n")
         scaled_lines = []
 
         for line in lines:
@@ -126,37 +124,38 @@ class Banner:
                 # This is a simple truncation; preserving ANSI codes properly
                 # would be more complex
                 if max_width > 3:
-                    scaled_lines.append(visible_line[:max_width - 3] + "...")
+                    scaled_lines.append(visible_line[: max_width - 3] + "...")
                 else:
                     scaled_lines.append(visible_line[:max_width])
 
-        return '\n'.join(scaled_lines)
+        return "\n".join(scaled_lines)
 
     def _strip_ansi(self, text: str) -> str:
         """
         Strip ANSI escape codes from text.
-        
+
         Args:
             text: Text with potential ANSI codes
-            
+
         Returns:
             Text with ANSI codes removed
         """
         import re
-        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-        return ansi_escape.sub('', text)
+
+        ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+        return ansi_escape.sub("", text)
 
     def _get_banner_width(self, banner_content: str) -> int:
         """
         Get the width of the banner content.
-        
+
         Args:
             banner_content: Banner content
-            
+
         Returns:
             Width in columns (max line width)
         """
-        lines = banner_content.split('\n')
+        lines = banner_content.split("\n")
         max_width = 0
 
         for line in lines:
@@ -168,7 +167,7 @@ class Banner:
     def render(self) -> None:
         """
         Render the banner based on the configured style.
-        
+
         Handles animated, static, minimal, and none styles.
         Applies responsive scaling for narrow terminals.
         """
@@ -192,6 +191,7 @@ class Banner:
         # Get version from package if available
         try:
             from mudhound import __version__
+
             version_str = f"MUDHOUND v{__version__}"
         except (ImportError, AttributeError):
             version_str = "MUDHOUND"
@@ -252,7 +252,7 @@ class Banner:
     def animate(self, duration: float = 0.0) -> None:
         """
         Animate the banner for the specified duration.
-        
+
         Args:
             duration: Animation duration in seconds (0 = infinite loop)
         """

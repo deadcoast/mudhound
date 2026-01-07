@@ -69,14 +69,16 @@ class TestConfigurationIntegration:
         """Test that ConfigManager respects CLI config path."""
         # Create a temporary config file
         config_file = tmp_path / "test_config.toml"
-        config_file.write_text("""
+        config_file.write_text(
+            """
 [general]
 engine = "test_engine"
 max_results = 100
 
 [ui]
 theme = "custom"
-""")
+"""
+        )
 
         # Initialize with CLI override
         config_manager = ConfigManager(cli_config_path=str(config_file))
@@ -161,8 +163,8 @@ class TestCLIIntegration:
 
         # Verify app has some registered commands
         # Note: Typer registers commands dynamically, so we just verify the structure exists
-        assert hasattr(app, 'registered_commands')
-        assert hasattr(app, 'registered_groups')
+        assert hasattr(app, "registered_commands")
+        assert hasattr(app, "registered_groups")
 
 
 class TestMainEntryPoint:
@@ -250,7 +252,7 @@ class TestEndToEndIntegration:
         assert logger is not None
         logger.info("Integration test complete")
 
-    @patch('mudhound.cli.app.app')
+    @patch("mudhound.cli.app.app")
     def test_main_entry_point_flow(self, mock_app):
         """Test that main entry point calls app correctly."""
         from mudhound.__main__ import main

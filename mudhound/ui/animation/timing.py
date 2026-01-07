@@ -7,6 +7,7 @@ from typing import Optional
 
 class EasingFunction(Enum):
     """Available easing functions for animations."""
+
     LINEAR = "linear"
     EASE_IN = "ease_in"
     EASE_OUT = "ease_out"
@@ -17,7 +18,7 @@ class EasingFunction(Enum):
 class TimingEngine:
     """
     Controls animation timing with configurable FPS and easing functions.
-    
+
     Manages frame rate control, start/stop/pause/resume operations, and
     calculates current frame index based on elapsed time.
     """
@@ -28,11 +29,11 @@ class TimingEngine:
         total_frames: int = 1,
         duration: float = 0.0,
         easing: EasingFunction = EasingFunction.LINEAR,
-        loop: bool = True
+        loop: bool = True,
     ):
         """
         Initialize the timing engine.
-        
+
         Args:
             fps: Frames per second (default 10)
             total_frames: Total number of frames in the animation
@@ -99,7 +100,7 @@ class TimingEngine:
     def get_elapsed_time(self) -> float:
         """
         Get the elapsed time since animation start, excluding paused time.
-        
+
         Returns:
             Elapsed time in seconds, or 0.0 if not running
         """
@@ -120,7 +121,7 @@ class TimingEngine:
     def get_current_frame(self) -> int:
         """
         Calculate the current frame index based on elapsed time.
-        
+
         Returns:
             Current frame index (0-based)
         """
@@ -158,7 +159,7 @@ class TimingEngine:
     def is_complete(self) -> bool:
         """
         Check if the animation has completed.
-        
+
         Returns:
             True if animation is complete (only for non-looping animations)
         """
@@ -171,10 +172,10 @@ class TimingEngine:
     def _apply_easing(self, t: float) -> float:
         """
         Apply the configured easing function to a progress value.
-        
+
         Args:
             t: Progress value from 0.0 to 1.0
-            
+
         Returns:
             Eased progress value from 0.0 to 1.0
         """

@@ -32,10 +32,10 @@ retry_after_values = st.floats(min_value=0.1, max_value=3600.0)
 def test_property_57_error_message_formatting(message):
     """
     Feature: mudhound-full-implementation, Property 57: Error message formatting
-    
+
     For any error that occurs, the error handler should display a formatted
     message with error type and description.
-    
+
     Validates: Requirements 18.1
     """
     # Create an error
@@ -63,9 +63,9 @@ def test_property_57_error_message_formatting(message):
 def test_property_57_config_error_formatting(message):
     """
     Feature: mudhound-full-implementation, Property 57: Error message formatting
-    
+
     Test formatting for ConfigError specifically.
-    
+
     Validates: Requirements 18.1
     """
     error = ConfigError(message)
@@ -84,9 +84,9 @@ def test_property_57_config_error_formatting(message):
 def test_property_57_network_error_formatting(message):
     """
     Feature: mudhound-full-implementation, Property 57: Error message formatting
-    
+
     Test formatting for NetworkError specifically.
-    
+
     Validates: Requirements 18.1
     """
     error = NetworkError(message)
@@ -103,9 +103,9 @@ def test_property_57_network_error_formatting(message):
 def test_property_57_rate_limit_error_formatting(message, retry_after):
     """
     Feature: mudhound-full-implementation, Property 57: Error message formatting
-    
+
     Test formatting for RateLimitError with retry_after display.
-    
+
     Validates: Requirements 18.1, 18.5
     """
     error = RateLimitError(message, retry_after=retry_after)
@@ -125,10 +125,10 @@ def test_property_57_rate_limit_error_formatting(message, retry_after):
 def test_property_60_error_type_classification_config(message):
     """
     Feature: mudhound-full-implementation, Property 60: Error type classification
-    
+
     For any error, the error handler should correctly classify it as the
     appropriate error type.
-    
+
     Validates: Requirements 18.4
     """
     error = ConfigError(message)
@@ -143,9 +143,9 @@ def test_property_60_error_type_classification_config(message):
 def test_property_60_error_type_classification_adapter_not_found(message):
     """
     Feature: mudhound-full-implementation, Property 60: Error type classification
-    
+
     Test classification for AdapterNotFoundError.
-    
+
     Validates: Requirements 18.4
     """
     # AdapterNotFoundError has specific constructor
@@ -161,9 +161,9 @@ def test_property_60_error_type_classification_adapter_not_found(message):
 def test_property_60_error_type_classification_rate_limit(message):
     """
     Feature: mudhound-full-implementation, Property 60: Error type classification
-    
+
     Test classification for RateLimitError.
-    
+
     Validates: Requirements 18.4
     """
     error = RateLimitError(message)
@@ -178,9 +178,9 @@ def test_property_60_error_type_classification_rate_limit(message):
 def test_property_60_error_type_classification_network(message):
     """
     Feature: mudhound-full-implementation, Property 60: Error type classification
-    
+
     Test classification for NetworkError.
-    
+
     Validates: Requirements 18.4
     """
     error = NetworkError(message)
@@ -195,9 +195,9 @@ def test_property_60_error_type_classification_network(message):
 def test_property_60_error_type_classification_validation(message):
     """
     Feature: mudhound-full-implementation, Property 60: Error type classification
-    
+
     Test classification for ValidationError.
-    
+
     Validates: Requirements 18.4
     """
     error = ValidationError(message)
@@ -212,9 +212,9 @@ def test_property_60_error_type_classification_validation(message):
 def test_property_60_error_type_classification_export(message):
     """
     Feature: mudhound-full-implementation, Property 60: Error type classification
-    
+
     Test classification for ExportError.
-    
+
     Validates: Requirements 18.4
     """
     error = ExportError(message)
@@ -229,9 +229,9 @@ def test_property_60_error_type_classification_export(message):
 def test_property_60_error_type_classification_animation(message):
     """
     Feature: mudhound-full-implementation, Property 60: Error type classification
-    
+
     Test classification for AnimationError.
-    
+
     Validates: Requirements 18.4
     """
     error = AnimationError(message)
@@ -246,9 +246,9 @@ def test_property_60_error_type_classification_animation(message):
 def test_property_60_error_type_classification_adapter(message):
     """
     Feature: mudhound-full-implementation, Property 60: Error type classification
-    
+
     Test classification for generic AdapterError.
-    
+
     Validates: Requirements 18.4
     """
     error = AdapterError(message)
@@ -263,9 +263,9 @@ def test_property_60_error_type_classification_adapter(message):
 def test_property_60_error_type_classification_mudhound(message):
     """
     Feature: mudhound-full-implementation, Property 60: Error type classification
-    
+
     Test classification for generic MudHoundError.
-    
+
     Validates: Requirements 18.4
     """
     error = MudHoundError(message)
@@ -278,11 +278,12 @@ def test_property_60_error_type_classification_mudhound(message):
 
 # Additional tests for suggestions and verbose mode
 
+
 @given(message=error_messages)
 def test_error_suggestions_provided(message):
     """
     Test that suggestions are provided for common error types.
-    
+
     Validates: Requirements 18.2
     """
     error = NetworkError(message)
@@ -299,7 +300,7 @@ def test_error_suggestions_provided(message):
 def test_verbose_mode_includes_stack_trace(message):
     """
     Test that verbose mode includes stack trace information.
-    
+
     Validates: Requirements 18.3
     """
     error = ConfigError(message)

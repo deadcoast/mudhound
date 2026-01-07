@@ -15,13 +15,13 @@ from mudhound.ui.theme import get_theme_engine
 class Menu:
     """
     Interactive menu component with keyboard navigation.
-    
+
     Displays numbered options with a cursor indicator and supports:
     - Arrow key navigation (up/down)
     - Number key direct selection
     - Enter to confirm selection
     - ESC to cancel
-    
+
     Attributes:
         options: List of menu option strings
         title: Optional menu title
@@ -42,7 +42,7 @@ class Menu:
     ):
         """
         Initialize the Menu component.
-        
+
         Args:
             options: List of menu option strings
             title: Optional menu title
@@ -64,12 +64,12 @@ class Menu:
     def _format_option(self, index: int, option: str, is_selected: bool) -> str:
         """
         Format a menu option with number and cursor indicator.
-        
+
         Args:
             index: Option index (0-based)
             option: Option text
             is_selected: Whether this option is currently selected
-            
+
         Returns:
             Formatted option string
         """
@@ -92,7 +92,7 @@ class Menu:
     def _render_menu(self) -> str:
         """
         Render the complete menu.
-        
+
         Returns:
             Formatted menu string
         """
@@ -110,7 +110,7 @@ class Menu:
 
         # Add all options
         for i, option in enumerate(self.options):
-            is_selected = (i == self.selected_index)
+            is_selected = i == self.selected_index
             formatted_option = self._format_option(i, option, is_selected)
             lines.append(formatted_option)
 
@@ -119,11 +119,11 @@ class Menu:
     def _read_key(self) -> str:
         """
         Read a single key press from input.
-        
+
         This is a simplified implementation that reads a line.
         For full arrow key support, platform-specific terminal handling
         would be needed (e.g., using termios on Unix, msvcrt on Windows).
-        
+
         Returns:
             Key string
         """
@@ -141,10 +141,10 @@ class Menu:
     def _handle_number_selection(self, key: str) -> Optional[int]:
         """
         Handle direct number selection.
-        
+
         Args:
             key: Input key string
-            
+
         Returns:
             Selected index if valid number, None otherwise
         """
@@ -164,16 +164,16 @@ class Menu:
     def show(self) -> Optional[int]:
         """
         Display the menu and get user selection.
-        
+
         Supports:
         - Arrow keys: 'up'/'u' to move up, 'down'/'d' to move down
         - Number keys: Direct selection (1-based)
         - Enter: Confirm selection (empty input)
         - ESC: Cancel and return None
-        
+
         Returns:
             Selected option index (0-based) or None if cancelled
-            
+
         Raises:
             KeyboardInterrupt: If user presses CTRL+C
         """
@@ -247,7 +247,7 @@ class Menu:
     def get_selected_option(self) -> Optional[str]:
         """
         Show menu and return the selected option text.
-        
+
         Returns:
             Selected option text or None if cancelled
         """

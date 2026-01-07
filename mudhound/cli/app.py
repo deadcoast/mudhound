@@ -39,7 +39,7 @@ def interactive(
 ):
     """
     Launch interactive mode with menu-driven interface.
-    
+
     Interactive mode allows you to perform multiple operations
     (search, history, export, config) without re-launching the application.
     """
@@ -48,10 +48,7 @@ def interactive(
     no_animation = ctx.obj.get("no_animation", False) if ctx.obj else False
 
     # Run interactive mode
-    interactive_cmd.interactive_command(
-        use_color=not no_color,
-        use_animation=not no_animation
-    )
+    interactive_cmd.interactive_command(use_color=not no_color, use_animation=not no_animation)
 
 
 @app.callback()
@@ -66,7 +63,7 @@ def main(
 ):
     """
     MudHound - Terminal-based batch URL extraction tool.
-    
+
     A modular search tool with animated UI and multiple search engine support.
     """
     # Validate conflicting options
@@ -103,7 +100,7 @@ def main(
         level = logging.INFO
 
     # Reconfigure logging with CLI options
-    log_file = Path.home() / '.mudhound' / 'logs' / 'mudhound.log'
+    log_file = Path.home() / ".mudhound" / "logs" / "mudhound.log"
     configure_logging(
         level=level,
         use_color=not no_color,
@@ -126,13 +123,16 @@ def main(
 
     # Get logger
     logger = logging.getLogger("mudhound")
-    logger.debug(f"MudHound starting with options: verbose={verbose}, quiet={quiet}, no_color={no_color}, no_animation={no_animation}")
+    logger.debug(
+        f"MudHound starting with options: verbose={verbose}, quiet={quiet}, no_color={no_color}, no_animation={no_animation}"
+    )
 
     if config:
         logger.debug(f"Using config file: {config}")
 
     # Log available adapters
     from mudhound.adapters.registry import AdapterRegistry
+
     available_adapters = AdapterRegistry.list_available()
     logger.debug(f"Available search adapters: {', '.join(available_adapters)}")
 
@@ -141,6 +141,7 @@ def main(
 def version():
     """Display version information."""
     from mudhound import __version__
+
     typer.echo(f"MudHound version {__version__}")
 
 

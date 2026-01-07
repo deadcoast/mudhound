@@ -27,11 +27,7 @@ class TestCLIAdapter(SearchAdapter):
     def display_name(self) -> str:
         return "Test CLI Adapter"
 
-    def search(
-        self,
-        query: str,
-        options: SearchOptions
-    ) -> Generator[SearchResult, None, None]:
+    def search(self, query: str, options: SearchOptions) -> Generator[SearchResult, None, None]:
         """Yield test results."""
         for i in range(min(5, options.max_results)):
             yield SearchResult(
@@ -40,7 +36,7 @@ class TestCLIAdapter(SearchAdapter):
                 snippet=f"This is a test snippet for query: {query}",
                 source="example.com",
                 rank=i + 1,
-                metadata={}
+                metadata={},
             )
 
     def validate_options(self, options: SearchOptions) -> List[str]:
@@ -67,18 +63,20 @@ class MockUIComponent:
 
 
 @given(
-    query=st.text(min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126)),
-    max_results=st.integers(min_value=1, max_value=50)
+    query=st.text(
+        min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+    ),
+    max_results=st.integers(min_value=1, max_value=50),
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_quiet_mode_output_suppression(query, max_results):
     """
     Feature: mudhound-full-implementation, Property 19: Quiet mode output suppression
     Validates: Requirements 6.3
-    
+
     For any search executed with quiet mode enabled, no UI output should be
     produced (only result data).
-    
+
     This test simulates the behavior of the search command with quiet mode.
     When the actual CLI command is implemented, it should:
     1. Skip rendering banners, progress bars, and status messages when quiet=True
@@ -144,13 +142,36 @@ def test_quiet_mode_output_suppression(query, max_results):
     # Verify no UI indicators are in the output
     ui_indicators = [
         "MUDHOUND",  # Banner
-        "[+]", "[*]", "[~]", "[!]",  # Status glyphs
+        "[+]",
+        "[*]",
+        "[~]",
+        "[!]",  # Status glyphs
         "Progress:",  # Progress indicator
         "Searching",  # Status message
-        "╔", "╗", "╚", "╝", "═", "║",  # Frame borders (double)
-        "┌", "┐", "└", "┘", "─", "│",  # Frame borders (single)
-        "▓", "░",  # Progress bar characters
-        "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏",  # Spinner characters
+        "╔",
+        "╗",
+        "╚",
+        "╝",
+        "═",
+        "║",  # Frame borders (double)
+        "┌",
+        "┐",
+        "└",
+        "┘",
+        "─",
+        "│",  # Frame borders (single)
+        "▓",
+        "░",  # Progress bar characters
+        "⠋",
+        "⠙",
+        "⠹",
+        "⠸",
+        "⠼",
+        "⠴",
+        "⠦",
+        "⠧",
+        "⠇",
+        "⠏",  # Spinner characters
         "%",  # Percentage indicators
     ]
 
@@ -166,24 +187,26 @@ def test_quiet_mode_output_suppression(query, max_results):
     assert len(session.results) <= max_results
 
     # In quiet mode, output should only contain result data (URLs in this case)
-    lines = quiet_output.strip().split('\n')
+    lines = quiet_output.strip().split("\n")
     for line in lines:
         if line.strip():
             # Each non-empty line should be a URL
-            assert line.startswith('https://') or line.startswith('http://'), (
-                f"Quiet mode output should only contain URLs, found: {line}"
-            )
+            assert line.startswith("https://") or line.startswith(
+                "http://"
+            ), f"Quiet mode output should only contain URLs, found: {line}"
 
 
 @given(
-    query=st.text(min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126)),
-    max_results=st.integers(min_value=1, max_value=50)
+    query=st.text(
+        min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+    ),
+    max_results=st.integers(min_value=1, max_value=50),
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_quiet_mode_vs_normal_mode_output(query, max_results):
     """
     Additional test: Verify that quiet mode produces less output than normal mode.
-    
+
     For any search, the output in quiet mode should be significantly shorter
     than the output in normal mode (which includes UI elements).
     """
@@ -256,9 +279,9 @@ def test_quiet_mode_vs_normal_mode_output(query, max_results):
     assert len(session_normal.results) == len(session_quiet.results)
 
     # Verify quiet mode output is shorter than normal mode
-    assert len(quiet_output) < len(normal_output), (
-        "Quiet mode output should be shorter than normal mode output"
-    )
+    assert len(quiet_output) < len(
+        normal_output
+    ), "Quiet mode output should be shorter than normal mode output"
 
     # Verify quiet mode has no UI elements
     assert "MUDHOUND" not in quiet_output
@@ -271,18 +294,23 @@ def test_quiet_mode_vs_normal_mode_output(query, max_results):
 
 
 @given(
-    query=st.text(min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126)),
+    query=st.text(
+        min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+    ),
     max_results=st.integers(min_value=1, max_value=50),
-    output_format=st.sampled_from(['json', 'csv', 'txt', 'urls'])
+    output_format=st.sampled_from(["json", "csv", "txt", "urls"]),
 )
-@settings(suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture], max_examples=100)
+@settings(
+    suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
+    max_examples=100,
+)
 def test_output_file_writing(query, max_results, output_format, tmp_path):
     """
     Feature: mudhound-full-implementation, Property 20: Output file writing
     Validates: Requirements 6.4
-    
+
     For any valid output path specified, search results should be written to that file path.
-    
+
     This test verifies that:
     1. When an output path is specified, results are written to that file
     2. The file is created if it doesn't exist
@@ -315,38 +343,37 @@ def test_output_file_writing(query, max_results, output_format, tmp_path):
 
     # Simulate writing results to file (this is what the CLI command should do)
     # The actual CLI command implementation will handle this
-    with open(output_file, 'w', encoding='utf-8') as f:
-        if output_format == 'json':
+    with open(output_file, "w", encoding="utf-8") as f:
+        if output_format == "json":
             # Write as JSON array
             results_data = [
                 {
-                    'url': r.url,
-                    'title': r.title,
-                    'snippet': r.snippet,
-                    'source': r.source,
-                    'rank': r.rank
+                    "url": r.url,
+                    "title": r.title,
+                    "snippet": r.snippet,
+                    "source": r.source,
+                    "rank": r.rank,
                 }
                 for r in session.results
             ]
             json.dump(results_data, f, indent=2)
 
-        elif output_format == 'csv':
+        elif output_format == "csv":
             # Write as CSV with headers
-            writer = csv.DictWriter(
-                f,
-                fieldnames=['rank', 'url', 'title', 'snippet', 'source']
-            )
+            writer = csv.DictWriter(f, fieldnames=["rank", "url", "title", "snippet", "source"])
             writer.writeheader()
             for r in session.results:
-                writer.writerow({
-                    'rank': r.rank,
-                    'url': r.url,
-                    'title': r.title,
-                    'snippet': r.snippet,
-                    'source': r.source
-                })
+                writer.writerow(
+                    {
+                        "rank": r.rank,
+                        "url": r.url,
+                        "title": r.title,
+                        "snippet": r.snippet,
+                        "source": r.source,
+                    }
+                )
 
-        elif output_format == 'txt':
+        elif output_format == "txt":
             # Write as formatted text
             f.write(f"Search Results for: {query}\n")
             f.write(f"Total Results: {len(session.results)}\n")
@@ -358,7 +385,7 @@ def test_output_file_writing(query, max_results, output_format, tmp_path):
                 f.write(f"Snippet: {r.snippet}\n")
                 f.write("-" * 80 + "\n\n")
 
-        elif output_format == 'urls':
+        elif output_format == "urls":
             # Write one URL per line
             for r in session.results:
                 f.write(f"{r.url}\n")
@@ -370,44 +397,44 @@ def test_output_file_writing(query, max_results, output_format, tmp_path):
     assert output_file.stat().st_size > 0, "Output file should not be empty"
 
     # Verify the file contains valid data by reading it back
-    with open(output_file, encoding='utf-8') as f:
+    with open(output_file, encoding="utf-8") as f:
         content = f.read()
 
     # Verify content is not empty
     assert len(content) > 0, "File content should not be empty"
 
     # Format-specific validation
-    if output_format == 'json':
+    if output_format == "json":
         # Verify valid JSON
-        with open(output_file, encoding='utf-8') as f:
+        with open(output_file, encoding="utf-8") as f:
             data = json.load(f)
         assert isinstance(data, list), "JSON output should be a list"
         assert len(data) == len(session.results), "JSON should contain all results"
 
         # Verify each result has required fields
         for item in data:
-            assert 'url' in item, "Each JSON result should have a url field"
-            assert 'title' in item, "Each JSON result should have a title field"
-            assert 'snippet' in item, "Each JSON result should have a snippet field"
-            assert 'source' in item, "Each JSON result should have a source field"
-            assert 'rank' in item, "Each JSON result should have a rank field"
+            assert "url" in item, "Each JSON result should have a url field"
+            assert "title" in item, "Each JSON result should have a title field"
+            assert "snippet" in item, "Each JSON result should have a snippet field"
+            assert "source" in item, "Each JSON result should have a source field"
+            assert "rank" in item, "Each JSON result should have a rank field"
 
-    elif output_format == 'csv':
+    elif output_format == "csv":
         # Verify valid CSV
-        with open(output_file, encoding='utf-8') as f:
+        with open(output_file, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             rows = list(reader)
         assert len(rows) == len(session.results), "CSV should contain all results"
 
         # Verify each row has required fields
         for row in rows:
-            assert 'url' in row, "Each CSV row should have a url field"
-            assert 'title' in row, "Each CSV row should have a title field"
-            assert 'snippet' in row, "Each CSV row should have a snippet field"
-            assert 'source' in row, "Each CSV row should have a source field"
-            assert 'rank' in row, "Each CSV row should have a rank field"
+            assert "url" in row, "Each CSV row should have a url field"
+            assert "title" in row, "Each CSV row should have a title field"
+            assert "snippet" in row, "Each CSV row should have a snippet field"
+            assert "source" in row, "Each CSV row should have a source field"
+            assert "rank" in row, "Each CSV row should have a rank field"
 
-    elif output_format == 'txt':
+    elif output_format == "txt":
         # Verify text format contains query and results
         assert query in content, "Text output should contain the query"
         assert "Total Results:" in content, "Text output should contain result count"
@@ -416,9 +443,9 @@ def test_output_file_writing(query, max_results, output_format, tmp_path):
         for result in session.results:
             assert result.url in content, f"Text output should contain URL: {result.url}"
 
-    elif output_format == 'urls':
+    elif output_format == "urls":
         # Verify URLs format (one per line)
-        lines = content.strip().split('\n')
+        lines = content.strip().split("\n")
         assert len(lines) == len(session.results), "URLs output should have one URL per line"
 
         # Verify each line is a URL from the results
@@ -428,23 +455,23 @@ def test_output_file_writing(query, max_results, output_format, tmp_path):
 
     # Verify all result URLs are in the file content
     for result in session.results:
-        assert result.url in content, (
-            f"Output file should contain result URL: {result.url}"
-        )
+        assert result.url in content, f"Output file should contain result URL: {result.url}"
 
 
 @given(
-    query=st.text(min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126))
+    query=st.text(
+        min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+    )
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_stdin_query_reading(query):
     """
     Feature: mudhound-full-implementation, Property 65: Stdin query reading
     Validates: Requirements 20.5
-    
+
     For any input provided via stdin when --stdin flag is used, the CLI should
     read it as the search query.
-    
+
     This test verifies that:
     1. When --stdin flag is provided, the CLI reads the query from stdin
     2. The query read from stdin is used for the search
@@ -503,24 +530,26 @@ def test_stdin_query_reading(query):
 
         # Verify results contain the query (they should reference it)
         for result in session.results:
-            assert stdin_query in result.title or stdin_query in result.snippet, (
-                f"Results should reference the query from stdin: {stdin_query}"
-            )
+            assert (
+                stdin_query in result.title or stdin_query in result.snippet
+            ), f"Results should reference the query from stdin: {stdin_query}"
 
     finally:
         sys.stdin = original_stdin
 
 
 @given(
-    query=st.text(min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126)),
-    leading_whitespace=st.text(max_size=10, alphabet=st.sampled_from([' ', '\t', '\n'])),
-    trailing_whitespace=st.text(max_size=10, alphabet=st.sampled_from([' ', '\t', '\n']))
+    query=st.text(
+        min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+    ),
+    leading_whitespace=st.text(max_size=10, alphabet=st.sampled_from([" ", "\t", "\n"])),
+    trailing_whitespace=st.text(max_size=10, alphabet=st.sampled_from([" ", "\t", "\n"])),
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_stdin_whitespace_handling(query, leading_whitespace, trailing_whitespace):
     """
     Additional test: Verify that stdin input properly handles whitespace.
-    
+
     For any query with leading/trailing whitespace provided via stdin,
     the CLI should trim the whitespace before using it as the search query.
     """
@@ -553,14 +582,14 @@ def test_stdin_whitespace_handling(query, leading_whitespace, trailing_whitespac
         )
 
         # Verify no leading whitespace
-        assert not stdin_query.startswith(' ') and not stdin_query.startswith('\t'), (
-            "Stdin query should not have leading whitespace"
-        )
+        assert not stdin_query.startswith(" ") and not stdin_query.startswith(
+            "\t"
+        ), "Stdin query should not have leading whitespace"
 
         # Verify no trailing whitespace
-        assert not stdin_query.endswith(' ') and not stdin_query.endswith('\t'), (
-            "Stdin query should not have trailing whitespace"
-        )
+        assert not stdin_query.endswith(" ") and not stdin_query.endswith(
+            "\t"
+        ), "Stdin query should not have trailing whitespace"
 
         # Execute search with the cleaned query
         options = SearchOptions(max_results=10)
@@ -576,16 +605,18 @@ def test_stdin_whitespace_handling(query, leading_whitespace, trailing_whitespac
 
 @given(
     lines=st.lists(
-        st.text(min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)),
+        st.text(
+            min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+        ),
         min_size=1,
-        max_size=5
+        max_size=5,
     )
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_stdin_multiline_input(lines):
     """
     Additional test: Verify that stdin handles multi-line input appropriately.
-    
+
     For any multi-line input provided via stdin, the CLI should handle it
     appropriately (either use first line, or join lines, depending on design).
     """
@@ -599,7 +630,7 @@ def test_stdin_multiline_input(lines):
     engine = SearchEngine(adapter=adapter)
 
     # Create multi-line input
-    stdin_input = '\n'.join(lines)
+    stdin_input = "\n".join(lines)
 
     # Simulate reading from stdin
     mock_stdin = StringIO(stdin_input)
@@ -616,16 +647,16 @@ def test_stdin_multiline_input(lines):
         first_line_query = lines[0].strip()
 
         # Option 2: Join all lines with spaces
-        joined_query = ' '.join(line.strip() for line in lines if line.strip())
+        joined_query = " ".join(line.strip() for line in lines if line.strip())
 
         # Option 3: Use the full input as-is (with newlines replaced by spaces)
-        full_query = full_input.replace('\n', ' ').strip()
+        full_query = full_input.replace("\n", " ").strip()
 
         # For this test, we'll verify that the CLI handles it consistently
         # The actual implementation should choose one approach
 
         # Test with the full input approach (most flexible)
-        stdin_query = full_input.replace('\n', ' ').strip()
+        stdin_query = full_input.replace("\n", " ").strip()
 
         # Verify the query is not empty
         assert len(stdin_query) > 0, "Stdin query should not be empty after processing"
@@ -640,10 +671,10 @@ def test_stdin_multiline_input(lines):
 
         # The query should be one of the valid interpretations
         assert (
-            session.query.query == first_line_query or
-            session.query.query == joined_query or
-            session.query.query == full_query or
-            session.query.query == stdin_query
+            session.query.query == first_line_query
+            or session.query.query == joined_query
+            or session.query.query == full_query
+            or session.query.query == stdin_query
         ), (
             f"Search query should be a valid interpretation of multi-line input. "
             f"Got: '{session.query.query}'"
@@ -655,21 +686,23 @@ def test_stdin_multiline_input(lines):
 
 @given(
     queries=st.lists(
-        st.text(min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)),
+        st.text(
+            min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+        ),
         min_size=1,
-        max_size=5
+        max_size=5,
     ),
-    max_results=st.integers(min_value=1, max_value=20)
+    max_results=st.integers(min_value=1, max_value=20),
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_interactive_session_state_preservation(queries, max_results):
     """
     Feature: mudhound-full-implementation, Property 62: Interactive session state preservation
     Validates: Requirements 19.2
-    
+
     For any sequence of operations in interactive mode, session state should be
     maintained across all operations.
-    
+
     This test verifies that:
     1. Session state is preserved across multiple search operations
     2. Last search query and results are accessible after each search
@@ -736,26 +769,24 @@ def test_interactive_session_state_preservation(queries, max_results):
         )
 
         # Verify has_results flag
-        assert current_state["has_results"] == (expected_result_count > 0), (
-            "Session state has_results flag should match actual results"
-        )
+        assert current_state["has_results"] == (
+            expected_result_count > 0
+        ), "Session state has_results flag should match actual results"
 
         # Verify session attributes directly
-        assert session.last_search_query == query, (
-            "Session last_search_query should be preserved"
-        )
-        assert session.last_search_session is not None, (
-            "Session last_search_session should be preserved"
-        )
-        assert session.last_search_results is not None, (
-            "Session last_search_results should be preserved"
-        )
-        assert len(session.last_search_results) == expected_result_count, (
-            "Session last_search_results length should match"
-        )
-        assert session.operation_count == expected_operations, (
-            "Session operation_count should be incremented"
-        )
+        assert session.last_search_query == query, "Session last_search_query should be preserved"
+        assert (
+            session.last_search_session is not None
+        ), "Session last_search_session should be preserved"
+        assert (
+            session.last_search_results is not None
+        ), "Session last_search_results should be preserved"
+        assert (
+            len(session.last_search_results) == expected_result_count
+        ), "Session last_search_results length should match"
+        assert (
+            session.operation_count == expected_operations
+        ), "Session operation_count should be incremented"
 
         # Store for verification
         previous_queries.append(query)
@@ -763,48 +794,46 @@ def test_interactive_session_state_preservation(queries, max_results):
 
     # Verify final state reflects the last operation
     final_state = session.get_state_summary()
-    assert final_state["last_query"] == queries[-1].strip(), (
-        "Final state should have the last query"
-    )
-    assert final_state["operations"] == len(queries), (
-        f"Final state should have {len(queries)} operations"
-    )
+    assert (
+        final_state["last_query"] == queries[-1].strip()
+    ), "Final state should have the last query"
+    assert final_state["operations"] == len(
+        queries
+    ), f"Final state should have {len(queries)} operations"
 
     # Verify state consistency: the last query should be the most recent one
-    assert session.last_search_query == queries[-1].strip(), (
-        "Session should preserve the most recent query"
-    )
+    assert (
+        session.last_search_query == queries[-1].strip()
+    ), "Session should preserve the most recent query"
 
     # Test state clearing
     session.clear_search_state()
     cleared_state = session.get_state_summary()
 
-    assert cleared_state["last_query"] is None, (
-        "Cleared state should have no last query"
-    )
-    assert cleared_state["result_count"] == 0, (
-        "Cleared state should have no results"
-    )
-    assert not cleared_state["has_results"], (
-        "Cleared state should have no results flag"
-    )
+    assert cleared_state["last_query"] is None, "Cleared state should have no last query"
+    assert cleared_state["result_count"] == 0, "Cleared state should have no results"
+    assert not cleared_state["has_results"], "Cleared state should have no results flag"
     # Operation count should NOT be cleared (it's a session metric)
-    assert cleared_state["operations"] == len(queries), (
-        "Operation count should persist after clearing search state"
-    )
+    assert cleared_state["operations"] == len(
+        queries
+    ), "Operation count should persist after clearing search state"
 
 
 @given(
-    query1=st.text(min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)),
-    query2=st.text(min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)),
+    query1=st.text(
+        min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+    ),
+    query2=st.text(
+        min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+    ),
     max_results1=st.integers(min_value=1, max_value=20),
-    max_results2=st.integers(min_value=1, max_value=20)
+    max_results2=st.integers(min_value=1, max_value=20),
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_interactive_session_state_isolation(query1, query2, max_results1, max_results2):
     """
     Additional test: Verify that session state is properly isolated between operations.
-    
+
     For any two consecutive search operations, the second operation should
     completely replace the state from the first operation (not merge or accumulate).
     """
@@ -845,51 +874,47 @@ def test_interactive_session_state_isolation(query1, query2, max_results1, max_r
     results2_count = len(search_session2.results)
 
     # Verify state was replaced, not merged
-    assert state2["last_query"] == query2, (
-        f"Second operation should replace query. Expected: '{query2}', Got: '{state2['last_query']}'"
-    )
-    assert state2["last_query"] != query1, (
-        "Second operation should not preserve first query"
-    )
+    assert (
+        state2["last_query"] == query2
+    ), f"Second operation should replace query. Expected: '{query2}', Got: '{state2['last_query']}'"
+    assert state2["last_query"] != query1, "Second operation should not preserve first query"
 
     # Verify result count is from second search only
     assert state2["result_count"] == results2_count, (
         f"Second operation should replace result count. "
         f"Expected: {results2_count}, Got: {state2['result_count']}"
     )
-    assert state2["result_count"] != results1_count or results1_count == results2_count, (
-        "Result count should be from second search (unless they happen to be equal)"
-    )
+    assert (
+        state2["result_count"] != results1_count or results1_count == results2_count
+    ), "Result count should be from second search (unless they happen to be equal)"
 
     # Verify operation count is cumulative (not replaced)
-    assert state2["operations"] == 2, (
-        "Operation count should be cumulative across operations"
-    )
-    assert state2["operations"] > state1["operations"], (
-        "Operation count should increase with each operation"
-    )
+    assert state2["operations"] == 2, "Operation count should be cumulative across operations"
+    assert (
+        state2["operations"] > state1["operations"]
+    ), "Operation count should increase with each operation"
 
     # Verify session attributes reflect only the second search
-    assert session.last_search_query == query2, (
-        "Session should only preserve the most recent query"
-    )
-    assert session.last_search_session == search_session2, (
-        "Session should only preserve the most recent session"
-    )
-    assert len(session.last_search_results) == results2_count, (
-        "Session should only preserve results from the most recent search"
-    )
+    assert session.last_search_query == query2, "Session should only preserve the most recent query"
+    assert (
+        session.last_search_session == search_session2
+    ), "Session should only preserve the most recent session"
+    assert (
+        len(session.last_search_results) == results2_count
+    ), "Session should only preserve results from the most recent search"
 
 
 @given(
-    query=st.text(min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)),
-    max_results=st.integers(min_value=1, max_value=20)
+    query=st.text(
+        min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+    ),
+    max_results=st.integers(min_value=1, max_value=20),
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_interactive_session_data_storage(query, max_results):
     """
     Additional test: Verify that session can store arbitrary data.
-    
+
     For any session, custom data should be storable and retrievable
     through the session_data dictionary.
     """
@@ -923,12 +948,12 @@ def test_interactive_session_data_storage(query, max_results):
     session.update_search_state(query, search_session)
 
     # Verify custom data persists after search operation
-    assert "custom_key" in session.session_data, (
-        "Custom session data should persist across operations"
-    )
-    assert session.session_data["custom_key"] == "custom_value", (
-        "Custom session data values should be preserved"
-    )
+    assert (
+        "custom_key" in session.session_data
+    ), "Custom session data should persist across operations"
+    assert (
+        session.session_data["custom_key"] == "custom_value"
+    ), "Custom session data values should be preserved"
     assert session.session_data["user_preference"] is True
     assert session.session_data["counter"] == 42
 
@@ -936,35 +961,33 @@ def test_interactive_session_data_storage(query, max_results):
     session.session_data["counter"] += 1
 
     # Verify modification
-    assert session.session_data["counter"] == 43, (
-        "Custom session data should be modifiable"
-    )
+    assert session.session_data["counter"] == 43, "Custom session data should be modifiable"
 
     # Clear search state (should not affect custom data)
     session.clear_search_state()
 
     # Verify custom data still persists
-    assert "custom_key" in session.session_data, (
-        "Custom session data should persist after clearing search state"
-    )
+    assert (
+        "custom_key" in session.session_data
+    ), "Custom session data should persist after clearing search state"
     assert session.session_data["custom_key"] == "custom_value"
     assert session.session_data["counter"] == 43
 
 
 @given(
-    invalid_format=st.sampled_from(['invalid', 'xml', 'yaml', 'pdf', 'doc', '123', '']),
-    invalid_max_results=st.sampled_from([-1, -10, 0, 1001, 10000, 'abc', 'invalid']),
-    invalid_engine=st.sampled_from(['invalid_engine', 'google123', '', '   ', 'not-an-engine'])
+    invalid_format=st.sampled_from(["invalid", "xml", "yaml", "pdf", "doc", "123", ""]),
+    invalid_max_results=st.sampled_from([-1, -10, 0, 1001, 10000, "abc", "invalid"]),
+    invalid_engine=st.sampled_from(["invalid_engine", "google123", "", "   ", "not-an-engine"]),
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_invalid_argument_handling(invalid_format, invalid_max_results, invalid_engine):
     """
     Feature: mudhound-full-implementation, Property 64: Invalid argument handling
     Validates: Requirements 20.3
-    
+
     For any invalid command-line arguments provided, the CLI should display
     usage information and exit with non-zero status.
-    
+
     This test verifies that:
     1. Invalid format arguments are rejected with appropriate error messages
     2. Invalid max_results values are rejected (negative, zero, too large, non-numeric)
@@ -974,23 +997,22 @@ def test_invalid_argument_handling(invalid_format, invalid_max_results, invalid_
     """
     from typer.testing import CliRunner
 
-
     runner = CliRunner()
 
     # Test 1: Invalid export format
     # Valid formats are: json, csv, txt, urls
-    if invalid_format not in ['json', 'csv', 'txt', 'urls']:
+    if invalid_format not in ["json", "csv", "txt", "urls"]:
         # Simulate: mh export --format invalid_format --output test.txt
         # Note: Since export command requires session_id and output, we'll test format validation
 
         # The CLI should validate the format argument
         # For now, we'll test the validation logic directly since the full CLI isn't implemented
-        valid_formats = ['json', 'csv', 'txt', 'urls']
+        valid_formats = ["json", "csv", "txt", "urls"]
         is_valid_format = invalid_format in valid_formats
 
-        assert not is_valid_format, (
-            f"Format '{invalid_format}' should be invalid. Valid formats: {valid_formats}"
-        )
+        assert (
+            not is_valid_format
+        ), f"Format '{invalid_format}' should be invalid. Valid formats: {valid_formats}"
 
         # When the CLI is implemented, it should:
         # 1. Check if format is in valid_formats
@@ -999,14 +1021,16 @@ def test_invalid_argument_handling(invalid_format, invalid_max_results, invalid_
 
         # Simulate the validation that should happen in the CLI
         if not is_valid_format:
-            error_message = f"Invalid format: {invalid_format}. Must be one of: {', '.join(valid_formats)}"
+            error_message = (
+                f"Invalid format: {invalid_format}. Must be one of: {', '.join(valid_formats)}"
+            )
             exit_code = 1
 
             # Verify error message is informative
             assert "Invalid format" in error_message or "format" in error_message.lower()
-            assert any(fmt in error_message for fmt in valid_formats), (
-                "Error message should list valid formats"
-            )
+            assert any(
+                fmt in error_message for fmt in valid_formats
+            ), "Error message should list valid formats"
 
             # Verify non-zero exit code
             assert exit_code != 0, "CLI should exit with non-zero status for invalid format"
@@ -1047,19 +1071,21 @@ def test_invalid_argument_handling(invalid_format, invalid_max_results, invalid_
     # Test 3: Invalid engine names
     # Valid engines are registered in the AdapterRegistry
     # For testing, we'll use a known set of valid engines
-    valid_engines = ['duckduckgo', 'test_cli']  # test_cli is our test adapter
+    valid_engines = ["duckduckgo", "test_cli"]  # test_cli is our test adapter
     is_valid_engine = invalid_engine in valid_engines
 
     if not is_valid_engine:
         # The CLI should validate the engine name against registered adapters
-        error_message = f"Invalid engine: {invalid_engine}. Available engines: {', '.join(valid_engines)}"
+        error_message = (
+            f"Invalid engine: {invalid_engine}. Available engines: {', '.join(valid_engines)}"
+        )
         exit_code = 1
 
         # Verify error message is informative
         assert "Invalid engine" in error_message or "engine" in error_message.lower()
-        assert any(eng in error_message for eng in valid_engines), (
-            "Error message should list available engines"
-        )
+        assert any(
+            eng in error_message for eng in valid_engines
+        ), "Error message should list available engines"
 
         # Verify non-zero exit code
         assert exit_code != 0, "CLI should exit with non-zero status for invalid engine"
@@ -1079,16 +1105,18 @@ def test_invalid_argument_handling(invalid_format, invalid_max_results, invalid_
 
 
 @given(
-    query=st.text(min_size=0, max_size=10000, alphabet=st.characters(min_codepoint=0, max_codepoint=1000)),
+    query=st.text(
+        min_size=0, max_size=10000, alphabet=st.characters(min_codepoint=0, max_codepoint=1000)
+    ),
     max_results=st.integers(min_value=-100, max_value=10000),
     region=st.text(min_size=0, max_size=50),
-    safesearch=st.text(min_size=0, max_size=50)
+    safesearch=st.text(min_size=0, max_size=50),
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_argument_validation_comprehensive(query, max_results, region, safesearch):
     """
     Additional test: Comprehensive argument validation across all parameters.
-    
+
     For any combination of arguments, the CLI should validate each one and
     provide clear error messages for any invalid values.
     """
@@ -1110,13 +1138,16 @@ def test_argument_validation_comprehensive(query, max_results, region, safesearc
 
     # Validate region (should be a valid region code)
     # Common region codes: wt-wt (worldwide), us-en, uk-en, etc.
-    valid_region_pattern = r'^[a-z]{2}-[a-z]{2}$'
+    valid_region_pattern = r"^[a-z]{2}-[a-z]{2}$"
     import re
+
     if region and not re.match(valid_region_pattern, region):
-        validation_errors.append(f"Invalid region format: {region}. Expected format: xx-xx (e.g., us-en)")
+        validation_errors.append(
+            f"Invalid region format: {region}. Expected format: xx-xx (e.g., us-en)"
+        )
 
     # Validate safesearch (should be: off, moderate, strict)
-    valid_safesearch = ['off', 'moderate', 'strict']
+    valid_safesearch = ["off", "moderate", "strict"]
     if safesearch and safesearch not in valid_safesearch:
         validation_errors.append(
             f"Invalid safesearch: {safesearch}. Must be one of: {', '.join(valid_safesearch)}"
@@ -1136,7 +1167,7 @@ def test_argument_validation_comprehensive(query, max_results, region, safesearc
             assert len(error) > 0, "Error messages should not be empty"
             assert any(
                 keyword in error.lower()
-                for keyword in ['invalid', 'must', 'cannot', 'expected', 'error']
+                for keyword in ["invalid", "must", "cannot", "expected", "error"]
             ), f"Error message should be descriptive: {error}"
 
         # The CLI should exit with non-zero status
@@ -1153,7 +1184,7 @@ def test_argument_validation_comprehensive(query, max_results, region, safesearc
                 max_results=max_results,
                 region=region if region else "wt-wt",
                 safesearch=safesearch if safesearch else "moderate",
-                time_limit=None
+                time_limit=None,
             )
 
             # Verify the options object was created successfully
@@ -1164,9 +1195,9 @@ def test_argument_validation_comprehensive(query, max_results, region, safesearc
         except Exception as e:
             # If SearchOptions validation fails, that's also acceptable
             # It means the validation is happening at the model level
-            assert isinstance(e, (ValueError, TypeError)), (
-                f"Expected validation error, got: {type(e).__name__}"
-            )
+            assert isinstance(
+                e, (ValueError, TypeError)
+            ), f"Expected validation error, got: {type(e).__name__}"
 
 
 @given(
@@ -1176,7 +1207,7 @@ def test_argument_validation_comprehensive(query, max_results, region, safesearc
 def test_output_path_validation(output_path):
     """
     Additional test: Validate output file paths.
-    
+
     For any output path provided, the CLI should validate that:
     1. The path is not empty
     2. The directory exists or can be created
@@ -1193,21 +1224,21 @@ def test_output_path_validation(output_path):
         validation_errors.append("Output path cannot be empty")
     else:
         # Check for invalid characters (platform-specific)
-        if os.name == 'nt':  # Windows
-            invalid_chars = ['<', '>', ':', '"', '|', '?', '*']
+        if os.name == "nt":  # Windows
+            invalid_chars = ["<", ">", ":", '"', "|", "?", "*"]
             # Note: Windows paths can have : in drive letters (C:)
             # So we need to be more careful with validation
-            path_without_drive = output_path[2:] if len(output_path) > 2 and output_path[1] == ':' else output_path
+            path_without_drive = (
+                output_path[2:] if len(output_path) > 2 and output_path[1] == ":" else output_path
+            )
 
             for char in invalid_chars:
                 if char in path_without_drive:
-                    validation_errors.append(
-                        f"Output path contains invalid character: {char}"
-                    )
+                    validation_errors.append(f"Output path contains invalid character: {char}")
                     break
 
         # Check if path is too long (Windows has 260 char limit, Unix typically 4096)
-        max_path_length = 260 if os.name == 'nt' else 4096
+        max_path_length = 260 if os.name == "nt" else 4096
         if len(output_path) > max_path_length:
             validation_errors.append(
                 f"Output path is too long ({len(output_path)} chars, max {max_path_length})"
@@ -1236,7 +1267,7 @@ def test_output_path_validation(output_path):
             assert len(error) > 0
             assert any(
                 keyword in error.lower()
-                for keyword in ['invalid', 'cannot', 'error', 'path', 'character']
+                for keyword in ["invalid", "cannot", "error", "path", "character"]
             ), f"Error message should be descriptive: {error}"
 
         # CLI should exit with non-zero status

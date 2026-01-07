@@ -16,12 +16,7 @@ def main():
     ]
 
     # Create timing engine (10 FPS, infinite loop)
-    timing_engine = TimingEngine(
-        fps=10,
-        total_frames=len(test_frames),
-        duration=0.0,
-        loop=True
-    )
+    timing_engine = TimingEngine(fps=10, total_frames=len(test_frames), duration=0.0, loop=True)
 
     # Create animation renderer
     renderer = AnimationRenderer(timing_engine=timing_engine)
@@ -65,6 +60,7 @@ def main():
     print("\nAnimation test complete!")
     print(f"Paused: {renderer.is_paused}")
     print(f"Running: {timing_engine.is_running}")
+
 
 if __name__ == "__main__":
     main()

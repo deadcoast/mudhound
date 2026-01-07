@@ -30,7 +30,7 @@ def search_result_strategy(draw):
     # Exclude control characters and line breaks to avoid issues with file formats
     safe_chars = st.characters(
         blacklist_categories=("Cc", "Cs"),  # Exclude control and surrogate characters
-        blacklist_characters="\r\n\t"  # Explicitly exclude line breaks and tabs
+        blacklist_characters="\r\n\t",  # Explicitly exclude line breaks and tabs
     )
 
     return SearchResult(
@@ -39,11 +39,13 @@ def search_result_strategy(draw):
         snippet=draw(st.text(min_size=1, max_size=500, alphabet=safe_chars)),
         source=draw(st.text(min_size=1, max_size=50, alphabet=safe_chars)),
         rank=draw(st.integers(min_value=1, max_value=1000)),
-        metadata=draw(st.dictionaries(
-            st.text(min_size=1, max_size=20, alphabet=safe_chars),
-            st.text(max_size=100, alphabet=safe_chars),
-            max_size=5
-        )),
+        metadata=draw(
+            st.dictionaries(
+                st.text(min_size=1, max_size=20, alphabet=safe_chars),
+                st.text(max_size=100, alphabet=safe_chars),
+                max_size=5,
+            )
+        ),
     )
 
 
@@ -53,7 +55,7 @@ def test_json_export_round_trip(results):
     """
     Feature: mudhound-full-implementation, Property 29: JSON export round trip
     Validates: Requirements 9.1
-    
+
     For any search results, exporting to JSON then parsing the JSON should
     produce equivalent result data.
     """
@@ -89,7 +91,7 @@ def test_csv_export_round_trip(results):
     """
     Feature: mudhound-full-implementation, Property 30: CSV export round trip
     Validates: Requirements 9.2
-    
+
     For any search results, exporting to CSV then parsing the CSV should
     produce equivalent result data.
     """
@@ -125,7 +127,7 @@ def test_urls_export_format(results):
     """
     Feature: mudhound-full-implementation, Property 31: URLs export format
     Validates: Requirements 9.4
-    
+
     For any search results, exporting with format "urls" should produce
     one URL per line with no additional formatting.
     """
@@ -258,7 +260,7 @@ def test_export_json_raises_error_on_io_failure():
         snippet="Test snippet",
         source="example.com",
         rank=1,
-        metadata={}
+        metadata={},
     )
 
     with pytest.raises(ExportError) as exc_info:
@@ -280,7 +282,7 @@ def test_export_csv_raises_error_on_io_failure():
         snippet="Test snippet",
         source="example.com",
         rank=1,
-        metadata={}
+        metadata={},
     )
 
     with pytest.raises(ExportError) as exc_info:
@@ -302,7 +304,7 @@ def test_export_urls_raises_error_on_io_failure():
         snippet="Test snippet",
         source="example.com",
         rank=1,
-        metadata={}
+        metadata={},
     )
 
     with pytest.raises(ExportError) as exc_info:

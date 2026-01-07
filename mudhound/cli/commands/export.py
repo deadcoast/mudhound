@@ -23,11 +23,11 @@ app = typer.Typer(help="Export search results to various formats")
 
 def export_json(results: List[SearchResult], output_path: Path) -> None:
     """Export results to JSON format.
-    
+
     Args:
         results: List of search results to export
         output_path: Path to write the JSON file
-        
+
     Raises:
         ExportError: If file writing fails
     """
@@ -53,11 +53,11 @@ def export_json(results: List[SearchResult], output_path: Path) -> None:
 
 def export_csv(results: List[SearchResult], output_path: Path) -> None:
     """Export results to CSV format.
-    
+
     Args:
         results: List of search results to export
         output_path: Path to write the CSV file
-        
+
     Raises:
         ExportError: If file writing fails
     """
@@ -68,13 +68,15 @@ def export_csv(results: List[SearchResult], output_path: Path) -> None:
 
             writer.writeheader()
             for result in results:
-                writer.writerow({
-                    "rank": result.rank,
-                    "url": result.url,
-                    "title": result.title,
-                    "snippet": result.snippet,
-                    "source": result.source,
-                })
+                writer.writerow(
+                    {
+                        "rank": result.rank,
+                        "url": result.url,
+                        "title": result.title,
+                        "snippet": result.snippet,
+                        "source": result.source,
+                    }
+                )
 
     except OSError as e:
         raise ExportError(f"Failed to write CSV file: {e}")
@@ -82,11 +84,11 @@ def export_csv(results: List[SearchResult], output_path: Path) -> None:
 
 def export_txt(results: List[SearchResult], output_path: Path) -> None:
     """Export results to formatted text.
-    
+
     Args:
         results: List of search results to export
         output_path: Path to write the text file
-        
+
     Raises:
         ExportError: If file writing fails
     """
@@ -105,11 +107,11 @@ def export_txt(results: List[SearchResult], output_path: Path) -> None:
 
 def export_urls(results: List[SearchResult], output_path: Path) -> None:
     """Export URLs only (one per line).
-    
+
     Args:
         results: List of search results to export
         output_path: Path to write the URLs file
-        
+
     Raises:
         ExportError: If file writing fails
     """
@@ -124,13 +126,17 @@ def export_urls(results: List[SearchResult], output_path: Path) -> None:
 
 @app.command()
 def export(
-    session_id: Optional[str] = typer.Argument(None, help="Session ID to export (uses last session if not provided)"),
+    session_id: Optional[str] = typer.Argument(
+        None, help="Session ID to export (uses last session if not provided)"
+    ),
     output: str = typer.Option(..., "--output", "-o", help="Output file path"),
-    format: str = typer.Option("json", "--format", "-f", help="Export format: json, csv, txt, urls"),
+    format: str = typer.Option(
+        "json", "--format", "-f", help="Export format: json, csv, txt, urls"
+    ),
 ):
     """
     Export search results to a file.
-    
+
     Supports multiple output formats:
     - json: Structured JSON with all fields
     - csv: Comma-separated values with headers

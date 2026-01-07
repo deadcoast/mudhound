@@ -41,12 +41,16 @@ def search(
     max_results: int = typer.Option(50, "--max", "-m", help="Maximum number of results"),
     engine: str = typer.Option("duckduckgo", "--engine", "-e", help="Search engine adapter"),
     region: str = typer.Option("wt-wt", "--region", "-r", help="Region code"),
-    safesearch: str = typer.Option("moderate", "--safesearch", "-s", help="Safe search level (off|moderate|strict)"),
+    safesearch: str = typer.Option(
+        "moderate", "--safesearch", "-s", help="Safe search level (off|moderate|strict)"
+    ),
     time_limit: Optional[str] = typer.Option(None, "--time", "-t", help="Time filter (d|w|m|y)"),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Output file path"),
     format: str = typer.Option("json", "--format", "-f", help="Output format (json|csv|txt|urls)"),
     quiet: bool = typer.Option(False, "--quiet", "-q", help="Suppress UI, output only"),
-    interactive_results: bool = typer.Option(False, "--interactive", "-i", help="Interactive results with navigation"),
+    interactive_results: bool = typer.Option(
+        False, "--interactive", "-i", help="Interactive results with navigation"
+    ),
 ):
     """
     Execute a search query and display results.
@@ -84,13 +88,17 @@ def search(
     # Validate safesearch
     valid_safesearch = ["off", "moderate", "strict"]
     if safesearch.lower() not in valid_safesearch:
-        errors.append(f"Invalid safesearch value: {safesearch}. Must be one of: {', '.join(valid_safesearch)}")
+        errors.append(
+            f"Invalid safesearch value: {safesearch}. Must be one of: {', '.join(valid_safesearch)}"
+        )
 
     # Validate time_limit
     if time_limit:
         valid_time = ["d", "w", "m", "y"]
         if time_limit.lower() not in valid_time:
-            errors.append(f"Invalid time filter: {time_limit}. Must be one of: {', '.join(valid_time)}")
+            errors.append(
+                f"Invalid time filter: {time_limit}. Must be one of: {', '.join(valid_time)}"
+            )
 
     if errors:
         console_err.print("[red]Validation Error(s):[/red]")
@@ -133,11 +141,7 @@ def search(
             f"Query: {query}",
             f"Engine: {engine} | Max: {max_results} | Region: {region}",
         ]
-        ui_renderer.render_and_flush(
-            content=search_info,
-            title="Search",
-            apply_theme=True
-        )
+        ui_renderer.render_and_flush(content=search_info, title="Search", apply_theme=True)
         console.print()
 
     # Initialize progress component
@@ -175,7 +179,9 @@ def search(
                     use_color=True,
                     page_size=10,
                 )
-                console.print("[dim]Interactive mode: Navigate with j/k, filter with /, select with Enter[/dim]\n")
+                console.print(
+                    "[dim]Interactive mode: Navigate with j/k, filter with /, select with Enter[/dim]\n"
+                )
                 selected = table.show_interactive()
                 if selected:
                     console.print(f"\n[green]Selected:[/green] {selected.url}")
@@ -184,7 +190,11 @@ def search(
                 for result in session.results[:10]:
                     console.print(f"[bold cyan][{result.rank}][/bold cyan] {result.title}")
                     console.print(f"    [link={result.url}]{result.url}[/link]")
-                    snippet = result.snippet[:150] + "..." if len(result.snippet) > 150 else result.snippet
+                    snippet = (
+                        result.snippet[:150] + "..."
+                        if len(result.snippet) > 150
+                        else result.snippet
+                    )
                     console.print(f"    [dim]{snippet}[/dim]\n")
 
                 if len(session.results) > 10:

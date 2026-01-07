@@ -25,18 +25,14 @@ class MockAdapter(SearchAdapter):
     def display_name(self) -> str:
         return "Mock Adapter"
 
-    def search(
-        self,
-        query: str,
-        options: SearchOptions
-    ) -> Generator[SearchResult, None, None]:
+    def search(self, query: str, options: SearchOptions) -> Generator[SearchResult, None, None]:
         yield SearchResult(
             url="https://example.com",
             title="Test",
             snippet="Test snippet",
             source="example.com",
             rank=1,
-            metadata={}
+            metadata={},
         )
 
     def validate_options(self, options: SearchOptions) -> List[str]:
@@ -54,18 +50,14 @@ class AnotherMockAdapter(SearchAdapter):
     def display_name(self) -> str:
         return "Another Mock Adapter"
 
-    def search(
-        self,
-        query: str,
-        options: SearchOptions
-    ) -> Generator[SearchResult, None, None]:
+    def search(self, query: str, options: SearchOptions) -> Generator[SearchResult, None, None]:
         yield SearchResult(
             url="https://example.com",
             title="Test",
             snippet="Test snippet",
             source="example.com",
             rank=1,
-            metadata={}
+            metadata={},
         )
 
     def validate_options(self, options: SearchOptions) -> List[str]:
@@ -143,6 +135,7 @@ def test_list_available_with_adapters():
 
 def test_register_non_adapter_raises_error():
     """Test that registering a non-SearchAdapter class raises TypeError."""
+
     class NotAnAdapter:
         pass
 

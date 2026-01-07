@@ -4,7 +4,6 @@ Unit tests for error handler component.
 Tests basic error display functionality.
 """
 
-
 from mudhound.core.exceptions import (
     ConfigError,
     NetworkError,

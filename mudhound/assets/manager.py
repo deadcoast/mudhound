@@ -15,7 +15,7 @@ class AssetManager:
 
     def __init__(self, assets_dir: Optional[Path] = None):
         """Initialize the AssetManager.
-        
+
         Args:
             assets_dir: Path to the assets directory. If None, uses the default
                        location relative to this module.
@@ -31,42 +31,42 @@ class AssetManager:
 
     def _strip_metadata(self, content: str) -> str:
         """Strip metadata header from ANSI frame file.
-        
+
         Metadata headers are separated from content by a line containing "---".
         All lines before and including the separator are removed.
-        
+
         Args:
             content: Raw file content with potential metadata header
-            
+
         Returns:
             Content with metadata header stripped
         """
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Find the separator line
         separator_index = -1
         for i, line in enumerate(lines):
-            if line.strip() == '---':
+            if line.strip() == "---":
                 separator_index = i
                 break
 
         # If separator found, return content after it
         if separator_index >= 0:
-            return '\n'.join(lines[separator_index + 1:])
+            return "\n".join(lines[separator_index + 1 :])
 
         # No separator found, return original content
         return content
 
     def _load_animated_asset(self, asset_name: str, pattern: str) -> List[str]:
         """Load animated asset frames using glob pattern matching.
-        
+
         Args:
             asset_name: Name of the asset for caching (e.g., "rainbow-banner")
             pattern: Glob pattern to match frame files (e.g., "rainbow-banner/*.txt")
-            
+
         Returns:
             List of frame contents (strings)
-            
+
         Raises:
             AnimationError: If no frames are found
         """
@@ -88,7 +88,7 @@ class AssetManager:
         frames = []
         for frame_file in frame_files:
             try:
-                with open(frame_file, encoding='utf-8') as f:
+                with open(frame_file, encoding="utf-8") as f:
                     content = f.read()
                     # Strip metadata header
                     frame_content = self._strip_metadata(content)
@@ -103,13 +103,13 @@ class AssetManager:
 
     def _load_static_asset(self, asset_name: str) -> str:
         """Load a static asset file.
-        
+
         Args:
             asset_name: Name of the static asset file (e.g., "banner.txt")
-            
+
         Returns:
             Content of the static asset
-            
+
         Raises:
             AnimationError: If the static asset cannot be loaded
         """
@@ -122,7 +122,7 @@ class AssetManager:
         asset_path = self.static_dir / asset_name
 
         try:
-            with open(asset_path, encoding='utf-8') as f:
+            with open(asset_path, encoding="utf-8") as f:
                 content = f.read()
                 # Strip metadata if present
                 content = self._strip_metadata(content)
@@ -134,10 +134,10 @@ class AssetManager:
 
     def get_banner_frames(self, scheme: str = "rainbow") -> List[str]:
         """Get banner frames for the specified color scheme.
-        
+
         Args:
             scheme: Color scheme name (e.g., "rainbow", "dark-rainbow", "light-rainbow")
-            
+
         Returns:
             List of banner frame contents
         """
@@ -161,10 +161,10 @@ class AssetManager:
 
     def get_logo_frames(self, scheme: str = "rainbow") -> List[str]:
         """Get logo frames for the specified color scheme.
-        
+
         Args:
             scheme: Color scheme name (e.g., "rainbow", "dark-rainbow", "light-rainbow")
-            
+
         Returns:
             List of logo frame contents
         """
@@ -188,7 +188,7 @@ class AssetManager:
 
     def _get_minimal_banner(self) -> str:
         """Get a minimal text-only banner as last resort fallback.
-        
+
         Returns:
             Minimal banner string
         """
@@ -196,7 +196,7 @@ class AssetManager:
 
     def _get_minimal_logo(self) -> str:
         """Get a minimal text-only logo as last resort fallback.
-        
+
         Returns:
             Minimal logo string
         """

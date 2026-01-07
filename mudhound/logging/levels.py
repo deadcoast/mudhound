@@ -8,8 +8,8 @@ including TRACE and SUCCESS levels.
 import logging
 
 # Define custom log levels
-TRACE = 5      # Below DEBUG (10)
-SUCCESS = 25   # Between INFO (20) and WARNING (30)
+TRACE = 5  # Below DEBUG (10)
+SUCCESS = 25  # Between INFO (20) and WARNING (30)
 
 # Add custom levels to logging module
 logging.addLevelName(TRACE, "TRACE")
@@ -68,10 +68,10 @@ LEVEL_STYLES = {
 
 def get_level_style(level: int) -> dict:
     """Get the style (glyph and color) for a log level.
-    
+
     Args:
         level: Logging level (e.g., logging.INFO, SUCCESS)
-        
+
     Returns:
         Dictionary with 'glyph' and 'color' keys
     """

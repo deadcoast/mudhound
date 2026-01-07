@@ -4,7 +4,9 @@
       "Bash(python -m pytest tests/ -v --tb=short)",
       "Bash(python -m mudhound:*)",
       "Bash(pip install:*)",
-      "Bash(python -m pytest:*)"
+      "Bash(python -m pytest:*)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs"
     ]
   }
 }

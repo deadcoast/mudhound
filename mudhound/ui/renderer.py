@@ -18,10 +18,10 @@ from mudhound.ui.theme import ThemeEngine, get_theme_engine
 class UIRenderer:
     """
     Core renderer for terminal UI output.
-    
+
     Handles frame rendering with theme application, cursor management,
     ANSI escape sequences, and output buffering for smooth rendering.
-    
+
     Attributes:
         frame_renderer: FrameRenderer instance for drawing frames
         theme_engine: ThemeEngine instance for color application
@@ -44,11 +44,11 @@ class UIRenderer:
         frame_renderer: Optional[FrameRenderer] = None,
         theme_engine: Optional[ThemeEngine] = None,
         layout_manager: Optional[LayoutManager] = None,
-        output: Optional[TextIO] = None
+        output: Optional[TextIO] = None,
     ):
         """
         Initialize the UI renderer.
-        
+
         Args:
             frame_renderer: FrameRenderer instance (creates default if None)
             theme_engine: ThemeEngine instance (uses global if None)
@@ -87,7 +87,7 @@ class UIRenderer:
     def move_cursor_up(self, lines: int) -> None:
         """
         Move cursor up by specified number of lines.
-        
+
         Args:
             lines: Number of lines to move up
         """
@@ -97,7 +97,7 @@ class UIRenderer:
     def move_cursor_down(self, lines: int) -> None:
         """
         Move cursor down by specified number of lines.
-        
+
         Args:
             lines: Number of lines to move down
         """
@@ -107,7 +107,7 @@ class UIRenderer:
     def move_cursor_to_column(self, column: int) -> None:
         """
         Move cursor to specified column (1-indexed).
-        
+
         Args:
             column: Column number (1-indexed)
         """
@@ -120,7 +120,7 @@ class UIRenderer:
     def clear_lines(self, count: int) -> None:
         """
         Clear multiple lines starting from current position.
-        
+
         Args:
             count: Number of lines to clear
         """
@@ -138,11 +138,11 @@ class UIRenderer:
     def apply_theme_to_text(self, text: str, semantic_name: str) -> str:
         """
         Apply theme color to text.
-        
+
         Args:
             text: Text to colorize
             semantic_name: Semantic color name from theme
-            
+
         Returns:
             Text with ANSI color codes applied
         """
@@ -156,11 +156,11 @@ class UIRenderer:
         tag: Optional[str] = None,
         pagination: Optional[str] = None,
         style: Optional[BorderStyle] = None,
-        apply_theme: bool = True
+        apply_theme: bool = True,
     ) -> List[str]:
         """
         Render a complete frame with theme application.
-        
+
         Args:
             content: List of content lines
             title: Optional title for top border
@@ -169,7 +169,7 @@ class UIRenderer:
             pagination: Optional pagination info for bottom border
             style: Border style (uses frame_renderer's style if None)
             apply_theme: Whether to apply theme colors
-            
+
         Returns:
             List of rendered frame lines with theme applied
         """
@@ -218,18 +218,18 @@ class UIRenderer:
         content: List[str],
         title: Optional[str] = None,
         style: Optional[BorderStyle] = None,
-        apply_theme: bool = True
+        apply_theme: bool = True,
     ) -> List[str]:
         """
         Render a frame with a header section.
-        
+
         Args:
             header: Header text
             content: List of content lines
             title: Optional title for top border
             style: Border style
             apply_theme: Whether to apply theme colors
-            
+
         Returns:
             List of rendered frame lines with theme applied
         """
@@ -284,7 +284,7 @@ class UIRenderer:
     def write(self, text: str) -> None:
         """
         Write text to the output buffer.
-        
+
         Args:
             text: Text to write
         """
@@ -293,7 +293,7 @@ class UIRenderer:
     def writeln(self, text: str = "") -> None:
         """
         Write text followed by a newline to the output buffer.
-        
+
         Args:
             text: Text to write (empty string for blank line)
         """
@@ -303,7 +303,7 @@ class UIRenderer:
     def write_lines(self, lines: List[str]) -> None:
         """
         Write multiple lines to the output buffer.
-        
+
         Args:
             lines: List of lines to write
         """
@@ -324,13 +324,13 @@ class UIRenderer:
         content: List[str],
         title: Optional[str] = None,
         status: Optional[str] = None,
-        apply_theme: bool = True
+        apply_theme: bool = True,
     ) -> None:
         """
         Render a frame and immediately flush to output.
-        
+
         Convenience method that combines render_frame, write_lines, and flush.
-        
+
         Args:
             content: List of content lines
             title: Optional title
@@ -338,10 +338,7 @@ class UIRenderer:
             apply_theme: Whether to apply theme colors
         """
         frame = self.render_frame(
-            content=content,
-            title=title,
-            status=status,
-            apply_theme=apply_theme
+            content=content, title=title, status=status, apply_theme=apply_theme
         )
         self.write_lines(frame)
         self.flush()
@@ -352,20 +349,20 @@ class UIRenderer:
         previous_line_count: int = 0,
         title: Optional[str] = None,
         status: Optional[str] = None,
-        apply_theme: bool = True
+        apply_theme: bool = True,
     ) -> int:
         """
         Clear previous output and render new frame.
-        
+
         Useful for updating animated or dynamic content.
-        
+
         Args:
             content: List of content lines
             previous_line_count: Number of lines to clear from previous render
             title: Optional title
             status: Optional status
             apply_theme: Whether to apply theme colors
-            
+
         Returns:
             Number of lines rendered (for next clear operation)
         """
@@ -377,10 +374,7 @@ class UIRenderer:
 
         # Render new frame
         frame = self.render_frame(
-            content=content,
-            title=title,
-            status=status,
-            apply_theme=apply_theme
+            content=content, title=title, status=status, apply_theme=apply_theme
         )
 
         self.write_lines(frame)

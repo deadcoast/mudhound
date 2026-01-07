@@ -36,7 +36,6 @@ ANSI_COLORS = {
     "bright_magenta": "\033[95m",
     "bright_cyan": "\033[96m",
     "bright_white": "\033[97m",
-
     # Reset
     "reset": "\033[0m",
 }
@@ -49,18 +48,15 @@ DEFAULT_THEME = {
         "primary": "bright_cyan",
         "secondary": "cyan",
         "accent": "bright_magenta",
-
         # Semantic colors
         "success": "bright_green",
         "error": "bright_red",
         "warning": "bright_yellow",
         "info": "bright_blue",
-
         # Frame colors
         "frame_border": "bright_cyan",
         "frame_title": "bright_white",
         "frame_content": "white",
-
         # Content colors
         "text": "white",
         "text_dim": "bright_black",
@@ -68,13 +64,13 @@ DEFAULT_THEME = {
     },
     "animation": {
         "color_scheme": None,  # None means use default from config
-    }
+    },
 }
 
 
 class Theme:
     """Represents a color theme for the terminal UI.
-    
+
     Attributes:
         name: Theme name
         colors: Dictionary mapping semantic color names to ANSI color names
@@ -83,7 +79,7 @@ class Theme:
 
     def __init__(self, name: str, colors: Dict[str, str], animation_scheme: Optional[str] = None):
         """Initialize a Theme.
-        
+
         Args:
             name: Theme name
             colors: Dictionary mapping semantic names to ANSI color names
@@ -95,10 +91,10 @@ class Theme:
 
     def get_color(self, semantic_name: str) -> str:
         """Get ANSI escape code for a semantic color name.
-        
+
         Args:
             semantic_name: Semantic color name (e.g., "success", "error")
-            
+
         Returns:
             ANSI escape code string
         """
@@ -110,11 +106,11 @@ class Theme:
 
     def apply(self, text: str, semantic_name: str) -> str:
         """Apply theme color to text.
-        
+
         Args:
             text: Text to colorize
             semantic_name: Semantic color name
-            
+
         Returns:
             Text with ANSI color codes applied
         """
@@ -125,10 +121,10 @@ class Theme:
     @classmethod
     def from_dict(cls, theme_dict: Dict[str, Any]) -> "Theme":
         """Create a Theme from a dictionary (typically loaded from TOML).
-        
+
         Args:
             theme_dict: Dictionary containing theme definition
-            
+
         Returns:
             Theme instance
         """
@@ -141,10 +137,10 @@ class Theme:
 
 class ThemeEngine:
     """Manages theme loading and application.
-    
+
     The ThemeEngine loads theme definitions from TOML files and provides
     methods to apply themes to UI components.
-    
+
     Attributes:
         themes_dir: Directory containing theme files
         themes: Dictionary of loaded themes
@@ -153,7 +149,7 @@ class ThemeEngine:
 
     def __init__(self, themes_dir: Optional[Path] = None):
         """Initialize the ThemeEngine.
-        
+
         Args:
             themes_dir: Directory containing theme TOML files
                        (defaults to mudhound/data/themes/)
@@ -172,13 +168,13 @@ class ThemeEngine:
 
     def load_theme(self, theme_name: str) -> Theme:
         """Load a theme from a TOML file.
-        
+
         Args:
             theme_name: Name of the theme (without .toml extension)
-            
+
         Returns:
             Loaded Theme instance
-            
+
         Raises:
             ConfigError: If theme file cannot be loaded or parsed
         """
@@ -201,7 +197,7 @@ class ThemeEngine:
 
     def set_active_theme(self, theme_name: str) -> None:
         """Set the active theme.
-        
+
         Args:
             theme_name: Name of the theme to activate
         """
@@ -215,10 +211,10 @@ class ThemeEngine:
 
     def get_color(self, semantic_name: str) -> str:
         """Get ANSI escape code for a semantic color name from active theme.
-        
+
         Args:
             semantic_name: Semantic color name
-            
+
         Returns:
             ANSI escape code string
         """
@@ -226,11 +222,11 @@ class ThemeEngine:
 
     def apply(self, text: str, semantic_name: str) -> str:
         """Apply active theme color to text.
-        
+
         Args:
             text: Text to colorize
             semantic_name: Semantic color name
-            
+
         Returns:
             Text with ANSI color codes applied
         """
@@ -238,7 +234,7 @@ class ThemeEngine:
 
     def get_animation_scheme(self) -> Optional[str]:
         """Get animation color scheme override from active theme.
-        
+
         Returns:
             Animation color scheme name or None if no override
         """
@@ -251,7 +247,7 @@ _theme_engine: Optional[ThemeEngine] = None
 
 def get_theme_engine() -> ThemeEngine:
     """Get the global ThemeEngine instance.
-    
+
     Returns:
         Global ThemeEngine instance
     """
@@ -263,7 +259,7 @@ def get_theme_engine() -> ThemeEngine:
 
 def set_theme(theme_name: str) -> None:
     """Set the active theme globally.
-    
+
     Args:
         theme_name: Name of the theme to activate
     """
@@ -273,11 +269,11 @@ def set_theme(theme_name: str) -> None:
 
 def apply_theme(text: str, semantic_name: str) -> str:
     """Apply active theme color to text (convenience function).
-    
+
     Args:
         text: Text to colorize
         semantic_name: Semantic color name
-        
+
     Returns:
         Text with ANSI color codes applied
     """

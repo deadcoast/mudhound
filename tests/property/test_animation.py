@@ -8,17 +8,15 @@ from hypothesis import strategies as st
 from mudhound.ui.animation.timing import TimingEngine
 
 
-@given(
-    fps=st.integers(min_value=5, max_value=60)  # Reduced range for more reliable timing
-)
+@given(fps=st.integers(min_value=5, max_value=60))  # Reduced range for more reliable timing
 @settings(max_examples=50, deadline=None)  # Reduced examples for faster execution
 def test_frame_rate_timing_accuracy(fps):
     """
     Feature: mudhound-full-implementation, Property 5: Frame rate timing accuracy
-    
+
     For any configured frame rate, the animation engine should render frames
     at approximately that rate (within 20% tolerance due to OS scheduling).
-    
+
     Validates: Requirements 2.2
     """
     # Create timing engine with specified FPS
@@ -61,24 +59,21 @@ def test_frame_rate_timing_accuracy(fps):
 
 @given(
     total_frames=st.integers(min_value=2, max_value=50),  # Reduced range
-    fps=st.integers(min_value=10, max_value=60)  # Higher minimum FPS for faster tests
+    fps=st.integers(min_value=10, max_value=60),  # Higher minimum FPS for faster tests
 )
 @settings(max_examples=50, deadline=5000)  # Added deadline to prevent hangs
 def test_infinite_loop_with_zero_duration(total_frames, fps):
     """
     Feature: mudhound-full-implementation, Property 8: Infinite loop with zero duration
-    
+
     For any animation with duration set to zero, the animation should continue
     looping until explicitly stopped.
-    
+
     Validates: Requirements 2.7
     """
     # Create timing engine with zero duration (infinite loop)
     engine = TimingEngine(
-        fps=fps,
-        total_frames=total_frames,
-        duration=0.0,  # Zero duration = infinite loop
-        loop=True
+        fps=fps, total_frames=total_frames, duration=0.0, loop=True  # Zero duration = infinite loop
     )
 
     # Start the engine
@@ -96,9 +91,9 @@ def test_infinite_loop_with_zero_duration(total_frames, fps):
 
         # Get current frame - should be valid
         current_frame = engine.get_current_frame()
-        assert 0 <= current_frame < total_frames, (
-            f"Current frame {current_frame} should be within range [0, {total_frames})"
-        )
+        assert (
+            0 <= current_frame < total_frames
+        ), f"Current frame {current_frame} should be within range [0, {total_frames})"
 
         # Wait a bit more and verify it continues looping
         time.sleep(0.1)
@@ -109,9 +104,9 @@ def test_infinite_loop_with_zero_duration(total_frames, fps):
 
         # Frame should still be valid (may have wrapped around)
         new_frame = engine.get_current_frame()
-        assert 0 <= new_frame < total_frames, (
-            f"Frame {new_frame} should still be within range [0, {total_frames})"
-        )
+        assert (
+            0 <= new_frame < total_frames
+        ), f"Frame {new_frame} should still be within range [0, {total_frames})"
 
         # Verify frames are cycling through the range
         elapsed = engine.get_elapsed_time()
@@ -131,17 +126,15 @@ from hypothesis import assume
 from mudhound.assets.manager import CACHE, AssetManager
 
 
-@given(
-    scheme=st.sampled_from(["rainbow", "dark-rainbow", "light-rainbow", "white"])
-)
+@given(scheme=st.sampled_from(["rainbow", "dark-rainbow", "light-rainbow", "white"]))
 @settings(max_examples=100, deadline=None)
 def test_asset_caching_behavior(scheme):
     """
     Feature: mudhound-full-implementation, Property 9: Asset caching behavior
-    
+
     For any asset loaded from disk, subsequent accesses to the same asset
     should return the cached version without additional disk I/O.
-    
+
     Validates: Requirements 3.2
     """
     # Clear cache before test
@@ -162,9 +155,9 @@ def test_asset_caching_behavior(scheme):
     static_cache_key = "static:banner.txt"
 
     # Either animated or static should be cached
-    assert cache_key in CACHE or static_cache_key in CACHE, (
-        "Asset should be cached after first load"
-    )
+    assert (
+        cache_key in CACHE or static_cache_key in CACHE
+    ), "Asset should be cached after first load"
 
     # Get the cached value
     if cache_key in CACHE:
@@ -176,9 +169,7 @@ def test_asset_caching_behavior(scheme):
     frames2 = manager.get_banner_frames(scheme)
 
     # Should return the exact same object (identity check)
-    assert frames1 is frames2, (
-        "Subsequent access should return the same cached object"
-    )
+    assert frames1 is frames2, "Subsequent access should return the same cached object"
 
     # Verify the cached value hasn't changed
     if cache_key in CACHE:
@@ -189,16 +180,16 @@ def test_asset_caching_behavior(scheme):
 
 @given(
     metadata_lines=st.integers(min_value=0, max_value=10),
-    content_lines=st.integers(min_value=1, max_value=20)
+    content_lines=st.integers(min_value=1, max_value=20),
 )
 @settings(max_examples=100, deadline=None)
 def test_ansi_metadata_stripping(metadata_lines, content_lines):
     """
     Feature: mudhound-full-implementation, Property 10: ANSI metadata stripping
-    
+
     For any ANSI frame file with metadata header, parsing should strip all
     lines before the "---" separator.
-    
+
     Validates: Requirements 3.3
     """
     manager = AssetManager()
@@ -208,40 +199,34 @@ def test_ansi_metadata_stripping(metadata_lines, content_lines):
     content = [f"content line {i}" for i in range(content_lines)]
 
     # Combine with separator
-    full_content = '\n'.join(metadata + ['---'] + content)
+    full_content = "\n".join(metadata + ["---"] + content)
 
     # Strip metadata
     stripped = manager._strip_metadata(full_content)
 
     # Verify metadata is removed
     for meta_line in metadata:
-        assert meta_line not in stripped, (
-            f"Metadata line '{meta_line}' should be stripped"
-        )
+        assert meta_line not in stripped, f"Metadata line '{meta_line}' should be stripped"
 
     # Verify separator is removed
-    assert '---' not in stripped or stripped.strip() == '---', (
-        "Separator should be stripped (or be the only content)"
-    )
+    assert (
+        "---" not in stripped or stripped.strip() == "---"
+    ), "Separator should be stripped (or be the only content)"
 
     # Verify content is preserved
     for content_line in content:
-        assert content_line in stripped, (
-            f"Content line '{content_line}' should be preserved"
-        )
+        assert content_line in stripped, f"Content line '{content_line}' should be preserved"
 
 
-@given(
-    scheme=st.sampled_from(["nonexistent-scheme", "invalid", "missing"])
-)
+@given(scheme=st.sampled_from(["nonexistent-scheme", "invalid", "missing"]))
 @settings(max_examples=100, deadline=None)
 def test_fallback_asset_provision(scheme):
     """
     Feature: mudhound-full-implementation, Property 11: Fallback asset provision
-    
+
     For any requested asset that does not exist, the asset manager should
     provide a static fallback asset instead of failing.
-    
+
     Validates: Requirements 3.4
     """
     # Clear cache before test
@@ -262,20 +247,14 @@ def test_fallback_asset_provision(scheme):
     assert len(logo_frames) > 0, "Should return at least one logo frame"
 
     # Frames should be strings
-    assert all(isinstance(frame, str) for frame in banner_frames), (
-        "All banner frames should be strings"
-    )
-    assert all(isinstance(frame, str) for frame in logo_frames), (
-        "All logo frames should be strings"
-    )
+    assert all(
+        isinstance(frame, str) for frame in banner_frames
+    ), "All banner frames should be strings"
+    assert all(isinstance(frame, str) for frame in logo_frames), "All logo frames should be strings"
 
     # Frames should not be empty strings
-    assert all(len(frame) > 0 for frame in banner_frames), (
-        "Banner frames should not be empty"
-    )
-    assert all(len(frame) > 0 for frame in logo_frames), (
-        "Logo frames should not be empty"
-    )
+    assert all(len(frame) > 0 for frame in banner_frames), "Banner frames should not be empty"
+    assert all(len(frame) > 0 for frame in logo_frames), "Logo frames should not be empty"
 
 
 from io import StringIO
@@ -285,32 +264,26 @@ from mudhound.ui.animation.engine import AnimationRenderer
 
 @given(
     total_frames=st.integers(min_value=2, max_value=10),  # Reduced range
-    fps=st.integers(min_value=10, max_value=30)  # Higher minimum FPS
+    fps=st.integers(min_value=10, max_value=30),  # Higher minimum FPS
 )
 @settings(max_examples=30, deadline=3000)  # Reduced examples and added deadline
 def test_animation_pause_and_resume_on_resize(total_frames, fps):
     """
     Feature: mudhound-full-implementation, Property 7: Animation pause and resume on resize
-    
+
     For any terminal resize event during animation, the animation should pause,
     allow re-render, and resume playback without frame loss.
-    
+
     Validates: Requirements 2.5
     """
     # Create timing engine with specified parameters
     timing_engine = TimingEngine(
-        fps=fps,
-        total_frames=total_frames,
-        duration=0.0,  # Infinite loop
-        loop=True
+        fps=fps, total_frames=total_frames, duration=0.0, loop=True  # Infinite loop
     )
 
     # Create animation renderer with test output
     output = StringIO()
-    renderer = AnimationRenderer(
-        timing_engine=timing_engine,
-        output=output
-    )
+    renderer = AnimationRenderer(timing_engine=timing_engine, output=output)
 
     # Load test frames
     test_frames = [f"Frame {i}\nLine 2" for i in range(total_frames)]
@@ -351,8 +324,7 @@ def test_animation_pause_and_resume_on_resize(total_frames, fps):
 
         # Allow small tolerance for timing precision
         assert time_diff < 0.05, (
-            f"Elapsed time should not advance while paused "
-            f"(diff: {time_diff:.3f}s)"
+            f"Elapsed time should not advance while paused " f"(diff: {time_diff:.3f}s)"
         )
 
         # Resume animation (simulating resize complete)
@@ -371,15 +343,15 @@ def test_animation_pause_and_resume_on_resize(total_frames, fps):
 
         # The elapsed time after resume should be greater than before pause
         # (accounting for the time after resume, not the paused time)
-        assert elapsed_after_resume > elapsed_before_pause, (
-            "Animation should continue advancing after resume"
-        )
+        assert (
+            elapsed_after_resume > elapsed_before_pause
+        ), "Animation should continue advancing after resume"
 
         # Verify frames are still cycling correctly
         current_frame = timing_engine.get_current_frame()
-        assert 0 <= current_frame < total_frames, (
-            f"Current frame {current_frame} should be within range [0, {total_frames})"
-        )
+        assert (
+            0 <= current_frame < total_frames
+        ), f"Current frame {current_frame} should be within range [0, {total_frames})"
     finally:
         # Always stop the animation to prevent resource leaks
         renderer.stop()

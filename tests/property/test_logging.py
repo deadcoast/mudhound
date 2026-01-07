@@ -18,15 +18,17 @@ from mudhound.logging.levels import SUCCESS, TRACE, get_level_style
 from mudhound.ui.components.status import StatusComponent
 
 # Strategy for log levels
-log_levels = st.sampled_from([
-    TRACE,
-    logging.DEBUG,
-    logging.INFO,
-    SUCCESS,
-    logging.WARNING,
-    logging.ERROR,
-    logging.CRITICAL,
-])
+log_levels = st.sampled_from(
+    [
+        TRACE,
+        logging.DEBUG,
+        logging.INFO,
+        SUCCESS,
+        logging.WARNING,
+        logging.ERROR,
+        logging.CRITICAL,
+    ]
+)
 
 
 @given(
@@ -36,10 +38,10 @@ log_levels = st.sampled_from([
 def test_log_message_formatting(message, level):
     """
     Feature: mudhound-full-implementation, Property 44: Log message formatting
-    
+
     For any log message emitted, it should be displayed with a timestamp and
     the level-appropriate glyph ([+], [*], [~], [!], etc.).
-    
+
     Validates: Requirements 15.1
     """
     # Create a log record
@@ -83,7 +85,7 @@ def test_log_message_formatting(message, level):
 def test_status_component_formatting(message, level):
     """
     Test that StatusComponent formats messages with timestamp and glyph.
-    
+
     For any message and level, the StatusComponent should format it with
     a timestamp and level-appropriate glyph.
     """
@@ -109,7 +111,7 @@ def test_status_component_formatting(message, level):
 def test_status_component_without_timestamp(message):
     """
     Test that StatusComponent can format messages without timestamps.
-    
+
     For any message, when show_timestamp is False, the formatted message
     should not contain a timestamp.
     """
@@ -121,8 +123,9 @@ def test_status_component_without_timestamp(message):
     # Should not start with a timestamp pattern
     # Timestamps typically start with year (4 digits)
     first_word = formatted.split()[0]
-    assert not (len(first_word) >= 4 and first_word[:4].isdigit()), \
+    assert not (len(first_word) >= 4 and first_word[:4].isdigit()), (
         "Should not contain timestamp when show_timestamp=False"
+    )
 
     # Should still contain glyph and message
     assert "[*]" in formatted, "Should contain info glyph"
@@ -136,10 +139,10 @@ def test_status_component_without_timestamp(message):
 def test_log_level_color_coding(message, level):
     """
     Feature: mudhound-full-implementation, Property 45: Log level color coding
-    
+
     For any log level, the status component should apply the correct color
     (success=green, error=red, warning=yellow, info=blue).
-    
+
     Validates: Requirements 15.2
     """
     # Create status component with color enabled
@@ -164,8 +167,9 @@ def test_log_level_color_coding(message, level):
     }
 
     # Verify the color name matches expected
-    assert expected_color_name == level_color_map[level], \
+    assert expected_color_name == level_color_map[level], (
         f"Level {level} should use color {level_color_map[level]}"
+    )
 
     # When color is enabled, formatted message should contain ANSI escape codes
     assert "\033[" in formatted, "Should contain ANSI escape codes when use_color=True"
@@ -181,7 +185,7 @@ def test_log_level_color_coding(message, level):
 def test_formatter_color_coding(message, level):
     """
     Test that StyledLogFormatter applies correct colors based on log level.
-    
+
     For any log level, the formatter should apply the appropriate color
     when use_color is enabled.
     """
@@ -222,20 +226,20 @@ def test_formatter_color_coding(message, level):
             max_size=100,
             alphabet=st.characters(
                 blacklist_categories=("Cc", "Cs")  # Exclude control and surrogate characters
-            )
+            ),
         ),
         min_size=1,
-        max_size=10
+        max_size=10,
     ),
     level=log_levels,
 )
 def test_file_logging_persistence(messages, level):
     """
     Feature: mudhound-full-implementation, Property 46: File logging persistence
-    
+
     For any log entry when file logging is enabled, the entry should be written
     to the configured log file path.
-    
+
     Validates: Requirements 15.4
     """
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -298,7 +302,7 @@ def test_file_logging_persistence(messages, level):
 def test_file_logging_rotation(message):
     """
     Test that log file rotation works when max size is exceeded.
-    
+
     For any log entries that exceed the max file size, the logging system
     should rotate the file and create backups.
     """
@@ -339,5 +343,3 @@ def test_file_logging_rotation(message):
         if log_file.stat().st_size > 0:
             # File exists and has content
             assert True
-
-

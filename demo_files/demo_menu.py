@@ -8,19 +8,9 @@ def main():
     print("=== Menu Component Demo ===\n")
 
     # Create a simple menu
-    options = [
-        "Search for URLs",
-        "View history",
-        "Export results",
-        "Configure settings",
-        "Quit"
-    ]
+    options = ["Search for URLs", "View history", "Export results", "Configure settings", "Quit"]
 
-    menu = Menu(
-        options=options,
-        title="Main Menu",
-        use_color=True
-    )
+    menu = Menu(options=options, title="Main Menu", use_color=True)
 
     print("Menu will be displayed. Use:")
     print("  - Numbers (1-5) for direct selection")
@@ -40,6 +30,7 @@ def main():
 
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")
+
 
 if __name__ == "__main__":
     main()

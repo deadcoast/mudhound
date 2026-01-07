@@ -246,11 +246,7 @@ def test_history_delete_without_yes():
             mock_store_class.return_value = store
 
             # Answer 'n' to confirmation
-            result = runner.invoke(
-                app,
-                ["history", "delete", "test-session-123"],
-                input="n\n"
-            )
+            result = runner.invoke(app, ["history", "delete", "test-session-123"], input="n\n")
 
             assert result.exit_code == 0
             assert "Delete cancelled" in result.stdout
@@ -318,11 +314,7 @@ def test_history_clear_without_yes():
             mock_store_class.return_value = store
 
             # Answer 'n' to confirmation
-            result = runner.invoke(
-                app,
-                ["history", "clear"],
-                input="n\n"
-            )
+            result = runner.invoke(app, ["history", "clear"], input="n\n")
 
             assert result.exit_code == 0
             assert "Clear cancelled" in result.stdout

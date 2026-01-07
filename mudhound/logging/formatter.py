@@ -15,13 +15,13 @@ from mudhound.ui.theme import get_theme_engine
 
 class StyledLogFormatter(logging.Formatter):
     """Custom log formatter with level-based styling.
-    
+
     Formats log messages with:
     - Timestamp
     - Level-appropriate glyph
     - Colored level name
     - Message
-    
+
     Attributes:
         use_color: Whether to apply color codes
         datefmt: Date format string for timestamps
@@ -33,7 +33,7 @@ class StyledLogFormatter(logging.Formatter):
         datefmt: Optional[str] = None,
     ):
         """Initialize the formatter.
-        
+
         Args:
             use_color: Whether to apply ANSI color codes
             datefmt: Date format string (defaults to "%Y-%m-%d %H:%M:%S")
@@ -46,10 +46,10 @@ class StyledLogFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record.
-        
+
         Args:
             record: Log record to format
-            
+
         Returns:
             Formatted log message string
         """
@@ -94,11 +94,11 @@ class StyledLogFormatter(logging.Formatter):
 
     def formatTime(self, record: logging.LogRecord, datefmt: Optional[str] = None) -> str:
         """Format the timestamp for a log record.
-        
+
         Args:
             record: Log record
             datefmt: Date format string
-            
+
         Returns:
             Formatted timestamp string
         """

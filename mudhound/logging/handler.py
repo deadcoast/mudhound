@@ -16,17 +16,17 @@ from mudhound.logging.formatter import StyledLogFormatter
 
 class StyledLogHandler(logging.StreamHandler):
     """Custom log handler with styled output.
-    
+
     Outputs log messages to stderr with level-based styling including
     glyphs and colors.
-    
+
     Attributes:
         formatter: StyledLogFormatter instance
     """
 
     def __init__(self, use_color: bool = True):
         """Initialize the handler.
-        
+
         Args:
             use_color: Whether to apply ANSI color codes
         """
@@ -41,13 +41,13 @@ def setup_file_logging(
     backup_count: int = 5,
 ) -> RotatingFileHandler:
     """Set up file logging with rotation support.
-    
+
     Args:
         log_file: Path to log file
         level: Logging level for file handler
         max_bytes: Maximum size of log file before rotation
         backup_count: Number of backup files to keep
-        
+
     Returns:
         Configured RotatingFileHandler instance
     """
@@ -80,7 +80,7 @@ def configure_logging(
     backup_count: int = 5,
 ) -> logging.Logger:
     """Configure the MudHound logger.
-    
+
     Args:
         level: Console logging level
         use_color: Whether to use colored output
@@ -88,7 +88,7 @@ def configure_logging(
         file_level: Logging level for file (defaults to level)
         max_bytes: Maximum log file size before rotation
         backup_count: Number of backup files to keep
-        
+
     Returns:
         Configured logger instance
     """

@@ -54,7 +54,9 @@ def search_query_strategy(draw):
         query=draw(st.text(min_size=1, max_size=200)),
         engine=draw(st.text(min_size=1, max_size=50)),
         options=draw(search_options_strategy()),
-        created_at=draw(st.datetimes(min_value=datetime(2020, 1, 1), max_value=datetime(2030, 12, 31))),
+        created_at=draw(
+            st.datetimes(min_value=datetime(2020, 1, 1), max_value=datetime(2030, 12, 31))
+        ),
         status=draw(st.sampled_from(SearchStatus)),
     )
 
@@ -64,7 +66,9 @@ def search_session_strategy(draw):
     """Generate random SearchSession instances."""
     query = draw(search_query_strategy())
     results = draw(st.lists(search_result_strategy(), min_size=0, max_size=50))
-    started_at = draw(st.datetimes(min_value=datetime(2020, 1, 1), max_value=datetime(2030, 12, 31)))
+    started_at = draw(
+        st.datetimes(min_value=datetime(2020, 1, 1), max_value=datetime(2030, 12, 31))
+    )
 
     # completed_at should be after started_at if present
     has_completed = draw(st.booleans())
@@ -92,7 +96,7 @@ def test_search_session_persistence(session):
     """
     Feature: mudhound-full-implementation, Property 25: Search session persistence
     Validates: Requirements 8.1
-    
+
     For any completed search, the result store should persist the SearchSession
     to the history database.
     """
@@ -156,7 +160,7 @@ def test_history_retrieval_by_id(session):
     """
     Feature: mudhound-full-implementation, Property 27: History retrieval by ID
     Validates: Requirements 8.4
-    
+
     For any valid search ID, executing show should retrieve and display
     the full results for that search.
     """
@@ -194,7 +198,7 @@ def test_history_replay_parameter_preservation(session):
     """
     Feature: mudhound-full-implementation, Property 28: History replay parameter preservation
     Validates: Requirements 8.5
-    
+
     For any search ID, replaying the search should use the exact same parameters
     (query, engine, options) as the original search.
     """
@@ -225,7 +229,11 @@ def test_history_replay_parameter_preservation(session):
         assert replay_params["options"]["time_limit"] == session.query.options.time_limit
 
 
-@given(sessions=st.lists(search_session_strategy(), min_size=1, max_size=10, unique_by=lambda s: s.query.id))
+@given(
+    sessions=st.lists(
+        search_session_strategy(), min_size=1, max_size=10, unique_by=lambda s: s.query.id
+    )
+)
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=50)
 def test_list_returns_recent_searches(sessions):
     """
@@ -278,7 +286,11 @@ def test_delete_removes_session(session):
         assert store.show(session.query.id) is None
 
 
-@given(sessions=st.lists(search_session_strategy(), min_size=1, max_size=5, unique_by=lambda s: s.query.id))
+@given(
+    sessions=st.lists(
+        search_session_strategy(), min_size=1, max_size=5, unique_by=lambda s: s.query.id
+    )
+)
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=50)
 def test_clear_removes_all_sessions(sessions):
     """

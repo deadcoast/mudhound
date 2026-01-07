@@ -41,5 +41,6 @@ def demo_logo_positions():
     print("Demo Complete!")
     print("=" * 60)
 
+
 if __name__ == "__main__":
     demo_logo_positions()

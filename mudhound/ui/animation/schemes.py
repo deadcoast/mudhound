@@ -13,11 +13,12 @@ class ColorScheme(Enum):
     Defines available color schemes for animated elements.
     Each scheme maps to a set of ANSI 256-color palette values.
     """
-    RAINBOW = "rainbow"           # Full spectrum cycling
-    DARK_RAINBOW = "dark-rainbow" # Muted/darker rainbow
-    LIGHT_RAINBOW = "light-rainbow" # Bright/pastel rainbow
-    WHITE = "white"               # Monochrome white
-    THEME = "theme"               # Use current theme colors
+
+    RAINBOW = "rainbow"  # Full spectrum cycling
+    DARK_RAINBOW = "dark-rainbow"  # Muted/darker rainbow
+    LIGHT_RAINBOW = "light-rainbow"  # Bright/pastel rainbow
+    WHITE = "white"  # Monochrome white
+    THEME = "theme"  # Use current theme colors
 
 
 # ANSI 256-color palette definitions
@@ -36,32 +37,28 @@ WHITE_COLORS = [255]
 """Monochrome white for non-colored animations"""
 
 
-def generate_rainbow_frame(
-    base_art: str,
-    color_offset: int,
-    scheme: ColorScheme
-) -> str:
+def generate_rainbow_frame(base_art: str, color_offset: int, scheme: ColorScheme) -> str:
     """
     Generate a single rainbow frame by applying color offset to base ASCII art.
-    
+
     This function takes plain ASCII art and applies ANSI color codes to create
     a rainbow effect. The color_offset parameter allows cycling through colors
     to create animation frames.
-    
+
     Algorithm:
     1. Parse base ASCII art into lines
     2. For each character, calculate color index: (char_index + offset) % len(colors)
     3. Wrap character with ANSI color escape sequence
     4. Join characters into complete frame
-    
+
     Args:
         base_art: Plain ASCII art string (no ANSI codes)
         color_offset: Offset for color cycling (0 to len(colors)-1)
         scheme: ColorScheme enum value specifying which palette to use
-        
+
     Returns:
         ASCII art string with ANSI color codes applied
-        
+
     Example:
         >>> art = "HELLO"
         >>> frame = generate_rainbow_frame(art, 0, ColorScheme.RAINBOW)
@@ -83,12 +80,12 @@ def generate_rainbow_frame(
     result_lines = []
     char_index = 0
 
-    for line in base_art.split('\n'):
+    for line in base_art.split("\n"):
         colored_line = []
 
         for char in line:
             # Skip coloring whitespace to avoid visual artifacts
-            if char in (' ', '\t'):
+            if char in (" ", "\t"):
                 colored_line.append(char)
             else:
                 # Calculate color index with offset for animation
@@ -103,8 +100,8 @@ def generate_rainbow_frame(
 
         # Reset color at end of each line
         if colored_line:
-            result_lines.append(''.join(colored_line) + "\033[0m")
+            result_lines.append("".join(colored_line) + "\033[0m")
         else:
-            result_lines.append('')
+            result_lines.append("")
 
-    return '\n'.join(result_lines)
+    return "\n".join(result_lines)
