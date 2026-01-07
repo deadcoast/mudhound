@@ -4,28 +4,37 @@ Terminal-based batch URL extraction tool with animated UI and multiple search en
 
 ## Features
 
-- 🔍 Batch keyword searches across multiple search engines
-- 🎨 Animated terminal UI with rainbow color cycling
-- 🎯 Modular adapter architecture for search engines
-- 📊 Export results in multiple formats (JSON, CSV, TXT, URLs)
-- 📜 Search history and replay functionality
-- ⚙️ Extensive configuration options
-- 🎭 Multiple themes and color schemes
+- Batch keyword searches across multiple search engines
+- Animated terminal UI with rainbow color cycling
+- Modular adapter architecture for search engines
+- Export results in multiple formats (JSON, CSV, TXT, URLs)
+- Search history and replay functionality
+- Extensive configuration options
+- Multiple themes and color schemes
 
 ## Installation
 
 ### From Source
 
 ```bash
-# Clone the repository
-git clone https://github.com/mudhound/mudhound.git
+# [1] Clone the repository
+git clone https://github.com/deadcoast/mudhound.git
 cd mudhound
 
-# Install in development mode
-pip install -e .
+# [2] Create virtual environment
+uv venv
 
+# [3] Activate virtual environment
+source .venv/bin/activate
+
+# [4] Install (optionally with dev dependencies:`uv sync --extra dev`)
+uv sync
+
+# [5] For pip
+# pip install from source
+# > pip install -e .
 # Or install with development dependencies
-pip install -e ".[dev]"
+# > pip install -e ".[dev]"
 ```
 
 ### Using pip (when published)
@@ -79,6 +88,7 @@ Options:
 ### Configuration
 
 MudHound looks for configuration files in the following order:
+
 1. Path specified with `--config` flag
 2. `MUDHOUND_CONFIG` environment variable
 3. `./mudhound.toml` (current directory)
@@ -89,6 +99,7 @@ MudHound looks for configuration files in the following order:
 ### Themes
 
 Available themes:
+
 - `default` - MudHound default theme
 - `minimal` - Minimal color scheme
 - `hacker` - Matrix-inspired green theme
