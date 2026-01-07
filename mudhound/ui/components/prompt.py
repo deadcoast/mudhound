@@ -295,7 +295,8 @@ class Prompt:
         self.prompt_type = PromptType.PATH
 
         # Add path validator
-        self.validators.append(PathValidator(must_exist, must_be_file, must_be_dir))
+        self.validators.append(PathValidator(
+            must_exist, must_be_file, must_be_dir))
 
         return self.prompt()
 

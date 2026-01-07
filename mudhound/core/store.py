@@ -56,8 +56,7 @@ class ResultStore:
         """Initialize the database schema if it doesn't exist."""
         conn = sqlite3.connect(self.db_path)
         try:
-            conn.execute(
-                """
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS search_sessions (
                     id TEXT PRIMARY KEY,
                     query TEXT NOT NULL,
@@ -71,11 +70,9 @@ class ResultStore:
                     duration REAL,
                     created_at TEXT NOT NULL
                 )
-            """
-            )
+            """)
 
-            conn.execute(
-                """
+            conn.execute("""
                 CREATE TABLE IF NOT EXISTS search_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     session_id TEXT NOT NULL,
@@ -88,16 +85,13 @@ class ResultStore:
                     FOREIGN KEY (session_id) REFERENCES search_sessions(id)
                         ON DELETE CASCADE
                 )
-            """
-            )
+            """)
 
             # Create index for faster lookups
-            conn.execute(
-                """
+            conn.execute("""
                 CREATE INDEX IF NOT EXISTS idx_session_created_at
                 ON search_sessions(created_at DESC)
-            """
-            )
+            """)
 
             conn.commit()
         finally:
@@ -305,7 +299,8 @@ class ResultStore:
                 results=results,
                 started_at=datetime.fromisoformat(row["started_at"]),
                 completed_at=(
-                    datetime.fromisoformat(row["completed_at"]) if row["completed_at"] else None
+                    datetime.fromisoformat(
+                        row["completed_at"]) if row["completed_at"] else None
                 ),
                 error=row["error"],
             )

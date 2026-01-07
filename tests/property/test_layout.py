@@ -31,7 +31,8 @@ def test_content_width_calculation(terminal_width, terminal_height):
 
     # Override get_terminal_size to return our test values
     original_get_size = layout_manager.get_terminal_size
-    layout_manager.get_terminal_size = lambda: (terminal_width, terminal_height)
+    layout_manager.get_terminal_size = lambda: (
+        terminal_width, terminal_height)
 
     try:
         content_width = layout_manager.get_content_width()
@@ -115,7 +116,8 @@ def test_content_height_calculation(terminal_width, terminal_height):
     (for top and bottom borders).
     """
     layout_manager = LayoutManager()
-    layout_manager.get_terminal_size = lambda: (terminal_width, terminal_height)
+    layout_manager.get_terminal_size = lambda: (
+        terminal_width, terminal_height)
 
     content_height = layout_manager.get_content_height()
 

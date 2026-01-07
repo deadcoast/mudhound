@@ -31,7 +31,8 @@ def search_result_strategy(draw):
         snippet=draw(st.text(min_size=1, max_size=500)),
         source=draw(st.text(min_size=1, max_size=50)),
         rank=draw(st.integers(min_value=1, max_value=1000)),
-        metadata=draw(st.dictionaries(st.text(min_size=1, max_size=20), st.text(max_size=100))),
+        metadata=draw(st.dictionaries(
+            st.text(min_size=1, max_size=20), st.text(max_size=100))),
     )
 
 
@@ -42,7 +43,8 @@ def search_options_strategy(draw):
         max_results=draw(st.integers(min_value=1, max_value=500)),
         region=draw(st.text(min_size=2, max_size=10)),
         safesearch=draw(st.sampled_from(["off", "moderate", "strict"])),
-        time_limit=draw(st.one_of(st.none(), st.sampled_from(["d", "w", "m", "y"]))),
+        time_limit=draw(
+            st.one_of(st.none(), st.sampled_from(["d", "w", "m", "y"]))),
     )
 
 
@@ -55,7 +57,8 @@ def search_query_strategy(draw):
         engine=draw(st.text(min_size=1, max_size=50)),
         options=draw(search_options_strategy()),
         created_at=draw(
-            st.datetimes(min_value=datetime(2020, 1, 1), max_value=datetime(2030, 12, 31))
+            st.datetimes(min_value=datetime(2020, 1, 1),
+                         max_value=datetime(2030, 12, 31))
         ),
         status=draw(st.sampled_from(SearchStatus)),
     )
@@ -67,7 +70,8 @@ def search_session_strategy(draw):
     query = draw(search_query_strategy())
     results = draw(st.lists(search_result_strategy(), min_size=0, max_size=50))
     started_at = draw(
-        st.datetimes(min_value=datetime(2020, 1, 1), max_value=datetime(2030, 12, 31))
+        st.datetimes(min_value=datetime(2020, 1, 1),
+                     max_value=datetime(2030, 12, 31))
     )
 
     # completed_at should be after started_at if present
@@ -126,12 +130,15 @@ def test_search_session_persistence(session):
         assert retrieved.query.options.time_limit == session.query.options.time_limit
 
         # Verify timestamps match (within 1 second due to serialization)
-        assert abs((retrieved.query.created_at - session.query.created_at).total_seconds()) < 1
-        assert abs((retrieved.started_at - session.started_at).total_seconds()) < 1
+        assert abs((retrieved.query.created_at -
+                   session.query.created_at).total_seconds()) < 1
+        assert abs((retrieved.started_at -
+                   session.started_at).total_seconds()) < 1
 
         if session.completed_at is not None:
             assert retrieved.completed_at is not None
-            assert abs((retrieved.completed_at - session.completed_at).total_seconds()) < 1
+            assert abs((retrieved.completed_at -
+                       session.completed_at).total_seconds()) < 1
         else:
             assert retrieved.completed_at is None
 

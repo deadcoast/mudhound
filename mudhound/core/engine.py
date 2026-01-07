@@ -118,7 +118,8 @@ class SearchEngine:
         # Validate options
         validation_errors = self.adapter.validate_options(options)
         if validation_errors:
-            raise ValidationError(f"Invalid search options: {', '.join(validation_errors)}")
+            raise ValidationError(
+                f"Invalid search options: {', '.join(validation_errors)}")
 
         # Create search query
         query_id = str(uuid.uuid4())

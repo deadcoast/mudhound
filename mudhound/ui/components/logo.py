@@ -66,16 +66,19 @@ class Logo:
 
         # Load position and scheme from config if not provided
         if position is None:
-            position = self.config_manager.get("ui.logo_position", LogoPosition.INLINE)
+            position = self.config_manager.get(
+                "ui.logo_position", LogoPosition.INLINE)
         if scheme is None:
-            scheme = self.config_manager.get("animation.color_scheme", "rainbow")
+            scheme = self.config_manager.get(
+                "animation.color_scheme", "rainbow")
 
         self.position = position
         self.scheme = scheme
 
         # Initialize animation renderer if needed
         if animation_renderer is None:
-            timing_engine = TimingEngine(fps=self.config_manager.get("animation.fps", 10))
+            timing_engine = TimingEngine(
+                fps=self.config_manager.get("animation.fps", 10))
             self.animation_renderer = AnimationRenderer(
                 timing_engine=timing_engine, asset_manager=self.asset_manager, output=self.output
             )

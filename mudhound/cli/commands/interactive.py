@@ -142,7 +142,8 @@ class InteractiveMode:
         self.output = output or sys.stdout
 
         # Initialize UI components
-        self.status = StatusComponent(use_color=use_color, show_timestamp=False)
+        self.status = StatusComponent(
+            use_color=use_color, show_timestamp=False)
         self.logo = Logo(
             position=LogoPosition.INLINE, config_manager=self.config_manager, output=self.output
         )
@@ -215,7 +216,8 @@ class InteractiveMode:
 
             # Get search options (use defaults for now)
             max_results = self.config_manager.get("search.max_results", 50)
-            engine_name = self.config_manager.get("search.default_engine", "duckduckgo")
+            engine_name = self.config_manager.get(
+                "search.default_engine", "duckduckgo")
 
             # Create search engine
             try:
@@ -246,7 +248,8 @@ class InteractiveMode:
                     self.output.write(f"    {result.snippet[:100]}...\n\n")
 
                 if len(session.results) > 10:
-                    self.output.write(f"... and {len(session.results) - 10} more results\n")
+                    self.output.write(
+                        f"... and {len(session.results) - 10} more results\n")
 
                 # Persist to history
                 self.result_store.persist(session)
@@ -273,7 +276,8 @@ class InteractiveMode:
                 self.status.warning("No search history found.")
                 return
 
-            self.output.write(f"Recent searches (showing last {len(sessions)}):\n\n")
+            self.output.write(
+                f"Recent searches (showing last {len(sessions)}):\n\n")
 
             for i, session in enumerate(sessions, 1):
                 self.output.write(f"{i}. {session['query']}\n")
@@ -292,12 +296,15 @@ class InteractiveMode:
 
         # Check if we have results to export
         if not self.session.last_search_results:
-            self.status.warning("No search results to export. Please perform a search first.")
+            self.status.warning(
+                "No search results to export. Please perform a search first.")
             return
 
         self.output.write(f"Last search: {self.session.last_search_query}\n")
-        self.output.write(f"Results: {len(self.session.last_search_results)}\n\n")
-        self.status.info("Export functionality will be available in the full implementation.")
+        self.output.write(
+            f"Results: {len(self.session.last_search_results)}\n\n")
+        self.status.info(
+            "Export functionality will be available in the full implementation.")
 
     def _handle_config(self) -> None:
         """Handle config operation."""
@@ -307,7 +314,8 @@ class InteractiveMode:
 
         try:
             # Show some key config values
-            engine = self.config_manager.get("search.default_engine", "duckduckgo")
+            engine = self.config_manager.get(
+                "search.default_engine", "duckduckgo")
             max_results = self.config_manager.get("search.max_results", 50)
             theme = self.config_manager.get("ui.theme", "default")
 
@@ -431,7 +439,8 @@ def interactive_command(use_color: bool = True, use_animation: bool = True) -> N
         use_color: Whether to use colored output
         use_animation: Whether to use animations
     """
-    interactive = InteractiveMode(use_color=use_color, use_animation=use_animation)
+    interactive = InteractiveMode(
+        use_color=use_color, use_animation=use_animation)
     interactive.run()
 
 

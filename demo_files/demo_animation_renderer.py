@@ -16,7 +16,8 @@ def main():
     ]
 
     # Create timing engine (10 FPS, infinite loop)
-    timing_engine = TimingEngine(fps=10, total_frames=len(test_frames), duration=0.0, loop=True)
+    timing_engine = TimingEngine(fps=10, total_frames=len(
+        test_frames), duration=0.0, loop=True)
 
     # Create animation renderer
     renderer = AnimationRenderer(timing_engine=timing_engine)

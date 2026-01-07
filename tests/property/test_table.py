@@ -25,7 +25,8 @@ def search_result_strategy(draw):
         )
     )
     title = draw(
-        st.text(min_size=5, max_size=100, alphabet=st.characters(blacklist_categories=("Cs", "Cc")))
+        st.text(min_size=5, max_size=100, alphabet=st.characters(
+            blacklist_categories=("Cs", "Cc")))
     )
     snippet = draw(
         st.text(
@@ -106,7 +107,8 @@ def test_table_column_rendering(results):
     assert len(actual_data_lines) > 0, "Table should have at least one data row"
 
     # For each result, verify its data appears in the table
-    for result in results[: min(len(results), table.page_size)]:  # Only check first page
+    # Only check first page
+    for result in results[: min(len(results), table.page_size)]:
         # Check that rank appears somewhere in the rendered output
         rank_str = str(result.rank)
         found_rank = any(rank_str in line for line in actual_data_lines)
@@ -151,7 +153,8 @@ def test_table_column_auto_sizing(results, terminal_width):
     widths = table._calculate_column_widths()
 
     # Verify we have widths for all columns
-    assert len(widths) == len(table.columns), "Should have width for each column"
+    assert len(widths) == len(
+        table.columns), "Should have width for each column"
 
     # Verify all widths are positive
     for width in widths:
@@ -233,7 +236,8 @@ def test_url_truncation_with_ellipsis(url, column_width):
 
     # Verify ellipsis is present when text is truncated
     if len(url) > column_width:
-        assert truncated.endswith("..."), "Truncated text should end with ellipsis"
+        assert truncated.endswith(
+            "..."), "Truncated text should end with ellipsis"
 
         # Verify the truncated text contains the beginning of the original
         # (minus the ellipsis)

@@ -316,7 +316,8 @@ class Progress:
                 check = theme_engine.apply(check, "success")
 
             elapsed_str = self.format_elapsed_time()
-            self.output.write(f"{check} {message} ({self.current} results in {elapsed_str})\n")
+            self.output.write(
+                f"{check} {message} ({self.current} results in {elapsed_str})\n")
         else:
             self.output.write(f"Complete: {self.current} results\n")
 

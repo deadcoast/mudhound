@@ -52,7 +52,7 @@ class AssetManager:
 
         # If separator found, return content after it
         if separator_index >= 0:
-            return "\n".join(lines[separator_index + 1 :])
+            return "\n".join(lines[separator_index + 1:])
 
         # No separator found, return original content
         return content
@@ -130,7 +130,8 @@ class AssetManager:
                 CACHE[cache_key] = [content]
                 return content
         except Exception as e:
-            raise AnimationError(f"Failed to load static asset {asset_name}: {e}")
+            raise AnimationError(
+                f"Failed to load static asset {asset_name}: {e}")
 
     def get_banner_frames(self, scheme: str = "rainbow") -> List[str]:
         """Get banner frames for the specified color scheme.

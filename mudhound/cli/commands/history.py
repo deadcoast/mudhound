@@ -40,7 +40,8 @@ def get_result_store(ctx: typer.Context) -> ResultStore:
 @app.command()
 def list(
     ctx: typer.Context,
-    limit: int = typer.Option(20, "--limit", "-n", help="Maximum number of sessions to display"),
+    limit: int = typer.Option(
+        20, "--limit", "-n", help="Maximum number of sessions to display"),
 ):
     """
     List recent search sessions.
@@ -54,7 +55,8 @@ def list(
     is_valid, error = validate_limit(limit)
     if not is_valid:
         console_err.print(f"[red]Validation Error:[/red] {error}")
-        console_err.print("[yellow]Tip:[/yellow] Limit must be between 1 and 10000")
+        console_err.print(
+            "[yellow]Tip:[/yellow] Limit must be between 1 and 10000")
         raise typer.Exit(1)
 
     try:
@@ -66,7 +68,8 @@ def list(
             return
 
         # Create a table for display
-        table = Table(title="Search History", show_header=True, header_style="bold magenta")
+        table = Table(title="Search History", show_header=True,
+                      header_style="bold magenta")
         table.add_column("ID", style="cyan", no_wrap=True)
         table.add_column("Query", style="green")
         table.add_column("Engine", style="blue")
@@ -84,7 +87,8 @@ def list(
             # Format timestamp (just the date and time, not microseconds)
             timestamp = session["started_at"]
             if "T" in timestamp:
-                timestamp = timestamp.split("T")[0] + " " + timestamp.split("T")[1].split(".")[0]
+                timestamp = timestamp.split(
+                    "T")[0] + " " + timestamp.split("T")[1].split(".")[0]
 
             # Truncate query if too long
             query = session["query"]
@@ -116,8 +120,10 @@ def list(
             )
 
         console.print(table)
-        console.print(f"\n[dim]Showing {len(sessions)} of {len(sessions)} sessions[/dim]")
-        console.print("[dim]Use 'mh history show <id>' to view full results[/dim]")
+        console.print(
+            f"\n[dim]Showing {len(sessions)} of {len(sessions)} sessions[/dim]")
+        console.print(
+            "[dim]Use 'mh history show <id>' to view full results[/dim]")
 
     except StoreError as e:
         console_err.print(f"[red]Error:[/red] {e}")
@@ -127,7 +133,8 @@ def list(
 @app.command()
 def show(
     ctx: typer.Context,
-    session_id: str = typer.Argument(..., help="Session ID to display (can use short ID)"),
+    session_id: str = typer.Argument(...,
+                                     help="Session ID to display (can use short ID)"),
 ):
     """
     Display full results for a specific search session.
@@ -137,7 +144,8 @@ def show(
     # Validate session_id is not empty
     if not session_id or len(session_id.strip()) == 0:
         console_err.print("[red]Error:[/red] Session ID cannot be empty")
-        console_err.print("[yellow]Tip:[/yellow] Use 'mh history list' to see available sessions")
+        console_err.print(
+            "[yellow]Tip:[/yellow] Use 'mh history list' to see available sessions")
         raise typer.Exit(1)
 
     try:
@@ -148,7 +156,8 @@ def show(
         if len(session_id) < 36:  # Short ID provided
             # List all sessions and find matching one
             all_sessions = store.list(limit=1000)
-            matching = [s for s in all_sessions if s["id"].startswith(session_id)]
+            matching = [
+                s for s in all_sessions if s["id"].startswith(session_id)]
 
             if not matching:
                 console_err.print(
@@ -168,11 +177,13 @@ def show(
         session = store.show(session_id)
 
         if session is None:
-            console_err.print(f"[red]Error:[/red] Session not found: {session_id}")
+            console_err.print(
+                f"[red]Error:[/red] Session not found: {session_id}")
             raise typer.Exit(1)
 
         # Display session header
-        console.print(f"\n[bold cyan]Search Session:[/bold cyan] {session.query.id[:8]}")
+        console.print(
+            f"\n[bold cyan]Search Session:[/bold cyan] {session.query.id[:8]}")
         console.print(f"[bold]Query:[/bold] {session.query.query}")
         console.print(f"[bold]Engine:[/bold] {session.query.engine}")
         console.print(f"[bold]Status:[/bold] {session.query.status.value}")
@@ -233,7 +244,8 @@ def show(
 @app.command()
 def replay(
     ctx: typer.Context,
-    session_id: str = typer.Argument(..., help="Session ID to replay (can use short ID)"),
+    session_id: str = typer.Argument(...,
+                                     help="Session ID to replay (can use short ID)"),
 ):
     """
     Re-execute a search with original parameters.
@@ -244,7 +256,8 @@ def replay(
     # Validate session_id is not empty
     if not session_id or len(session_id.strip()) == 0:
         console_err.print("[red]Error:[/red] Session ID cannot be empty")
-        console_err.print("[yellow]Tip:[/yellow] Use 'mh history list' to see available sessions")
+        console_err.print(
+            "[yellow]Tip:[/yellow] Use 'mh history list' to see available sessions")
         raise typer.Exit(1)
 
     try:
@@ -254,7 +267,8 @@ def replay(
         if len(session_id) < 36:  # Short ID provided
             # List all sessions and find matching one
             all_sessions = store.list(limit=1000)
-            matching = [s for s in all_sessions if s["id"].startswith(session_id)]
+            matching = [
+                s for s in all_sessions if s["id"].startswith(session_id)]
 
             if not matching:
                 console_err.print(
@@ -275,7 +289,8 @@ def replay(
         params = store.replay(session_id)
 
         if params is None:
-            console_err.print(f"[red]Error:[/red] Session not found: {session_id}")
+            console_err.print(
+                f"[red]Error:[/red] Session not found: {session_id}")
             raise typer.Exit(1)
 
         console.print(f"[cyan]Replaying search:[/cyan] {params['query']}")
@@ -296,7 +311,8 @@ def replay(
         try:
             engine = SearchEngine(adapter_name=params["engine"])
         except Exception as e:
-            console_err.print(f"[red]Error:[/red] Failed to initialize search engine: {e}")
+            console_err.print(
+                f"[red]Error:[/red] Failed to initialize search engine: {e}")
             raise typer.Exit(1)
 
         # Execute search
@@ -306,7 +322,8 @@ def replay(
             session = engine.search(
                 query=params["query"],
                 options=options,
-                progress_callback=lambda result: console.print(f"  [{result.rank}] {result.title}"),
+                progress_callback=lambda result: console.print(
+                    f"  [{result.rank}] {result.title}"),
             )
 
             # Persist the new session
@@ -332,8 +349,10 @@ def replay(
 @app.command()
 def delete(
     ctx: typer.Context,
-    session_id: str = typer.Argument(..., help="Session ID to delete (can use short ID)"),
-    yes: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation prompt"),
+    session_id: str = typer.Argument(...,
+                                     help="Session ID to delete (can use short ID)"),
+    yes: bool = typer.Option(False, "--yes", "-y",
+                             help="Skip confirmation prompt"),
 ):
     """
     Delete a specific search session.
@@ -344,7 +363,8 @@ def delete(
     # Validate session_id is not empty
     if not session_id or len(session_id.strip()) == 0:
         console_err.print("[red]Error:[/red] Session ID cannot be empty")
-        console_err.print("[yellow]Tip:[/yellow] Use 'mh history list' to see available sessions")
+        console_err.print(
+            "[yellow]Tip:[/yellow] Use 'mh history list' to see available sessions")
         raise typer.Exit(1)
 
     try:
@@ -355,7 +375,8 @@ def delete(
         if len(session_id) < 36:  # Short ID provided
             # List all sessions and find matching one
             all_sessions = store.list(limit=1000)
-            matching = [s for s in all_sessions if s["id"].startswith(session_id)]
+            matching = [
+                s for s in all_sessions if s["id"].startswith(session_id)]
 
             if not matching:
                 console_err.print(
@@ -377,7 +398,8 @@ def delete(
 
         # Confirm destructive action
         if not yes:
-            confirm = typer.confirm(f"Delete session {session_id}?", default=False)
+            confirm = typer.confirm(
+                f"Delete session {session_id}?", default=False)
             if not confirm:
                 console.print("[yellow]Delete cancelled[/yellow]")
                 raise typer.Exit(0)
@@ -388,7 +410,8 @@ def delete(
         if deleted:
             console.print(f"[green]✓[/green] Session deleted: {session_id}")
         else:
-            console_err.print(f"[red]Error:[/red] Session not found: {session_id}")
+            console_err.print(
+                f"[red]Error:[/red] Session not found: {session_id}")
             raise typer.Exit(1)
 
     except StoreError as e:
@@ -399,7 +422,8 @@ def delete(
 @app.command()
 def clear(
     ctx: typer.Context,
-    yes: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation prompt"),
+    yes: bool = typer.Option(False, "--yes", "-y",
+                             help="Skip confirmation prompt"),
 ):
     """
     Delete all search history.
@@ -422,7 +446,8 @@ def clear(
         # Clear all history
         count = store.clear()
 
-        console.print(f"[green]✓[/green] Cleared {count} session(s) from history")
+        console.print(
+            f"[green]✓[/green] Cleared {count} session(s) from history")
 
     except StoreError as e:
         console_err.print(f"[red]Error:[/red] {e}")

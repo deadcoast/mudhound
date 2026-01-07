@@ -105,9 +105,9 @@ class TestInteractiveMode:
         has_logo = "MH" in output_text or "mh" in output_text.lower()
         has_thank_you = "Thank you" in captured.out
 
-        assert (
-            has_logo or has_thank_you
-        ), f"Expected logo or thank you message. Output: {output_text}, Stdout: {captured.out}"
+        assert has_logo or has_thank_you, (
+            f"Expected logo or thank you message. Output: {output_text}, Stdout: {captured.out}"
+        )
 
     @patch("mudhound.cli.commands.interactive.Menu")
     def test_show_main_menu(self, mock_menu_class):

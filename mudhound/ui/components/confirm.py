@@ -184,7 +184,8 @@ class Confirmation:
         timeout_thread = None
         if self.variant == ConfirmationVariant.TIMED and self.timeout:
             self._timed_out = False
-            timeout_thread = threading.Thread(target=self._timeout_handler, daemon=True)
+            timeout_thread = threading.Thread(
+                target=self._timeout_handler, daemon=True)
             timeout_thread.start()
 
         try:

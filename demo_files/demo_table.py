@@ -52,7 +52,8 @@ results = [
 layout_manager = LayoutManager()
 
 # Create table
-table = Table(results=results, layout_manager=layout_manager, use_color=True, page_size=10)
+table = Table(results=results, layout_manager=layout_manager,
+              use_color=True, page_size=10)
 
 # Render the table
 print("Table Component Demo")

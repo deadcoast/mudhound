@@ -133,7 +133,8 @@ class TimingEngine:
         # Handle infinite loop (duration = 0)
         if self.duration == 0.0:
             # Continuous loop based on frame rate
-            frame_index = int(elapsed / self.frame_duration) % self.total_frames
+            frame_index = int(
+                elapsed / self.frame_duration) % self.total_frames
             return frame_index
 
         # Handle finite duration

@@ -133,9 +133,9 @@ def test_banner_responsive_scaling(terminal_width, banner_width):
         visible_line = banner._strip_ansi(line)
 
         # Each line should fit within terminal width
-        assert (
-            len(visible_line) <= terminal_width
-        ), f"Scaled line length {len(visible_line)} exceeds terminal width {terminal_width}"
+        assert len(visible_line) <= terminal_width, (
+            f"Scaled line length {len(visible_line)} exceeds terminal width {terminal_width}"
+        )
 
     # Verify we still have content (not completely empty)
     assert len(scaled_banner.strip()) > 0, "Scaled banner should not be empty"
@@ -154,7 +154,8 @@ def test_banner_scaling_preserves_structure(terminal_width):
     basic structure after scaling.
     """
     # Create a multi-line test banner
-    lines = ["=" * 80, "MUDHOUND - URL Extraction Tool", "=" * 80, "", "Version 1.0.0"]
+    lines = ["=" * 80, "MUDHOUND - URL Extraction Tool",
+             "=" * 80, "", "Version 1.0.0"]
     test_banner = "\n".join(lines)
 
     # Create banner instance
@@ -166,28 +167,29 @@ def test_banner_scaling_preserves_structure(terminal_width):
 
     # Verify line count is preserved
     scaled_lines = scaled_banner.split("\n")
-    assert len(scaled_lines) == len(
-        lines
-    ), f"Line count should be preserved: expected {len(lines)}, got {len(scaled_lines)}"
+    assert len(scaled_lines) == len(lines), (
+        f"Line count should be preserved: expected {len(lines)}, got {len(scaled_lines)}"
+    )
 
     # Verify each line fits within terminal width
     for i, line in enumerate(scaled_lines):
         visible_line = banner._strip_ansi(line)
-        assert (
-            len(visible_line) <= terminal_width
-        ), f"Line {i} length {len(visible_line)} exceeds terminal width {terminal_width}"
+        assert len(visible_line) <= terminal_width, (
+            f"Line {i} length {len(visible_line)} exceeds terminal width {terminal_width}"
+        )
 
     # Verify empty lines remain empty
     for i, original_line in enumerate(lines):
         if original_line.strip() == "":
-            assert (
-                scaled_lines[i].strip() == ""
-            ), f"Empty line {i} should remain empty after scaling"
+            assert scaled_lines[i].strip() == "", (
+                f"Empty line {i} should remain empty after scaling"
+            )
 
 
 @given(
     style=st.sampled_from(
-        [BannerStyle.ANIMATED, BannerStyle.STATIC, BannerStyle.MINIMAL, BannerStyle.NONE]
+        [BannerStyle.ANIMATED, BannerStyle.STATIC,
+            BannerStyle.MINIMAL, BannerStyle.NONE]
     )
 )
 @settings(max_examples=100, deadline=None)
@@ -223,4 +225,5 @@ def test_banner_style_rendering(style):
     else:
         # Static and animated should produce output (at least for single frame render)
         # Note: animated might fall back to static or minimal if frames aren't available
-        assert len(rendered_output) >= 0, "Style should produce output or handle gracefully"
+        assert len(
+            rendered_output) >= 0, "Style should produce output or handle gracefully"

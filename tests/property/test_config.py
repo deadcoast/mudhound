@@ -18,7 +18,8 @@ from mudhound.core.config import ConfigManager
 
 @given(
     config_value=st.text(min_size=1, max_size=50),
-    key_name=st.sampled_from(["engine", "max_results", "theme", "fps", "level"]),
+    key_name=st.sampled_from(
+        ["engine", "max_results", "theme", "fps", "level"]),
 )
 def test_config_priority_chain(config_value, key_name):
     """
@@ -84,10 +85,12 @@ def test_config_priority_chain(config_value, key_name):
 
 @given(
     key=st.sampled_from(
-        ["general.engine", "ui.theme", "animation.fps", "search.timeout", "logging.level"]
+        ["general.engine", "ui.theme", "animation.fps",
+            "search.timeout", "logging.level"]
     ),
     value=st.one_of(
-        st.text(min_size=1, max_size=50), st.integers(min_value=1, max_value=1000), st.booleans()
+        st.text(min_size=1, max_size=50), st.integers(
+            min_value=1, max_value=1000), st.booleans()
     ),
 )
 def test_config_set_get_round_trip(key, value):
@@ -115,7 +118,8 @@ def test_config_set_get_round_trip(key, value):
     nested_key=st.text(
         min_size=1,
         max_size=20,
-        alphabet=st.characters(whitelist_categories=("Ll", "Lu", "Nd"), whitelist_characters="_"),
+        alphabet=st.characters(whitelist_categories=(
+            "Ll", "Lu", "Nd"), whitelist_characters="_"),
     ),
     value=st.integers(min_value=0, max_value=1000),
 )
@@ -149,9 +153,11 @@ def test_config_nested_key_creation(nested_key, value):
             keys=st.text(
                 min_size=1,
                 max_size=20,
-                alphabet=st.characters(whitelist_categories=("Ll",), whitelist_characters="_"),
+                alphabet=st.characters(whitelist_categories=(
+                    "Ll",), whitelist_characters="_"),
             ),
-            values=st.one_of(st.text(min_size=1, max_size=50), st.integers(1, 100)),
+            values=st.one_of(st.text(min_size=1, max_size=50),
+                             st.integers(1, 100)),
         ),
         min_size=1,
         max_size=4,
