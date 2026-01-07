@@ -16,6 +16,7 @@ from mudhound.ui.animation.timing import TimingEngine
 
 class LogoPosition:
     """Logo position constants."""
+
     INLINE = "inline"
     HEADER = "header"
     FOOTER = "footer"
@@ -25,10 +26,10 @@ class LogoPosition:
 class Logo:
     """
     Compact animated logo component.
-    
+
     Displays a compact MUDHOUND logo with configurable positions and color schemes.
     Supports animated color cycling and multiple display positions.
-    
+
     Attributes:
         position: Display position (inline, header, footer, floating)
         scheme: Color scheme for animation
@@ -45,11 +46,11 @@ class Logo:
         config_manager: Optional[ConfigManager] = None,
         asset_manager: Optional[AssetManager] = None,
         animation_renderer: Optional[AnimationRenderer] = None,
-        output: Optional[TextIO] = None
+        output: Optional[TextIO] = None,
     ):
         """
         Initialize the Logo component.
-        
+
         Args:
             position: Display position (inline, header, footer, floating).
                      If None, defaults to inline.
@@ -65,9 +66,11 @@ class Logo:
 
         # Load position and scheme from config if not provided
         if position is None:
-            position = self.config_manager.get("ui.logo_position", LogoPosition.INLINE)
+            position = self.config_manager.get(
+                "ui.logo_position", LogoPosition.INLINE)
         if scheme is None:
-            scheme = self.config_manager.get("animation.color_scheme", "rainbow")
+            scheme = self.config_manager.get(
+                "animation.color_scheme", "rainbow")
 
         self.position = position
         self.scheme = scheme
@@ -75,12 +78,9 @@ class Logo:
         # Initialize animation renderer if needed
         if animation_renderer is None:
             timing_engine = TimingEngine(
-                fps=self.config_manager.get("animation.fps", 10)
-            )
+                fps=self.config_manager.get("animation.fps", 10))
             self.animation_renderer = AnimationRenderer(
-                timing_engine=timing_engine,
-                asset_manager=self.asset_manager,
-                output=self.output
+                timing_engine=timing_engine, asset_manager=self.asset_manager, output=self.output
             )
         else:
             self.animation_renderer = animation_renderer
@@ -88,32 +88,33 @@ class Logo:
     def _strip_ansi(self, text: str) -> str:
         """
         Strip ANSI escape codes from text.
-        
+
         Args:
             text: Text with potential ANSI codes
-            
+
         Returns:
             Text with ANSI codes removed
         """
         import re
-        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-        return ansi_escape.sub('', text)
+
+        ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+        return ansi_escape.sub("", text)
 
     def _format_for_position(self, logo_content: str) -> str:
         """
         Format logo content based on the configured position.
-        
+
         Args:
             logo_content: Raw logo content
-            
+
         Returns:
             Formatted logo content for the specified position
         """
         if self.position == LogoPosition.INLINE:
             # For inline, keep logo on same line (strip newlines)
-            lines = logo_content.strip().split('\n')
+            lines = logo_content.strip().split("\n")
             # Join lines with spaces for inline display
-            return ' '.join(line.strip() for line in lines if line.strip())
+            return " ".join(line.strip() for line in lines if line.strip())
 
         elif self.position == LogoPosition.HEADER:
             # For header, add spacing below
@@ -134,20 +135,21 @@ class Logo:
     def _center_logo(self, logo_content: str) -> str:
         """
         Center the logo horizontally in the terminal.
-        
+
         Args:
             logo_content: Logo content to center
-            
+
         Returns:
             Centered logo content
         """
         try:
             import shutil
+
             terminal_width = shutil.get_terminal_size().columns
         except Exception:
             terminal_width = 80
 
-        lines = logo_content.strip().split('\n')
+        lines = logo_content.strip().split("\n")
         centered_lines = []
 
         for line in lines:
@@ -156,16 +158,16 @@ class Logo:
 
             if line_width < terminal_width:
                 padding = (terminal_width - line_width) // 2
-                centered_lines.append(' ' * padding + line)
+                centered_lines.append(" " * padding + line)
             else:
                 centered_lines.append(line)
 
-        return '\n'.join(centered_lines)
+        return "\n".join(centered_lines)
 
     def render(self, animated: bool = False) -> None:
         """
         Render the logo based on the configured position.
-        
+
         Args:
             animated: Whether to render with animation (single frame if False)
         """
@@ -193,7 +195,7 @@ class Logo:
     def render_animated_frame(self, frame_index: int = 0) -> None:
         """
         Render a specific animated frame of the logo.
-        
+
         Args:
             frame_index: Index of the frame to render
         """
@@ -223,7 +225,7 @@ class Logo:
     def animate(self, duration: float = 0.0) -> None:
         """
         Animate the logo for the specified duration.
-        
+
         Args:
             duration: Animation duration in seconds (0 = infinite loop)
         """
@@ -236,8 +238,7 @@ class Logo:
 
         # Format all frames for position
         formatted_frames = [
-            self._format_for_position(frame)
-            for frame in self.animation_renderer.frames
+            self._format_for_position(frame) for frame in self.animation_renderer.frames
         ]
 
         # Load formatted frames

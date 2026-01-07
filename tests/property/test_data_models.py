@@ -28,7 +28,8 @@ def search_result_strategy(draw):
         snippet=draw(st.text(min_size=1, max_size=500)),
         source=draw(st.text(min_size=1, max_size=50)),
         rank=draw(st.integers(min_value=1, max_value=1000)),
-        metadata=draw(st.dictionaries(st.text(min_size=1, max_size=20), st.text(max_size=100))),
+        metadata=draw(st.dictionaries(
+            st.text(min_size=1, max_size=20), st.text(max_size=100))),
     )
 
 
@@ -39,7 +40,8 @@ def search_options_strategy(draw):
         max_results=draw(st.integers(min_value=1, max_value=500)),
         region=draw(st.text(min_size=2, max_size=10)),
         safesearch=draw(st.sampled_from(["off", "moderate", "strict"])),
-        time_limit=draw(st.one_of(st.none(), st.sampled_from(["d", "w", "m", "y"]))),
+        time_limit=draw(
+            st.one_of(st.none(), st.sampled_from(["d", "w", "m", "y"]))),
     )
 
 
@@ -51,7 +53,10 @@ def search_query_strategy(draw):
         query=draw(st.text(min_size=1, max_size=200)),
         engine=draw(st.text(min_size=1, max_size=50)),
         options=draw(search_options_strategy()),
-        created_at=draw(st.datetimes(min_value=datetime(2020, 1, 1), max_value=datetime(2030, 12, 31))),
+        created_at=draw(
+            st.datetimes(min_value=datetime(2020, 1, 1),
+                         max_value=datetime(2030, 12, 31))
+        ),
         status=draw(st.sampled_from(SearchStatus)),
     )
 
@@ -60,8 +65,12 @@ def search_query_strategy(draw):
 def search_session_strategy(draw):
     """Generate random SearchSession instances."""
     query = draw(search_query_strategy())
-    results = draw(st.lists(search_result_strategy(), min_size=0, max_size=100))
-    started_at = draw(st.datetimes(min_value=datetime(2020, 1, 1), max_value=datetime(2030, 12, 31)))
+    results = draw(st.lists(search_result_strategy(),
+                   min_size=0, max_size=100))
+    started_at = draw(
+        st.datetimes(min_value=datetime(2020, 1, 1),
+                     max_value=datetime(2030, 12, 31))
+    )
 
     # completed_at should be after started_at if present
     has_completed = draw(st.booleans())
@@ -89,7 +98,7 @@ def test_session_data_completeness(session):
     """
     Feature: mudhound-full-implementation, Property 26: Session data completeness
     Validates: Requirements 8.2
-    
+
     For any stored search session, it should contain all required fields:
     query, results, timestamps, status, and error (if applicable).
     """
@@ -105,7 +114,8 @@ def test_session_data_completeness(session):
     assert isinstance(session.started_at, datetime)
 
     # completed_at can be None (for running searches) or a datetime
-    assert session.completed_at is None or isinstance(session.completed_at, datetime)
+    assert session.completed_at is None or isinstance(
+        session.completed_at, datetime)
 
     # error can be None (for successful searches) or a string
     assert session.error is None or isinstance(session.error, str)
@@ -140,8 +150,11 @@ def test_session_data_completeness(session):
         assert isinstance(session.duration, float)
         assert session.duration >= 0
         # Verify duration calculation is correct
-        expected_duration = (session.completed_at - session.started_at).total_seconds()
-        assert abs(session.duration - expected_duration) < 0.001  # Allow for floating point precision
+        expected_duration = (session.completed_at -
+                             session.started_at).total_seconds()
+        assert (
+            abs(session.duration - expected_duration) < 0.001
+        )  # Allow for floating point precision
     else:
         assert session.duration is None
 

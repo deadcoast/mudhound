@@ -27,10 +27,10 @@ console_err = Console(stderr=True)
 
 def get_config_manager(ctx: typer.Context) -> ConfigManager:
     """Get or create a ConfigManager instance.
-    
+
     Args:
         ctx: Typer context containing global options
-        
+
     Returns:
         ConfigManager instance
     """
@@ -46,7 +46,7 @@ def get_config_manager(ctx: typer.Context) -> ConfigManager:
 def list(ctx: typer.Context):
     """
     List all configuration keys and values.
-    
+
     Displays the complete configuration in a formatted table.
     """
     try:
@@ -54,7 +54,8 @@ def list(ctx: typer.Context):
         config_dict = config_manager.list()
 
         # Create a table for display
-        table = Table(title="MudHound Configuration", show_header=True, header_style="bold magenta")
+        table = Table(title="MudHound Configuration",
+                      show_header=True, header_style="bold magenta")
         table.add_column("Key", style="cyan", no_wrap=True)
         table.add_column("Value", style="green")
 
@@ -77,9 +78,11 @@ def list(ctx: typer.Context):
 
         # Show config file location
         if config_manager.config_path:
-            console.print(f"\n[dim]Configuration loaded from: {config_manager.config_path}[/dim]")
+            console.print(
+                f"\n[dim]Configuration loaded from: {config_manager.config_path}[/dim]")
         else:
-            console.print("\n[dim]Using default configuration (no config file found)[/dim]")
+            console.print(
+                "\n[dim]Using default configuration (no config file found)[/dim]")
 
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
@@ -89,17 +92,21 @@ def list(ctx: typer.Context):
 @app.command()
 def get(
     ctx: typer.Context,
-    key: str = typer.Argument(..., help="Configuration key (supports dot notation, e.g., 'general.engine')"),
+    key: str = typer.Argument(
+        ..., help="Configuration key (supports dot notation, e.g., 'general.engine')"
+    ),
 ):
     """
     Get a specific configuration value.
-    
+
     Supports dot notation for nested keys (e.g., 'general.engine').
     """
     # Validate key is not empty
     if not key or len(key.strip()) == 0:
-        console_err.print("[red]Error:[/red] Configuration key cannot be empty")
-        console_err.print("[yellow]Tip:[/yellow] Use 'mh config list' to see all available keys")
+        console_err.print(
+            "[red]Error:[/red] Configuration key cannot be empty")
+        console_err.print(
+            "[yellow]Tip:[/yellow] Use 'mh config list' to see all available keys")
         raise typer.Exit(1)
 
     try:
@@ -107,7 +114,8 @@ def get(
         value = config_manager.get(key)
 
         if value is None:
-            console_err.print(f"[yellow]Warning:[/yellow] Key '{key}' not found in configuration")
+            console_err.print(
+                f"[yellow]Warning:[/yellow] Key '{key}' not found in configuration")
             raise typer.Exit(1)
 
         # Format output based on value type
@@ -126,25 +134,29 @@ def get(
 @app.command()
 def set(
     ctx: typer.Context,
-    key: str = typer.Argument(..., help="Configuration key (supports dot notation)"),
+    key: str = typer.Argument(...,
+                              help="Configuration key (supports dot notation)"),
     value: str = typer.Argument(..., help="Value to set"),
 ):
     """
     Set a configuration value.
-    
+
     Supports dot notation for nested keys (e.g., 'general.engine').
     Creates intermediate dictionaries as needed.
     The configuration is persisted to disk after setting.
     """
     # Validate key is not empty
     if not key or len(key.strip()) == 0:
-        console_err.print("[red]Error:[/red] Configuration key cannot be empty")
-        console_err.print("[yellow]Tip:[/yellow] Use 'mh config list' to see all available keys")
+        console_err.print(
+            "[red]Error:[/red] Configuration key cannot be empty")
+        console_err.print(
+            "[yellow]Tip:[/yellow] Use 'mh config list' to see all available keys")
         raise typer.Exit(1)
 
     # Validate value is not empty
     if not value or len(value.strip()) == 0:
-        console_err.print("[red]Error:[/red] Configuration value cannot be empty")
+        console_err.print(
+            "[red]Error:[/red] Configuration value cannot be empty")
         raise typer.Exit(1)
 
     try:
@@ -159,10 +171,12 @@ def set(
         # Save to disk
         config_manager.save()
 
-        console.print(f"[green]✓[/green] Set [cyan]{key}[/cyan] = {parsed_value}")
+        console.print(
+            f"[green]✓[/green] Set [cyan]{key}[/cyan] = {parsed_value}")
 
         if config_manager.config_path:
-            console.print(f"[dim]Configuration saved to: {config_manager.config_path}[/dim]")
+            console.print(
+                f"[dim]Configuration saved to: {config_manager.config_path}[/dim]")
 
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
@@ -172,11 +186,12 @@ def set(
 @app.command()
 def reset(
     ctx: typer.Context,
-    yes: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation prompt"),
+    yes: bool = typer.Option(False, "--yes", "-y",
+                             help="Skip confirmation prompt"),
 ):
     """
     Reset configuration to defaults.
-    
+
     This will discard all custom settings and restore the default configuration.
     Requires confirmation unless --yes flag is provided.
     """
@@ -186,8 +201,7 @@ def reset(
         # Confirm destructive action
         if not yes:
             confirm = typer.confirm(
-                "This will reset all configuration to defaults. Are you sure?",
-                default=False
+                "This will reset all configuration to defaults. Are you sure?", default=False
             )
             if not confirm:
                 console.print("[yellow]Reset cancelled[/yellow]")
@@ -202,7 +216,8 @@ def reset(
         console.print("[green]✓[/green] Configuration reset to defaults")
 
         if config_manager.config_path:
-            console.print(f"[dim]Configuration saved to: {config_manager.config_path}[/dim]")
+            console.print(
+                f"[dim]Configuration saved to: {config_manager.config_path}[/dim]")
 
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
@@ -213,11 +228,11 @@ def reset(
 def edit(ctx: typer.Context):
     """
     Open configuration file in $EDITOR.
-    
+
     Opens the configuration file in the editor specified by the EDITOR
     environment variable. Falls back to 'nano' on Unix or 'notepad' on Windows
     if EDITOR is not set.
-    
+
     If no configuration file exists, creates one at the default location.
     """
     try:
@@ -227,7 +242,9 @@ def edit(ctx: typer.Context):
         if config_manager.config_path is None:
             # Create default config file
             config_manager.save()
-            console.print(f"[green]✓[/green] Created configuration file at: {config_manager.config_path}")
+            console.print(
+                f"[green]✓[/green] Created configuration file at: {config_manager.config_path}"
+            )
 
         config_path = config_manager.config_path
 
@@ -248,11 +265,14 @@ def edit(ctx: typer.Context):
             subprocess.run([editor, str(config_path)], check=True)
             console.print("[green]✓[/green] Configuration file closed")
         except subprocess.CalledProcessError as e:
-            console_err.print(f"[red]Error:[/red] Editor exited with error code {e.returncode}")
+            console_err.print(
+                f"[red]Error:[/red] Editor exited with error code {e.returncode}")
             raise typer.Exit(1)
         except FileNotFoundError:
             console_err.print(f"[red]Error:[/red] Editor '{editor}' not found")
-            console_err.print("[yellow]Tip:[/yellow] Set the EDITOR environment variable to your preferred editor")
+            console_err.print(
+                "[yellow]Tip:[/yellow] Set the EDITOR environment variable to your preferred editor"
+            )
             raise typer.Exit(1)
 
     except ConfigError as e:
@@ -262,16 +282,16 @@ def edit(ctx: typer.Context):
 
 def _parse_value(value: str):
     """Parse a string value to appropriate Python type.
-    
+
     Attempts to parse as:
     - boolean (true/false, yes/no, on/off)
     - integer
     - float
     - string (fallback)
-    
+
     Args:
         value: String value to parse
-        
+
     Returns:
         Parsed value in appropriate type
     """

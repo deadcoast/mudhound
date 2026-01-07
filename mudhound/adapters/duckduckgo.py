@@ -21,11 +21,11 @@ from mudhound.core.result import SearchOptions, SearchResult
 
 class DuckDuckGoAdapter(SearchAdapter):
     """Search adapter for DuckDuckGo.
-    
+
     This adapter uses the duckduckgo-search library to perform searches without
     requiring API keys or authentication. It supports all standard search options
     including region, safesearch, and time limits.
-    
+
     Features:
         - Streaming results via generator
         - Rate limit detection and handling
@@ -36,7 +36,7 @@ class DuckDuckGoAdapter(SearchAdapter):
     @property
     def name(self) -> str:
         """Internal identifier for the adapter.
-        
+
         Returns:
             "duckduckgo"
         """
@@ -45,30 +45,26 @@ class DuckDuckGoAdapter(SearchAdapter):
     @property
     def display_name(self) -> str:
         """Human-readable name for the adapter.
-        
+
         Returns:
             "DuckDuckGo"
         """
         return "DuckDuckGo"
 
-    def search(
-        self,
-        query: str,
-        options: SearchOptions
-    ) -> Generator[SearchResult, None, None]:
+    def search(self, query: str, options: SearchOptions) -> Generator[SearchResult, None, None]:
         """Execute a DuckDuckGo search and yield results as a generator.
-        
+
         This method performs a search using the duckduckgo-search library and
         yields SearchResult objects one at a time. It handles rate limits and
         network errors appropriately.
-        
+
         Args:
             query: The search query string
             options: Search configuration options
-            
+
         Yields:
             SearchResult objects as they are retrieved
-            
+
         Raises:
             NetworkError: If network connectivity issues occur
             RateLimitError: If rate limits are exceeded
@@ -84,11 +80,7 @@ class DuckDuckGoAdapter(SearchAdapter):
 
             # Map our safesearch values to DDGS values
             # DDGS expects: -2 (off), -1 (moderate), 1 (strict)
-            safesearch_map = {
-                "off": -2,
-                "moderate": -1,
-                "strict": 1
-            }
+            safesearch_map = {"off": -2, "moderate": -1, "strict": 1}
             safesearch_value = safesearch_map.get(options.safesearch, -1)
 
             # Map time_limit to DDGS timelimit parameter
@@ -102,7 +94,7 @@ class DuckDuckGoAdapter(SearchAdapter):
                 region=options.region,
                 safesearch=safesearch_value,
                 timelimit=timelimit,
-                max_results=options.max_results
+                max_results=options.max_results,
             )
 
             # Yield results one at a time
@@ -110,9 +102,9 @@ class DuckDuckGoAdapter(SearchAdapter):
             for result in results:
                 # Extract fields from DuckDuckGo result
                 # DuckDuckGo returns: title, href, body
-                url = result.get('href', '')
-                title = result.get('title', '')
-                snippet = result.get('body', '')
+                url = result.get("href", "")
+                title = result.get("title", "")
+                snippet = result.get("body", "")
 
                 # Extract source from URL (domain name)
                 source = self._extract_source(url)
@@ -124,7 +116,7 @@ class DuckDuckGoAdapter(SearchAdapter):
                     snippet=snippet,
                     source=source,
                     rank=rank,
-                    metadata=result  # Store full result as metadata
+                    metadata=result,  # Store full result as metadata
                 )
 
                 yield search_result
@@ -136,12 +128,13 @@ class DuckDuckGoAdapter(SearchAdapter):
             retry_after = self.on_rate_limit(60)
             raise RateLimitError(
                 f"DuckDuckGo rate limit exceeded. Please wait {retry_after} seconds.",
-                retry_after=retry_after
+                retry_after=retry_after,
             )
 
         except TimeoutException as e:
             # Network timeout
-            raise NetworkError(f"Network timeout while searching DuckDuckGo: {str(e)}")
+            raise NetworkError(
+                f"Network timeout while searching DuckDuckGo: {str(e)}")
 
         except DuckDuckGoSearchException as e:
             # Other DuckDuckGo-specific errors
@@ -149,20 +142,21 @@ class DuckDuckGoAdapter(SearchAdapter):
 
         except Exception as e:
             # Catch-all for unexpected errors
-            raise NetworkError(f"Unexpected error during DuckDuckGo search: {str(e)}")
+            raise NetworkError(
+                f"Unexpected error during DuckDuckGo search: {str(e)}")
 
     def validate_options(self, options: SearchOptions) -> List[str]:
         """Validate search options for DuckDuckGo.
-        
+
         Checks that all options are valid for DuckDuckGo searches:
         - max_results must be at least 1
         - safesearch must be "off", "moderate", or "strict"
         - time_limit must be None or one of "d", "w", "m", "y"
         - region should be a valid region code (basic validation)
-        
+
         Args:
             options: Search configuration options to validate
-            
+
         Returns:
             List of error messages (empty if valid)
         """
@@ -189,10 +183,10 @@ class DuckDuckGoAdapter(SearchAdapter):
 
     def _extract_source(self, url: str) -> str:
         """Extract the source domain from a URL.
-        
+
         Args:
             url: The full URL
-            
+
         Returns:
             The domain name (e.g., "example.com")
         """

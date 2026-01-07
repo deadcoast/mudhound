@@ -105,9 +105,11 @@ class TestInteractiveMode:
         has_logo = "MH" in output_text or "mh" in output_text.lower()
         has_thank_you = "Thank you" in captured.out
 
-        assert has_logo or has_thank_you, f"Expected logo or thank you message. Output: {output_text}, Stdout: {captured.out}"
+        assert has_logo or has_thank_you, (
+            f"Expected logo or thank you message. Output: {output_text}, Stdout: {captured.out}"
+        )
 
-    @patch('mudhound.cli.commands.interactive.Menu')
+    @patch("mudhound.cli.commands.interactive.Menu")
     def test_show_main_menu(self, mock_menu_class):
         """Test that main menu is displayed."""
         output = StringIO()
@@ -124,7 +126,7 @@ class TestInteractiveMode:
         mock_menu_class.assert_called_once()
         mock_menu.show.assert_called_once()
 
-    @patch('mudhound.cli.commands.interactive.Menu')
+    @patch("mudhound.cli.commands.interactive.Menu")
     def test_show_main_menu_quit(self, mock_menu_class):
         """Test that quit option works in main menu."""
         output = StringIO()
@@ -139,7 +141,7 @@ class TestInteractiveMode:
 
         assert result == "quit"
 
-    @patch('mudhound.cli.commands.interactive.Menu')
+    @patch("mudhound.cli.commands.interactive.Menu")
     def test_show_main_menu_cancel(self, mock_menu_class):
         """Test that cancelling menu returns None."""
         output = StringIO()
@@ -154,7 +156,7 @@ class TestInteractiveMode:
 
         assert result is None
 
-    @patch('mudhound.cli.commands.interactive.Menu')
+    @patch("mudhound.cli.commands.interactive.Menu")
     def test_show_main_menu_keyboard_interrupt(self, mock_menu_class):
         """Test that CTRL+C in menu returns quit."""
         output = StringIO()

@@ -21,6 +21,7 @@ from mudhound.utils.validators import (
 
 class PromptType:
     """Prompt type constants."""
+
     TEXT = "text"
     NUMBER = "number"
     CHOICE = "choice"
@@ -31,11 +32,11 @@ class PromptType:
 class Prompt:
     """
     Input prompt component with validation support.
-    
+
     Supports multiple prompt types (text, number, choice, path, confirm)
     with configurable validation rules. Displays error messages and
     allows re-entry on validation failure.
-    
+
     Attributes:
         prompt_text: Text to display as the prompt
         prompt_type: Type of prompt (text, number, choice, path, confirm)
@@ -58,7 +59,7 @@ class Prompt:
     ):
         """
         Initialize the Prompt component.
-        
+
         Args:
             prompt_text: Text to display as the prompt
             prompt_type: Type of prompt (text, number, choice, path, confirm)
@@ -79,7 +80,7 @@ class Prompt:
     def _format_prompt(self) -> str:
         """
         Format the prompt text with cursor indicator.
-        
+
         Returns:
             Formatted prompt string
         """
@@ -99,10 +100,10 @@ class Prompt:
     def _format_error(self, error_message: str) -> str:
         """
         Format an error message.
-        
+
         Args:
             error_message: Error message text
-            
+
         Returns:
             Formatted error string
         """
@@ -118,10 +119,10 @@ class Prompt:
     def _validate_input(self, value: Any) -> tuple[bool, Optional[str]]:
         """
         Validate input against all validators.
-        
+
         Args:
             value: Input value to validate
-            
+
         Returns:
             Tuple of (is_valid, error_message)
         """
@@ -135,13 +136,13 @@ class Prompt:
     def _convert_value(self, raw_value: str) -> Any:
         """
         Convert raw input string to appropriate type.
-        
+
         Args:
             raw_value: Raw input string
-            
+
         Returns:
             Converted value
-            
+
         Raises:
             ValueError: If conversion fails
         """
@@ -172,13 +173,13 @@ class Prompt:
     def prompt(self) -> Any:
         """
         Display the prompt and collect user input.
-        
+
         Handles validation, error display, and re-entry on validation failure.
         Supports CTRL+C cancellation with KeyboardInterrupt.
-        
+
         Returns:
             Validated user input
-            
+
         Raises:
             KeyboardInterrupt: If user presses CTRL+C
         """
@@ -231,21 +232,23 @@ class Prompt:
     def prompt_text_input(self) -> str:
         """
         Prompt for text input.
-        
+
         Returns:
             Text input string
         """
         self.prompt_type = PromptType.TEXT
         return self.prompt()
 
-    def prompt_number(self, min_value: Optional[float] = None, max_value: Optional[float] = None) -> float:
+    def prompt_number(
+        self, min_value: Optional[float] = None, max_value: Optional[float] = None
+    ) -> float:
         """
         Prompt for numeric input.
-        
+
         Args:
             min_value: Minimum allowed value
             max_value: Maximum allowed value
-            
+
         Returns:
             Numeric input
         """
@@ -260,11 +263,11 @@ class Prompt:
     def prompt_choice(self, choices: List[Any], case_sensitive: bool = True) -> Any:
         """
         Prompt for choice from a list of options.
-        
+
         Args:
             choices: List of allowed choices
             case_sensitive: Whether comparison is case-sensitive
-            
+
         Returns:
             Selected choice
         """
@@ -276,36 +279,34 @@ class Prompt:
         return self.prompt()
 
     def prompt_path(
-        self,
-        must_exist: bool = False,
-        must_be_file: bool = False,
-        must_be_dir: bool = False
+        self, must_exist: bool = False, must_be_file: bool = False, must_be_dir: bool = False
     ) -> Path:
         """
         Prompt for file/directory path.
-        
+
         Args:
             must_exist: Whether path must exist
             must_be_file: Whether path must be a file
             must_be_dir: Whether path must be a directory
-            
+
         Returns:
             Path object
         """
         self.prompt_type = PromptType.PATH
 
         # Add path validator
-        self.validators.append(PathValidator(must_exist, must_be_file, must_be_dir))
+        self.validators.append(PathValidator(
+            must_exist, must_be_file, must_be_dir))
 
         return self.prompt()
 
     def prompt_confirm(self, default: Optional[bool] = None) -> bool:
         """
         Prompt for yes/no confirmation.
-        
+
         Args:
             default: Default value if user provides no input
-            
+
         Returns:
             Boolean confirmation
         """

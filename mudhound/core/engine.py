@@ -30,7 +30,7 @@ from mudhound.core.result import (
 
 class SearchEngine:
     """Orchestrates search operations across different adapters.
-    
+
     The SearchEngine coordinates all aspects of a search operation:
     - Adapter selection and validation
     - Progress tracking and callbacks
@@ -38,7 +38,7 @@ class SearchEngine:
     - Session management
     - Error handling and retry logic
     - Cancellation support
-    
+
     Attributes:
         adapter: The search adapter to use for searches
         max_retries: Maximum number of retry attempts for failed searches
@@ -53,13 +53,13 @@ class SearchEngine:
         retry_delay: float = 1.0,
     ):
         """Initialize the SearchEngine.
-        
+
         Args:
             adapter: A SearchAdapter instance to use (takes precedence over adapter_name)
             adapter_name: Name of adapter to load from registry (used if adapter is None)
             max_retries: Maximum number of retry attempts for failed searches
             retry_delay: Base delay in seconds between retries
-            
+
         Raises:
             ValueError: If neither adapter nor adapter_name is provided
             AdapterNotFoundError: If adapter_name is not found in registry
@@ -69,6 +69,7 @@ class SearchEngine:
         elif adapter_name is not None:
             # Import here to avoid circular import
             from mudhound.adapters.registry import AdapterRegistry
+
             adapter_class = AdapterRegistry.get(adapter_name)
             self.adapter = adapter_class()
         else:
@@ -85,7 +86,7 @@ class SearchEngine:
         on_complete: Optional[Callable[[SearchSession], None]] = None,
     ) -> SearchSession:
         """Execute a search operation.
-        
+
         This method coordinates the entire search process:
         1. Validates search options
         2. Creates a SearchQuery and SearchSession
@@ -93,16 +94,16 @@ class SearchEngine:
         4. Collects results with progress callbacks
         5. Handles errors with retry logic
         6. Returns the completed session
-        
+
         Args:
             query: The search query string
             options: Search configuration options (uses defaults if None)
             progress_callback: Optional callback invoked for each result
             on_complete: Optional callback invoked when search completes
-            
+
         Returns:
             SearchSession containing query, results, and metadata
-            
+
         Raises:
             ValidationError: If search options are invalid
             NetworkError: If network errors occur after all retries
@@ -118,8 +119,7 @@ class SearchEngine:
         validation_errors = self.adapter.validate_options(options)
         if validation_errors:
             raise ValidationError(
-                f"Invalid search options: {', '.join(validation_errors)}"
-            )
+                f"Invalid search options: {', '.join(validation_errors)}")
 
         # Create search query
         query_id = str(uuid.uuid4())
@@ -225,17 +225,17 @@ class SearchEngine:
         progress_callback: Optional[Callable[[SearchResult], None]] = None,
     ) -> List[SearchResult]:
         """Execute the actual search and collect results.
-        
+
         This is an internal method that handles the low-level search execution.
-        
+
         Args:
             query: The search query string
             options: Search configuration options
             progress_callback: Optional callback invoked for each result
-            
+
         Returns:
             List of SearchResult objects
-            
+
         Raises:
             NetworkError: If network errors occur
             RateLimitError: If rate limits are exceeded

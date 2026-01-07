@@ -15,13 +15,13 @@ from mudhound.ui.theme import get_theme_engine
 
 class StatusComponent:
     """Component for displaying status messages.
-    
+
     Displays log messages with:
     - Timestamp
     - Level-appropriate glyph
     - Colored level name
     - Message text
-    
+
     Attributes:
         use_color: Whether to apply color codes
         show_timestamp: Whether to show timestamps
@@ -35,7 +35,7 @@ class StatusComponent:
         datefmt: str = "%Y-%m-%d %H:%M:%S",
     ):
         """Initialize the StatusComponent.
-        
+
         Args:
             use_color: Whether to apply ANSI color codes
             show_timestamp: Whether to display timestamps
@@ -52,12 +52,12 @@ class StatusComponent:
         timestamp: Optional[datetime] = None,
     ) -> str:
         """Format a status message.
-        
+
         Args:
             message: Message text
             level: Logging level (e.g., logging.INFO, SUCCESS)
             timestamp: Optional timestamp (defaults to current time)
-            
+
         Returns:
             Formatted status message string
         """
@@ -96,7 +96,7 @@ class StatusComponent:
         timestamp: Optional[datetime] = None,
     ) -> None:
         """Display a status message.
-        
+
         Args:
             message: Message text
             level: Logging level
@@ -107,7 +107,7 @@ class StatusComponent:
 
     def success(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display a success message.
-        
+
         Args:
             message: Message text
             timestamp: Optional timestamp
@@ -116,7 +116,7 @@ class StatusComponent:
 
     def info(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display an info message.
-        
+
         Args:
             message: Message text
             timestamp: Optional timestamp
@@ -125,7 +125,7 @@ class StatusComponent:
 
     def warning(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display a warning message.
-        
+
         Args:
             message: Message text
             timestamp: Optional timestamp
@@ -134,7 +134,7 @@ class StatusComponent:
 
     def error(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display an error message.
-        
+
         Args:
             message: Message text
             timestamp: Optional timestamp
@@ -143,7 +143,7 @@ class StatusComponent:
 
     def debug(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display a debug message.
-        
+
         Args:
             message: Message text
             timestamp: Optional timestamp
@@ -152,7 +152,7 @@ class StatusComponent:
 
     def trace(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display a trace message.
-        
+
         Args:
             message: Message text
             timestamp: Optional timestamp

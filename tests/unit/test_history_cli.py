@@ -139,7 +139,8 @@ def test_history_show_full_id():
         with patch("mudhound.cli.commands.history.ResultStore") as mock_store_class:
             mock_store_class.return_value = store
 
-            result = runner.invoke(app, ["history", "show", "test-session-123"])
+            result = runner.invoke(
+                app, ["history", "show", "test-session-123"])
 
             assert result.exit_code == 0
             assert "Search Session:" in result.stdout
@@ -222,7 +223,8 @@ def test_history_delete_with_yes():
         with patch("mudhound.cli.commands.history.ResultStore") as mock_store_class:
             mock_store_class.return_value = store
 
-            result = runner.invoke(app, ["history", "delete", "test-session-123", "--yes"])
+            result = runner.invoke(
+                app, ["history", "delete", "test-session-123", "--yes"])
 
             assert result.exit_code == 0
             assert "Session deleted" in result.stdout
@@ -247,10 +249,7 @@ def test_history_delete_without_yes():
 
             # Answer 'n' to confirmation
             result = runner.invoke(
-                app,
-                ["history", "delete", "test-session-123"],
-                input="n\n"
-            )
+                app, ["history", "delete", "test-session-123"], input="n\n")
 
             assert result.exit_code == 0
             assert "Delete cancelled" in result.stdout
@@ -273,7 +272,8 @@ def test_history_delete_short_id():
         with patch("mudhound.cli.commands.history.ResultStore") as mock_store_class:
             mock_store_class.return_value = store
 
-            result = runner.invoke(app, ["history", "delete", "test-ses", "--yes"])
+            result = runner.invoke(
+                app, ["history", "delete", "test-ses", "--yes"])
 
             assert result.exit_code == 0
             assert "Session deleted" in result.stdout
@@ -318,11 +318,7 @@ def test_history_clear_without_yes():
             mock_store_class.return_value = store
 
             # Answer 'n' to confirmation
-            result = runner.invoke(
-                app,
-                ["history", "clear"],
-                input="n\n"
-            )
+            result = runner.invoke(app, ["history", "clear"], input="n\n")
 
             assert result.exit_code == 0
             assert "Clear cancelled" in result.stdout
@@ -352,7 +348,8 @@ def test_history_replay():
                 mock_engine.search.return_value = new_session
                 mock_engine_class.return_value = mock_engine
 
-                result = runner.invoke(app, ["history", "replay", "test-session-123"])
+                result = runner.invoke(
+                    app, ["history", "replay", "test-session-123"])
 
                 assert result.exit_code == 0
                 assert "Replaying search:" in result.stdout

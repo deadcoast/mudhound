@@ -20,14 +20,16 @@ from mudhound.utils.validators import (
 )
 
 # Pre-configured validators for CLI arguments
-_format_validator = EnumValidator(['json', 'csv', 'txt', 'urls'], case_sensitive=False)
-_safesearch_validator = EnumValidator(['off', 'moderate', 'strict'], case_sensitive=False)
+_format_validator = EnumValidator(
+    ["json", "csv", "txt", "urls"], case_sensitive=False)
+_safesearch_validator = EnumValidator(
+    ["off", "moderate", "strict"], case_sensitive=False)
 _max_results_validator = RangeValidator(min_value=1, max_value=1000)
 _limit_validator = RangeValidator(min_value=1, max_value=10000)
 _query_length_validator = LengthValidator(min_length=1, max_length=1000)
 _region_pattern_validator = PatternValidator(
-    r'^[a-z]{2}-[a-z]{2}$',
-    error_message="Invalid region format. Expected format: xx-xx (e.g., us-en, wt-wt)"
+    r"^[a-z]{2}-[a-z]{2}$",
+    error_message="Invalid region format. Expected format: xx-xx (e.g., us-en, wt-wt)",
 )
 
 
@@ -75,11 +77,15 @@ def validate_engine(engine_name: str) -> Tuple[bool, Optional[str]]:
     # Get available engines from registry for dynamic validation
     try:
         available_engines = AdapterRegistry.list_available()
-        engine_validator = EnumValidator(available_engines, case_sensitive=True)
+        engine_validator = EnumValidator(
+            available_engines, case_sensitive=True)
 
         is_valid, error = engine_validator.validate(engine_name)
         if not is_valid:
-            return False, f"Invalid engine: {engine_name}. Available engines: {', '.join(available_engines)}"
+            return (
+                False,
+                f"Invalid engine: {engine_name}. Available engines: {', '.join(available_engines)}",
+            )
 
         return True, None
 
@@ -151,12 +157,12 @@ def validate_output_path(output_path: str) -> Tuple[bool, Optional[str]]:
         return False, "Output path cannot be empty"
 
     # Check for invalid characters (platform-specific)
-    if os.name == 'nt':  # Windows
-        invalid_chars = ['<', '>', '"', '|', '?', '*']
+    if os.name == "nt":  # Windows
+        invalid_chars = ["<", ">", '"', "|", "?", "*"]
         # Windows paths can have : in drive letters (C:)
         path_without_drive = (
-            output_path[2:] if len(output_path) > 2 and output_path[1] == ':'
-            else output_path
+            output_path[2:] if len(
+                output_path) > 2 and output_path[1] == ":" else output_path
         )
 
         for char in invalid_chars:
@@ -164,15 +170,15 @@ def validate_output_path(output_path: str) -> Tuple[bool, Optional[str]]:
                 return False, f"Output path contains invalid character: {char}"
 
     # Check path length
-    max_path_length = 260 if os.name == 'nt' else 4096
+    max_path_length = 260 if os.name == "nt" else 4096
     if len(output_path) > max_path_length:
         return False, (
-            f"Output path is too long ({len(output_path)} characters, "
-            f"max {max_path_length})"
+            f"Output path is too long ({len(output_path)} characters, max {max_path_length})"
         )
 
     # Use PathValidator for basic path validation
-    path_validator = PathValidator(must_exist=False, must_be_file=False, must_be_dir=False)
+    path_validator = PathValidator(
+        must_exist=False, must_be_file=False, must_be_dir=False)
     is_valid, error = path_validator.validate(output_path)
     if not is_valid:
         return False, f"Invalid output path: {error}"

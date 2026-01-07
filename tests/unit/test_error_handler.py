@@ -4,7 +4,6 @@ Unit tests for error handler component.
 Tests basic error display functionality.
 """
 
-
 from mudhound.core.exceptions import (
     ConfigError,
     NetworkError,
@@ -102,4 +101,5 @@ def test_suggestions_for_all_error_types():
 
     for error in error_types:
         suggestions = handler.get_suggestions(error)
-        assert len(suggestions) > 0, f"No suggestions for {type(error).__name__}"
+        assert len(
+            suggestions) > 0, f"No suggestions for {type(error).__name__}"

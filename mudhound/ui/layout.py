@@ -8,7 +8,7 @@ from mudhound.utils.terminal import get_terminal_size
 class LayoutManager:
     """
     Manages terminal layout dimensions and resize handling.
-    
+
     Provides content width calculations, minimum dimension enforcement,
     and resize detection with callback support.
     """
@@ -27,9 +27,9 @@ class LayoutManager:
     def get_terminal_size(self) -> Tuple[int, int]:
         """
         Get current terminal size.
-        
+
         Returns cached size if available (for testing), otherwise queries actual terminal.
-        
+
         Returns:
             Tuple[int, int]: (width, height) in columns and rows
         """
@@ -40,7 +40,7 @@ class LayoutManager:
     def get_content_width(self) -> int:
         """
         Calculate available content width accounting for borders and padding.
-        
+
         Returns:
             int: Content width in columns
         """
@@ -50,7 +50,7 @@ class LayoutManager:
     def get_content_height(self) -> int:
         """
         Calculate available content height accounting for borders.
-        
+
         Returns:
             int: Content height in rows
         """
@@ -61,7 +61,7 @@ class LayoutManager:
     def check_minimum_dimensions(self) -> bool:
         """
         Check if terminal meets minimum dimension requirements.
-        
+
         Returns:
             bool: True if terminal is large enough
         """
@@ -71,7 +71,7 @@ class LayoutManager:
     def detect_resize(self) -> bool:
         """
         Detect if terminal has been resized since last check.
-        
+
         Returns:
             bool: True if terminal size has changed
         """
@@ -90,7 +90,7 @@ class LayoutManager:
     def register_resize_callback(self, callback: Callable[[], None]) -> None:
         """
         Register a callback to be invoked on terminal resize.
-        
+
         Args:
             callback: Function to call when resize is detected
         """
@@ -100,7 +100,7 @@ class LayoutManager:
     def unregister_resize_callback(self, callback: Callable[[], None]) -> None:
         """
         Unregister a resize callback.
-        
+
         Args:
             callback: Function to remove from callbacks
         """
@@ -110,11 +110,11 @@ class LayoutManager:
     def set_animation_callbacks(
         self,
         pause_callback: Optional[Callable[[], None]] = None,
-        resume_callback: Optional[Callable[[], None]] = None
+        resume_callback: Optional[Callable[[], None]] = None,
     ) -> None:
         """
         Set callbacks for pausing/resuming animation on resize.
-        
+
         Args:
             pause_callback: Function to pause animation
             resume_callback: Function to resume animation
@@ -125,7 +125,7 @@ class LayoutManager:
     def handle_resize(self) -> None:
         """
         Handle terminal resize event.
-        
+
         Pauses animation, triggers callbacks, and resumes animation.
         """
         # Pause animation if callback is set
@@ -143,7 +143,7 @@ class LayoutManager:
     def check_and_handle_resize(self) -> bool:
         """
         Check for resize and handle it if detected.
-        
+
         Returns:
             bool: True if resize was detected and handled
         """

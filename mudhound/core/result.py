@@ -28,7 +28,7 @@ class SearchStatus(Enum):
 @dataclass
 class SearchResult:
     """Individual search result from a search engine.
-    
+
     Attributes:
         url: The URL of the search result
         title: The title of the page
@@ -49,7 +49,7 @@ class SearchResult:
 @dataclass
 class SearchOptions:
     """Configuration options for search operations.
-    
+
     Attributes:
         max_results: Maximum number of results to retrieve (default: 50)
         region: Region code for search localization (default: "wt-wt" for worldwide)
@@ -66,7 +66,7 @@ class SearchOptions:
 @dataclass
 class SearchQuery:
     """Representation of a search request.
-    
+
     Attributes:
         id: Unique identifier for the query
         query: The search query string
@@ -87,7 +87,7 @@ class SearchQuery:
 @dataclass
 class SearchSession:
     """Complete search session including query, results, and metadata.
-    
+
     Attributes:
         query: The search query that was executed
         results: List of search results
@@ -105,7 +105,7 @@ class SearchSession:
     @property
     def duration(self) -> Optional[float]:
         """Calculate the duration of the search session in seconds.
-        
+
         Returns:
             Duration in seconds if completed, None if still running
         """
@@ -116,7 +116,7 @@ class SearchSession:
     @property
     def result_count(self) -> int:
         """Get the number of results in this session.
-        
+
         Returns:
             Number of search results
         """

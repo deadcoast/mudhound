@@ -10,47 +10,44 @@ and data flow visualization.
 GLYPHS = {
     # Status indicators - used for log messages and status displays
     "status": {
-        "success": "[+]",      # Successful operation
-        "error": "[!]",        # Error condition
-        "warning": "[~]",      # Warning message
-        "info": "[*]",         # Informational message
-        "debug": "[.]",        # Debug message
-        "question": "[?]",     # Question or prompt
+        "success": "[+]",  # Successful operation
+        "error": "[!]",  # Error condition
+        "warning": "[~]",  # Warning message
+        "info": "[*]",  # Informational message
+        "debug": "[.]",  # Debug message
+        "question": "[?]",  # Question or prompt
     },
-
     # Progress glyphs - used for progress indicators and animations
     "progress": {
-        "spinner": ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],  # Braille spinner frames
+        # Braille spinner frames
+        "spinner": ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],
         "blocks": ["▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"],  # Progress blocks
-        "bullet": "•",         # Bullet point
-        "arrow": "→",          # Arrow indicator
-        "pointer": "▶",        # Pointer/play symbol
+        "bullet": "•",  # Bullet point
+        "arrow": "→",  # Arrow indicator
+        "pointer": "▶",  # Pointer/play symbol
     },
-
     # Selection glyphs - used for menus and interactive selections
     "selection": {
-        "checked": "[x]",      # Checked checkbox
-        "unchecked": "[ ]",    # Unchecked checkbox
+        "checked": "[x]",  # Checked checkbox
+        "unchecked": "[ ]",  # Unchecked checkbox
         "radio_selected": "(*)",  # Selected radio button
         "radio_unselected": "( )",  # Unselected radio button
-        "cursor": ">>>",       # Menu cursor indicator
+        "cursor": ">>>",  # Menu cursor indicator
     },
-
     # Decorative glyphs - used for visual separation and feedback
     "decorative": {
-        "divider": "─",        # Horizontal divider line
-        "ellipsis": "…",       # Ellipsis for truncation
-        "check": "✓",          # Checkmark
-        "cross": "✗",          # Cross/X mark
-        "dot": "·",            # Middle dot
+        "divider": "─",  # Horizontal divider line
+        "ellipsis": "…",  # Ellipsis for truncation
+        "check": "✓",  # Checkmark
+        "cross": "✗",  # Cross/X mark
+        "dot": "·",  # Middle dot
     },
-
     # Data flow glyphs - used for showing data movement and operations
     "dataflow": {
-        "input": "←",          # Input indicator
-        "output": "→",         # Output indicator
-        "pipe": "│",           # Pipe/vertical connector
-        "chain": "⇒",          # Chain/sequence indicator
+        "input": "←",  # Input indicator
+        "output": "→",  # Output indicator
+        "pipe": "│",  # Pipe/vertical connector
+        "chain": "⇒",  # Chain/sequence indicator
     },
 }
 
@@ -58,14 +55,14 @@ GLYPHS = {
 def get_glyph(category: str, name: str) -> str:
     """
     Retrieve a glyph from the registry.
-    
+
     Args:
         category: The glyph category (e.g., "status", "progress")
         name: The specific glyph name within the category
-        
+
     Returns:
         The glyph string, or a fallback character if not found
-        
+
     Examples:
         >>> get_glyph("status", "success")
         '[+]'
@@ -82,13 +79,13 @@ def get_glyph(category: str, name: str) -> str:
 def get_spinner_frame(frame_index: int) -> str:
     """
     Get a specific frame from the spinner animation.
-    
+
     Args:
         frame_index: The frame number (will wrap around if out of bounds)
-        
+
     Returns:
         The spinner character for the given frame
-        
+
     Examples:
         >>> get_spinner_frame(0)
         '⠋'
@@ -102,13 +99,13 @@ def get_spinner_frame(frame_index: int) -> str:
 def get_progress_block(level: int) -> str:
     """
     Get a progress block character for a given fill level.
-    
+
     Args:
         level: Fill level from 0-7 (0 = empty, 7 = full)
-        
+
     Returns:
         The appropriate progress block character
-        
+
     Examples:
         >>> get_progress_block(0)
         '▏'
