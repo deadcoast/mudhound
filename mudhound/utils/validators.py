@@ -7,6 +7,7 @@ and custom validation functions.
 """
 
 import re
+import typing
 from pathlib import Path
 from typing import Any, Callable, List, Optional
 
@@ -17,10 +18,10 @@ class Validator:
     def validate(self, value: Any) -> tuple[bool, Optional[str]]:
         """
         Validate a value.
-        
+
         Args:
             value: Value to validate
-            
+
         Returns:
             Tuple of (is_valid, error_message)
         """
@@ -33,7 +34,7 @@ class RangeValidator(Validator):
     def __init__(self, min_value: Optional[float] = None, max_value: Optional[float] = None):
         """
         Initialize range validator.
-        
+
         Args:
             min_value: Minimum allowed value (inclusive)
             max_value: Maximum allowed value (inclusive)
@@ -63,7 +64,7 @@ class PatternValidator(Validator):
     def __init__(self, pattern: str, error_message: Optional[str] = None):
         """
         Initialize pattern validator.
-        
+
         Args:
             pattern: Regular expression pattern
             error_message: Custom error message (defaults to generic message)
@@ -87,7 +88,7 @@ class LengthValidator(Validator):
     def __init__(self, min_length: Optional[int] = None, max_length: Optional[int] = None):
         """
         Initialize length validator.
-        
+
         Args:
             min_length: Minimum allowed length (inclusive)
             max_length: Maximum allowed length (inclusive)
@@ -115,7 +116,7 @@ class EnumValidator(Validator):
     def __init__(self, allowed_values: List[Any], case_sensitive: bool = True):
         """
         Initialize enum validator.
-        
+
         Args:
             allowed_values: List of allowed values
             case_sensitive: Whether string comparison is case-sensitive
@@ -145,10 +146,12 @@ class EnumValidator(Validator):
 class PathValidator(Validator):
     """Validates that a path exists or is valid."""
 
-    def __init__(self, must_exist: bool = False, must_be_file: bool = False, must_be_dir: bool = False):
+    def __init__(
+        self, must_exist: bool = False, must_be_file: bool = False, must_be_dir: bool = False
+    ):
         """
         Initialize path validator.
-        
+
         Args:
             must_exist: Whether path must exist
             must_be_file: Whether path must be a file
@@ -176,14 +179,41 @@ class PathValidator(Validator):
 
         return True, None
 
+    def validate_output_path(self, value: Any) -> tuple[bool, Optional[str]]:
+        """Validate output path."""
+        try:
+            path = Path(value)
+        except (TypeError, ValueError):
+            return False, "Invalid path"
+
+        if path.exists() and not path.is_file():
+            return False, "Path must be a file"
+
+        return True, None
+
+    def validate_input_path(self, value: Any) -> tuple[bool, Optional[str]]:
+        """Validate input path."""
+        try:
+            path = Path(value)
+        except (TypeError, ValueError):
+            return False, "Invalid path"
+
+        if not path.exists():
+            return False, "Path does not exist"
+
+        if not path.is_file():
+            return False, "Path must be a file"
+
+        return True, None
+
 
 class CustomValidator(Validator):
     """Validates using a custom function."""
 
-    def __init__(self, func: Callable[[Any], tuple[bool, Optional[str]]]):
+    def __init__(self, func: Callable[[Any], typing.Tuple[bool, Optional[str]]]):
         """
         Initialize custom validator.
-        
+
         Args:
             func: Validation function that returns (is_valid, error_message)
         """
