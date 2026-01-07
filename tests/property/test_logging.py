@@ -65,7 +65,8 @@ def test_log_message_formatting(message, level):
 
     # Formatted message should contain:
     # 1. A timestamp (we'll check for date pattern)
-    assert any(char.isdigit() for char in formatted[:20]), "Should contain timestamp"
+    assert any(char.isdigit()
+               for char in formatted[:20]), "Should contain timestamp"
 
     # 2. The level-appropriate glyph
     assert expected_glyph in formatted, f"Should contain glyph {expected_glyph}"
@@ -99,9 +100,11 @@ def test_status_component_formatting(message, level):
     expected_glyph = style["glyph"]
 
     # Should contain timestamp, glyph, level name, and message
-    assert any(char.isdigit() for char in formatted[:20]), "Should contain timestamp"
+    assert any(char.isdigit()
+               for char in formatted[:20]), "Should contain timestamp"
     assert expected_glyph in formatted, f"Should contain glyph {expected_glyph}"
-    assert logging.getLevelName(level) in formatted, "Should contain level name"
+    assert logging.getLevelName(
+        level) in formatted, "Should contain level name"
     assert message in formatted, "Should contain the message"
 
 
@@ -123,9 +126,9 @@ def test_status_component_without_timestamp(message):
     # Should not start with a timestamp pattern
     # Timestamps typically start with year (4 digits)
     first_word = formatted.split()[0]
-    assert not (
-        len(first_word) >= 4 and first_word[:4].isdigit()
-    ), "Should not contain timestamp when show_timestamp=False"
+    assert not (len(first_word) >= 4 and first_word[:4].isdigit()), (
+        "Should not contain timestamp when show_timestamp=False"
+    )
 
     # Should still contain glyph and message
     assert "[*]" in formatted, "Should contain info glyph"
@@ -167,9 +170,9 @@ def test_log_level_color_coding(message, level):
     }
 
     # Verify the color name matches expected
-    assert (
-        expected_color_name == level_color_map[level]
-    ), f"Level {level} should use color {level_color_map[level]}"
+    assert expected_color_name == level_color_map[level], (
+        f"Level {level} should use color {level_color_map[level]}"
+    )
 
     # When color is enabled, formatted message should contain ANSI escape codes
     assert "\033[" in formatted, "Should contain ANSI escape codes when use_color=True"
@@ -225,7 +228,8 @@ def test_formatter_color_coding(message, level):
             min_size=1,
             max_size=100,
             alphabet=st.characters(
-                blacklist_categories=("Cc", "Cs")  # Exclude control and surrogate characters
+                # Exclude control and surrogate characters
+                blacklist_categories=("Cc", "Cs")
             ),
         ),
         min_size=1,

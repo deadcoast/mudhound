@@ -56,9 +56,11 @@ class Table:
 
     # Default column configurations
     DEFAULT_COLUMNS = [
-        ColumnConfig(name="Rank", width=6, min_width=6, max_width=6, align="right"),
+        ColumnConfig(name="Rank", width=6, min_width=6,
+                     max_width=6, align="right"),
         ColumnConfig(name="URL", min_width=20, align="left"),
-        ColumnConfig(name="Source", width=20, min_width=10, max_width=30, align="left"),
+        ColumnConfig(name="Source", width=20, min_width=10,
+                     max_width=30, align="left"),
     ]
 
     def __init__(
@@ -387,7 +389,8 @@ class Table:
             lines.append(filter_line)
 
         # Add pagination info
-        total_pages = (len(filtered_results) + self.page_size - 1) // self.page_size
+        total_pages = (len(filtered_results) +
+                       self.page_size - 1) // self.page_size
         if total_pages > 1:
             page_info = f"Page {self.current_page + 1}/{total_pages}"
             if self.use_color:
@@ -415,7 +418,8 @@ class Table:
             self.current_row += 1
         else:
             # Check if there's a next page
-            total_pages = (len(filtered_results) + self.page_size - 1) // self.page_size
+            total_pages = (len(filtered_results) +
+                           self.page_size - 1) // self.page_size
             if self.current_page < total_pages - 1:
                 self.current_page += 1
                 self.current_row = 0
@@ -429,7 +433,8 @@ class Table:
     def page_down(self) -> None:
         """Move down one page."""
         filtered_results = self._filter_results()
-        total_pages = (len(filtered_results) + self.page_size - 1) // self.page_size
+        total_pages = (len(filtered_results) +
+                       self.page_size - 1) // self.page_size
 
         if self.current_page < total_pages - 1:
             self.current_page += 1

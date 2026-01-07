@@ -35,7 +35,8 @@ def demo_basic_errors():
     print()
 
     # Validation error
-    validation_err = ValidationError("Input must be between 1 and 100", field="max_results")
+    validation_err = ValidationError(
+        "Input must be between 1 and 100", field="max_results")
     print(handler.display_error(validation_err, width=70))
     print()
 
@@ -48,7 +49,8 @@ def demo_rate_limit_error():
     print()
 
     handler = ErrorHandler(verbose=False)
-    error = RateLimitError("Too many requests to search API", retry_after=120.0)
+    error = RateLimitError(
+        "Too many requests to search API", retry_after=120.0)
     print(handler.display_error(error, width=70))
     print()
 
@@ -64,7 +66,8 @@ def demo_verbose_mode():
 
     try:
         # Create a real exception with stack trace
-        raise ExportError("Failed to write to /protected/file.json: Permission denied")
+        raise ExportError(
+            "Failed to write to /protected/file.json: Permission denied")
     except ExportError as e:
         print(handler.display_error(e, width=80))
     print()

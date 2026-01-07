@@ -40,7 +40,6 @@ ANSI_COLORS = {
     "reset": "\033[0m",
 }
 
-
 # Default theme definition
 DEFAULT_THEME = {
     "name": "default",
@@ -193,7 +192,8 @@ class ThemeEngine:
             return theme
 
         except Exception as e:
-            raise ConfigError(f"Failed to load theme '{theme_name}': {e}") from e
+            raise ConfigError(
+                f"Failed to load theme '{theme_name}': {e}") from e
 
     def set_active_theme(self, theme_name: str) -> None:
         """Set the active theme.
