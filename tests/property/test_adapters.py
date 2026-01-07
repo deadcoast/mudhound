@@ -10,7 +10,12 @@ from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 from mudhound.adapters.base import SearchAdapter
-from mudhound.core.result import SearchOptions, SearchResult, SearchSession, SearchStatus
+from mudhound.core.result import (
+    SearchOptions,
+    SearchResult,
+    SearchSession,
+    SearchStatus,
+)
 
 
 # Create a concrete test adapter for testing the interface
@@ -59,7 +64,8 @@ def search_options_strategy(draw):
         max_results=draw(st.integers(min_value=1, max_value=500)),
         region=draw(st.text(min_size=2, max_size=10)),
         safesearch=draw(st.sampled_from(["off", "moderate", "strict"])),
-        time_limit=draw(st.one_of(st.none(), st.sampled_from(["d", "w", "m", "y"]))),
+        time_limit=draw(
+            st.one_of(st.none(), st.sampled_from(["d", "w", "m", "y"]))),
     )
 
 

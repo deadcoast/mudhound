@@ -25,7 +25,8 @@ def search_result_strategy(draw):
         )
     )
     title = draw(
-        st.text(min_size=5, max_size=100, alphabet=st.characters(blacklist_categories=("Cs", "Cc")))
+        st.text(min_size=5, max_size=100, alphabet=st.characters(
+            blacklist_categories=("Cs", "Cc")))
     )
     snippet = draw(
         st.text(
@@ -74,9 +75,9 @@ def test_table_column_rendering(results):
     rendered_lines = table.render()
 
     # Verify we have at least header + separator + data rows
-    assert (
-        len(rendered_lines) >= 3
-    ), "Table should have header, separator, and at least one data row"
+    assert len(rendered_lines) >= 3, (
+        "Table should have header, separator, and at least one data row"
+    )
 
     # Check header line (first line)
     header_line = rendered_lines[0]
@@ -88,9 +89,9 @@ def test_table_column_rendering(results):
 
     # Check separator line (second line)
     separator_line = rendered_lines[1]
-    assert (
-        "─" in separator_line or "-" in separator_line
-    ), "Separator line should contain horizontal line characters"
+    assert "─" in separator_line or "-" in separator_line, (
+        "Separator line should contain horizontal line characters"
+    )
 
     # Check data rows (starting from line 3)
     data_lines = rendered_lines[2:]
@@ -106,7 +107,8 @@ def test_table_column_rendering(results):
     assert len(actual_data_lines) > 0, "Table should have at least one data row"
 
     # For each result, verify its data appears in the table
-    for result in results[: min(len(results), table.page_size)]:  # Only check first page
+    # Only check first page
+    for result in results[: min(len(results), table.page_size)]:
         # Check that rank appears somewhere in the rendered output
         rank_str = str(result.rank)
         found_rank = any(rank_str in line for line in actual_data_lines)
@@ -151,7 +153,8 @@ def test_table_column_auto_sizing(results, terminal_width):
     widths = table._calculate_column_widths()
 
     # Verify we have widths for all columns
-    assert len(widths) == len(table.columns), "Should have width for each column"
+    assert len(widths) == len(
+        table.columns), "Should have width for each column"
 
     # Verify all widths are positive
     for width in widths:
@@ -164,26 +167,26 @@ def test_table_column_auto_sizing(results, terminal_width):
 
     total_used_width = total_width + separator_width + frame_border_width
 
-    assert (
-        total_used_width <= terminal_width
-    ), f"Total table width ({total_used_width}) should fit within terminal width ({terminal_width})"
+    assert total_used_width <= terminal_width, (
+        f"Total table width ({total_used_width}) should fit within terminal width ({terminal_width})"
+    )
 
     # Verify each column respects its min/max constraints
     for _i, (width, col) in enumerate(zip(widths, table.columns)):
-        assert (
-            width >= col.min_width
-        ), f"Column {col.name} width ({width}) should be >= min_width ({col.min_width})"
+        assert width >= col.min_width, (
+            f"Column {col.name} width ({width}) should be >= min_width ({col.min_width})"
+        )
 
         if col.max_width is not None:
-            assert (
-                width <= col.max_width
-            ), f"Column {col.name} width ({width}) should be <= max_width ({col.max_width})"
+            assert width <= col.max_width, (
+                f"Column {col.name} width ({width}) should be <= max_width ({col.max_width})"
+            )
 
         if col.width is not None:
             # Fixed width columns should have exact width
-            assert (
-                width == col.width
-            ), f"Fixed width column {col.name} should have width {col.width}, got {width}"
+            assert width == col.width, (
+                f"Fixed width column {col.name} should have width {col.width}, got {width}"
+            )
 
 
 @given(
@@ -227,13 +230,14 @@ def test_url_truncation_with_ellipsis(url, column_width):
     truncated = table._truncate_text(url, column_width)
 
     # Verify truncated text fits within width
-    assert (
-        len(truncated) <= column_width
-    ), f"Truncated text length ({len(truncated)}) should be <= column width ({column_width})"
+    assert len(truncated) <= column_width, (
+        f"Truncated text length ({len(truncated)}) should be <= column width ({column_width})"
+    )
 
     # Verify ellipsis is present when text is truncated
     if len(url) > column_width:
-        assert truncated.endswith("..."), "Truncated text should end with ellipsis"
+        assert truncated.endswith(
+            "..."), "Truncated text should end with ellipsis"
 
         # Verify the truncated text contains the beginning of the original
         # (minus the ellipsis)
@@ -241,9 +245,9 @@ def test_url_truncation_with_ellipsis(url, column_width):
         if prefix_length > 0:
             expected_prefix = url[:prefix_length]
             actual_prefix = truncated[:-3]
-            assert (
-                actual_prefix == expected_prefix
-            ), f"Truncated text should preserve prefix: expected '{expected_prefix}', got '{actual_prefix}'"
+            assert actual_prefix == expected_prefix, (
+                f"Truncated text should preserve prefix: expected '{expected_prefix}', got '{actual_prefix}'"
+            )
 
     # Also test in the context of rendering
     rendered_lines = table.render()

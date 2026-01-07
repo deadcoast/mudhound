@@ -25,7 +25,8 @@ GLYPHS: Dict[str, GlyphCategory] = {
     },
     # Progress glyphs - used for progress indicators and animations
     "progress": {
-        "spinner": ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],  # Braille spinner frames
+        # Braille spinner frames
+        "spinner": ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],
         "blocks": ["▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"],  # Progress blocks
         "bullet": "•",  # Bullet point
         "arrow": "→",  # Arrow indicator

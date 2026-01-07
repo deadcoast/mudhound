@@ -51,7 +51,8 @@ class AdapterRegistry:
             TypeError: If adapter_class is not a SearchAdapter subclass
         """
         if not issubclass(adapter_class, SearchAdapter):
-            raise TypeError(f"{adapter_class.__name__} must be a subclass of SearchAdapter")
+            raise TypeError(
+                f"{adapter_class.__name__} must be a subclass of SearchAdapter")
 
         # Instantiate to get the name property
         instance = adapter_class()
@@ -194,7 +195,8 @@ class AdapterRegistry:
                 try:
                     # Load the module from file
                     module_name = py_file.stem
-                    spec = importlib.util.spec_from_file_location(module_name, py_file)
+                    spec = importlib.util.spec_from_file_location(
+                        module_name, py_file)
 
                     if spec and spec.loader:
                         module = importlib.util.module_from_spec(spec)

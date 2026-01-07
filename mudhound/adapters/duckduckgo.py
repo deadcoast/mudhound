@@ -132,7 +132,8 @@ class DuckDuckGoAdapter(SearchAdapter):
 
         except TimeoutException as e:
             # Network timeout
-            raise NetworkError(f"Network timeout while searching DuckDuckGo: {str(e)}") from e
+            raise NetworkError(
+                f"Network timeout while searching DuckDuckGo: {str(e)}") from e
 
         except DuckDuckGoSearchException as e:
             # Other DuckDuckGo-specific errors
@@ -140,7 +141,8 @@ class DuckDuckGoAdapter(SearchAdapter):
 
         except Exception as e:
             # Catch-all for unexpected errors
-            raise NetworkError(f"Unexpected error during DuckDuckGo search: {str(e)}") from e
+            raise NetworkError(
+                f"Unexpected error during DuckDuckGo search: {str(e)}") from e
 
     def validate_options(self, options: SearchOptions) -> List[str]:
         """Validate search options for DuckDuckGo.
