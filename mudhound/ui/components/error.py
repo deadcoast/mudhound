@@ -19,7 +19,7 @@ from mudhound.core.exceptions import (
     ValidationError,
 )
 from mudhound.ui.frames import BorderStyle, FrameRenderer
-from mudhound.ui.glyphs import GLYPHS
+from mudhound.ui.glyphs import get_glyph
 from mudhound.ui.theme import Theme
 
 
@@ -176,7 +176,7 @@ class ErrorHandler:
 
         # Error type and glyph
         error_type = self.classify_error(error)
-        error_glyph = GLYPHS["decorative"]["cross"]
+        error_glyph = get_glyph("decorative", "cross")
 
         # Apply error color from theme
         error_color = self.theme.get_color("error")

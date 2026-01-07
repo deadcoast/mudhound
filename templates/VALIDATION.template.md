@@ -1,8 +1,8 @@
 # Validation
 
-## 0.0.0
+## X.X.X
 
-### A) PROTOCOL
+### PROTOCOL
 
 > [!NOTE]
 > versioning: canonical
@@ -10,8 +10,6 @@
 > status: 'tracking validation findings and integration status'
 
 ---
-
-## X.X.X
 
 - YEAR-MM-DD
 

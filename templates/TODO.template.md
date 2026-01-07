@@ -1,8 +1,8 @@
 # TODO.md
 
-## 0.0.0
+## X.X.X
 
-### A) PROTOCOL
+### PROTOCOL
 
 > [!NOTE]
 > versioning: canonical
@@ -10,8 +10,6 @@
 > status: 'tracking TODO items and outstanding work'
 
 ---
-
-## X.X.X
 
 - YEAR-MM-DD
 
@@ -21,21 +19,21 @@
 
 ---
 
-### A) Task title
+### A)
 
 > [!IMPORTANT]
 > Brief description of the task or issue.
 > [VALIDATION.md], [ver:`X.X.X`, sect:`Y)`]
 > [CHANGELOG.md], [ver:`X.X.X`, sect:`X)`]
 
-### B) Task title
+### B)
 
 > [!IMPORTANT]
 > Brief description of the task or issue.
 > [VALIDATION.md], [ver:`X.X.X`, sect:`Y)`]
 > [CHANGELOG.md], [ver:`X.X.X`, sect:`X)`]
 
-### C) Task title
+### C)
 
 > [!IMPORTANT]
 > Brief description of the task or issue.

@@ -25,18 +25,18 @@ def demo_basic_errors():
     handler = ErrorHandler(verbose=False)
 
     # Config error
-    error = ConfigError("Invalid TOML syntax in configuration file")
-    print(handler.display_error(error, width=70))
+    config_err = ConfigError("Invalid TOML syntax in configuration file")
+    print(handler.display_error(config_err, width=70))
     print()
 
     # Network error
-    error = NetworkError("Connection timeout after 30 seconds")
-    print(handler.display_error(error, width=70))
+    network_err = NetworkError("Connection timeout after 30 seconds")
+    print(handler.display_error(network_err, width=70))
     print()
 
     # Validation error
-    error = ValidationError("Input must be between 1 and 100", field="max_results")
-    print(handler.display_error(error, width=70))
+    validation_err = ValidationError("Input must be between 1 and 100", field="max_results")
+    print(handler.display_error(validation_err, width=70))
     print()
 
 

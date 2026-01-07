@@ -171,7 +171,7 @@ class ResultStore:
 
             conn.commit()
         except sqlite3.Error as e:
-            raise StoreError(f"Failed to persist session: {e}")
+            raise StoreError(f"Failed to persist session: {e}") from e
         finally:
             conn.close()
 
@@ -220,7 +220,7 @@ class ResultStore:
 
             return sessions
         except sqlite3.Error as e:
-            raise StoreError(f"Failed to list sessions: {e}")
+            raise StoreError(f"Failed to list sessions: {e}") from e
         finally:
             conn.close()
 
@@ -312,7 +312,7 @@ class ResultStore:
 
             return session
         except (sqlite3.Error, json.JSONDecodeError, ValueError) as e:
-            raise StoreError(f"Failed to retrieve session: {e}")
+            raise StoreError(f"Failed to retrieve session: {e}") from e
         finally:
             conn.close()
 
@@ -353,7 +353,7 @@ class ResultStore:
                 "options": options_dict,
             }
         except (sqlite3.Error, json.JSONDecodeError) as e:
-            raise StoreError(f"Failed to retrieve replay parameters: {e}")
+            raise StoreError(f"Failed to retrieve replay parameters: {e}") from e
         finally:
             conn.close()
 
@@ -382,7 +382,7 @@ class ResultStore:
 
             return cursor.rowcount > 0
         except sqlite3.Error as e:
-            raise StoreError(f"Failed to delete session: {e}")
+            raise StoreError(f"Failed to delete session: {e}") from e
         finally:
             conn.close()
 
@@ -398,7 +398,7 @@ class ResultStore:
         conn = sqlite3.connect(self.db_path)
         try:
             cursor = conn.execute("SELECT COUNT(*) FROM search_sessions")
-            count = cursor.fetchone()[0]
+            count: int = cursor.fetchone()[0]
 
             conn.execute("DELETE FROM search_sessions")
             conn.execute("DELETE FROM search_results")
@@ -406,6 +406,6 @@ class ResultStore:
 
             return count
         except sqlite3.Error as e:
-            raise StoreError(f"Failed to clear history: {e}")
+            raise StoreError(f"Failed to clear history: {e}") from e
         finally:
             conn.close()

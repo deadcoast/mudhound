@@ -6,8 +6,14 @@ for status indicators, progress displays, selection markers, decorative elements
 and data flow visualization.
 """
 
+from typing import Dict, List, Union
+
+# Type alias for glyph values (can be str or list of str)
+GlyphValue = Union[str, List[str]]
+GlyphCategory = Dict[str, GlyphValue]
+
 # Main glyph registry dictionary
-GLYPHS = {
+GLYPHS: Dict[str, GlyphCategory] = {
     # Status indicators - used for log messages and status displays
     "status": {
         "success": "[+]",  # Successful operation
@@ -69,7 +75,9 @@ def get_glyph(category: str, name: str) -> str:
         '•'
     """
     try:
-        return GLYPHS[category][name]
+        value = GLYPHS[category][name]
+        # Most glyphs are strings; spinner/blocks are lists (handled by other functions)
+        return str(value) if isinstance(value, str) else "?"
     except KeyError:
         # Fallback to a generic indicator if glyph not found
         return "?"
@@ -92,7 +100,9 @@ def get_spinner_frame(frame_index: int) -> str:
         '⠴'
     """
     spinner = GLYPHS["progress"]["spinner"]
-    return spinner[frame_index % len(spinner)]
+    if isinstance(spinner, list):
+        return spinner[frame_index % len(spinner)]
+    return "?"
 
 
 def get_progress_block(level: int) -> str:
@@ -114,7 +124,9 @@ def get_progress_block(level: int) -> str:
     blocks = GLYPHS["progress"]["blocks"]
     # Clamp level to valid range
     level = max(0, min(7, level))
-    return blocks[level]
+    if isinstance(blocks, list):
+        return blocks[level]
+    return "?"
 
 
 __all__ = [

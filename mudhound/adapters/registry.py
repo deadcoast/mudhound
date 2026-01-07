@@ -140,7 +140,7 @@ class AdapterRegistry:
         __init__.py or in a module named 'adapter'.
         """
         # Iterate through all installed packages
-        for finder, name, ispkg in pkgutil.iter_modules():
+        for _finder, name, _ispkg in pkgutil.iter_modules():
             # Check if package name matches the plugin pattern
             if name.startswith("mudhound_adapter_"):
                 try:

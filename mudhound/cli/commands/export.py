@@ -48,7 +48,7 @@ def export_json(results: List[SearchResult], output_path: Path) -> None:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
     except OSError as e:
-        raise ExportError(f"Failed to write JSON file: {e}")
+        raise ExportError(f"Failed to write JSON file: {e}") from e
 
 
 def export_csv(results: List[SearchResult], output_path: Path) -> None:
@@ -79,7 +79,7 @@ def export_csv(results: List[SearchResult], output_path: Path) -> None:
                 )
 
     except OSError as e:
-        raise ExportError(f"Failed to write CSV file: {e}")
+        raise ExportError(f"Failed to write CSV file: {e}") from e
 
 
 def export_txt(results: List[SearchResult], output_path: Path) -> None:
@@ -102,7 +102,7 @@ def export_txt(results: List[SearchResult], output_path: Path) -> None:
                 f.write("\n" + "-" * 80 + "\n\n")
 
     except OSError as e:
-        raise ExportError(f"Failed to write TXT file: {e}")
+        raise ExportError(f"Failed to write TXT file: {e}") from e
 
 
 def export_urls(results: List[SearchResult], output_path: Path) -> None:
@@ -121,7 +121,7 @@ def export_urls(results: List[SearchResult], output_path: Path) -> None:
                 f.write(f"{result.url}\n")
 
     except OSError as e:
-        raise ExportError(f"Failed to write URLs file: {e}")
+        raise ExportError(f"Failed to write URLs file: {e}") from e
 
 
 @app.command()

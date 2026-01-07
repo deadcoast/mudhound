@@ -14,7 +14,7 @@ from mudhound.core.result import SearchOptions, SearchResult, SearchSession, Sea
 
 
 # Create a concrete test adapter for testing the interface
-class TestAdapter(SearchAdapter):
+class MockAdapter(SearchAdapter):
     """Concrete test adapter for property testing."""
 
     def __init__(self, adapter_name: str = "test", adapter_display_name: str = "Test Adapter"):
@@ -72,7 +72,7 @@ def adapter_strategy(draw):
         )
     )
     display_name = draw(st.text(min_size=1, max_size=100))
-    return TestAdapter(adapter_name=name, adapter_display_name=display_name)
+    return MockAdapter(adapter_name=name, adapter_display_name=display_name)
 
 
 @given(adapter=adapter_strategy())
@@ -201,7 +201,7 @@ def test_on_rate_limit_default_implementation(adapter):
 
 
 # DuckDuckGo-specific property tests
-# Note: These tests use the TestAdapter as a mock since we can't make real API calls
+# Note: These tests use the MockAdapter as a mock since we can't make real API calls
 # in property tests. The actual DuckDuckGo adapter behavior is tested in integration tests.
 
 
@@ -215,8 +215,8 @@ def test_max_results_enforcement(max_results, query):
     For any max_results value specified, the DuckDuckGo adapter should return
     at most that number of results.
     """
-    # Use TestAdapter as a proxy since we can't make real API calls
-    adapter = TestAdapter()
+    # Use MockAdapter as a proxy since we can't make real API calls
+    adapter = MockAdapter()
     options = SearchOptions(max_results=max_results)
 
     # Execute search and collect results
@@ -240,8 +240,8 @@ def test_search_result_structure_completeness(query, max_results):
     For any search result yielded by the DuckDuckGo adapter, it should contain
     all required fields: url, title, snippet, source, and rank.
     """
-    # Use TestAdapter as a proxy since we can't make real API calls
-    adapter = TestAdapter()
+    # Use MockAdapter as a proxy since we can't make real API calls
+    adapter = MockAdapter()
     options = SearchOptions(max_results=max_results)
 
     # Execute search and collect results
@@ -293,7 +293,7 @@ def test_search_command_initiation(query, max_results):
     from mudhound.core.engine import SearchEngine
 
     # Create a search engine with the test adapter
-    adapter = TestAdapter()
+    adapter = MockAdapter()
     engine = SearchEngine(adapter=adapter)
 
     # Create search options

@@ -121,26 +121,26 @@ class DuckDuckGoAdapter(SearchAdapter):
                 yield search_result
                 rank += 1
 
-        except RatelimitException:
+        except RatelimitException as err:
             # DuckDuckGo rate limit exceeded
             # Suggest waiting 60 seconds by default
             retry_after = self.on_rate_limit(60)
             raise RateLimitError(
                 f"DuckDuckGo rate limit exceeded. Please wait {retry_after} seconds.",
                 retry_after=retry_after,
-            )
+            ) from err
 
         except TimeoutException as e:
             # Network timeout
-            raise NetworkError(f"Network timeout while searching DuckDuckGo: {str(e)}")
+            raise NetworkError(f"Network timeout while searching DuckDuckGo: {str(e)}") from e
 
         except DuckDuckGoSearchException as e:
             # Other DuckDuckGo-specific errors
-            raise NetworkError(f"DuckDuckGo search error: {str(e)}")
+            raise NetworkError(f"DuckDuckGo search error: {str(e)}") from e
 
         except Exception as e:
             # Catch-all for unexpected errors
-            raise NetworkError(f"Unexpected error during DuckDuckGo search: {str(e)}")
+            raise NetworkError(f"Unexpected error during DuckDuckGo search: {str(e)}") from e
 
     def validate_options(self, options: SearchOptions) -> List[str]:
         """Validate search options for DuckDuckGo.

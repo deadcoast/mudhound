@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import List, Optional, TextIO
 
 from mudhound.core.result import SearchResult
-from mudhound.ui.glyphs import GLYPHS
+from mudhound.ui.glyphs import get_glyph
 from mudhound.ui.layout import LayoutManager
 from mudhound.ui.theme import get_theme_engine
 
@@ -293,7 +293,7 @@ class Table:
 
         # Apply selection highlighting
         if is_selected:
-            cursor = GLYPHS["selection"]["cursor"]
+            cursor = get_glyph("selection", "cursor")
             if self.use_color:
                 theme_engine = get_theme_engine()
                 row = theme_engine.apply(row, "accent")

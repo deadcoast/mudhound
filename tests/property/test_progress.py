@@ -2,6 +2,7 @@
 
 from io import StringIO
 
+import pytest
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
@@ -168,7 +169,7 @@ def test_progress_variant_rendering(variant, total, current):
     try:
         progress.render()
     except Exception as e:
-        assert False, f"Progress rendering with variant '{variant}' should not raise exception: {e}"
+        pytest.fail(f"Progress rendering with variant '{variant}' should not raise exception: {e}")
 
     # Get output
     rendered_output = output.getvalue()

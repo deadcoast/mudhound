@@ -39,6 +39,8 @@ class Banner:
         output: Output stream for rendering
     """
 
+    animation_renderer: Optional[AnimationRenderer]
+
     def __init__(
         self,
         style: Optional[str] = None,

@@ -7,9 +7,9 @@ support for different input types and validation rules.
 
 import sys
 from pathlib import Path
-from typing import Any, List, Optional, TextIO
+from typing import Any, List, Optional, TextIO, cast
 
-from mudhound.ui.glyphs import GLYPHS
+from mudhound.ui.glyphs import get_glyph
 from mudhound.ui.theme import get_theme_engine
 from mudhound.utils.validators import (
     EnumValidator,
@@ -107,7 +107,7 @@ class Prompt:
         Returns:
             Formatted error string
         """
-        error_glyph = GLYPHS["status"]["error"]
+        error_glyph = get_glyph("status", "error")
 
         if self.use_color:
             theme_engine = get_theme_engine()
@@ -219,7 +219,7 @@ class Prompt:
                     return value
                 else:
                     # Display error and allow re-entry
-                    error_msg = self._format_error(error_message)
+                    error_msg = self._format_error(error_message or "Invalid input")
                     self.output.write(error_msg + "\n")
                     self.output.flush()
 
@@ -237,7 +237,7 @@ class Prompt:
             Text input string
         """
         self.prompt_type = PromptType.TEXT
-        return self.prompt()
+        return cast(str, self.prompt())
 
     def prompt_number(
         self, min_value: Optional[float] = None, max_value: Optional[float] = None
@@ -258,7 +258,7 @@ class Prompt:
         if min_value is not None or max_value is not None:
             self.validators.append(RangeValidator(min_value, max_value))
 
-        return self.prompt()
+        return cast(float, self.prompt())
 
     def prompt_choice(self, choices: List[Any], case_sensitive: bool = True) -> Any:
         """
@@ -297,7 +297,7 @@ class Prompt:
         # Add path validator
         self.validators.append(PathValidator(must_exist, must_be_file, must_be_dir))
 
-        return self.prompt()
+        return cast(Path, self.prompt())
 
     def prompt_confirm(self, default: Optional[bool] = None) -> bool:
         """
@@ -312,7 +312,7 @@ class Prompt:
         self.prompt_type = PromptType.CONFIRM
         self.default = default
 
-        return self.prompt()
+        return cast(bool, self.prompt())
 
 
 __all__ = ["Prompt", "PromptType"]

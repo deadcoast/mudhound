@@ -158,7 +158,7 @@ class ConfigManager:
                     return
 
                 except Exception as e:
-                    raise ConfigError(f"Failed to parse config file '{path}': {e}")
+                    raise ConfigError(f"Failed to parse config file '{path}': {e}") from e
 
         # No config file found, using defaults
 
@@ -280,7 +280,7 @@ class ConfigManager:
             self.config_path = path
 
         except Exception as e:
-            raise ConfigError(f"Failed to save config to '{path}': {e}")
+            raise ConfigError(f"Failed to save config to '{path}': {e}") from e
 
     def reset(self) -> None:
         """Reset configuration to defaults."""

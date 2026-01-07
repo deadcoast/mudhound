@@ -193,7 +193,7 @@ class ThemeEngine:
             return theme
 
         except Exception as e:
-            raise ConfigError(f"Failed to load theme '{theme_name}': {e}")
+            raise ConfigError(f"Failed to load theme '{theme_name}': {e}") from e
 
     def set_active_theme(self, theme_name: str) -> None:
         """Set the active theme.

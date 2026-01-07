@@ -29,8 +29,8 @@ def success(self, message, *args, **kwargs):
 
 
 # Add methods to Logger class
-logging.Logger.trace = trace
-logging.Logger.success = success
+logging.Logger.trace = trace  # type: ignore[attr-defined]
+logging.Logger.success = success  # type: ignore[attr-defined]
 
 
 # Level styles mapping: glyph and color per level

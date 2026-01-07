@@ -11,7 +11,7 @@ import time
 from enum import Enum
 from typing import Optional, TextIO
 
-from mudhound.ui.glyphs import GLYPHS
+from mudhound.ui.glyphs import get_glyph
 from mudhound.ui.theme import get_theme_engine
 
 
@@ -84,7 +84,7 @@ class Confirmation:
         """
         # Add warning glyph for destructive actions
         if self.variant == ConfirmationVariant.DESTRUCTIVE:
-            warning_glyph = GLYPHS["status"]["warning"]
+            warning_glyph = get_glyph("status", "warning")
             if self.use_color:
                 theme_engine = get_theme_engine()
                 warning_glyph = theme_engine.apply(warning_glyph, "warning")

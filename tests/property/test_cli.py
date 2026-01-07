@@ -997,7 +997,7 @@ def test_invalid_argument_handling(invalid_format, invalid_max_results, invalid_
     """
     from typer.testing import CliRunner
 
-    runner = CliRunner()
+    _runner = CliRunner()  # Reserved for future CLI testing
 
     # Test 1: Invalid export format
     # Valid formats are: json, csv, txt, urls
@@ -1250,7 +1250,7 @@ def test_output_path_validation(output_path):
 
             # Check if parent directory exists (we don't actually create it in the test)
             # In the real CLI, we might create parent directories or error if they don't exist
-            parent = path.parent
+            _parent = path.parent  # Reserved for future directory creation logic
 
             # For testing, we just verify the path can be parsed
             assert path is not None

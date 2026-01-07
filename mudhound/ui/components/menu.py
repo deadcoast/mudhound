@@ -8,7 +8,7 @@ with keyboard navigation support.
 import sys
 from typing import List, Optional, TextIO
 
-from mudhound.ui.glyphs import GLYPHS
+from mudhound.ui.glyphs import get_glyph
 from mudhound.ui.theme import get_theme_engine
 
 
@@ -78,7 +78,7 @@ class Menu:
 
         # Add cursor indicator for selected option
         if is_selected:
-            cursor = GLYPHS["selection"]["cursor"]
+            cursor = get_glyph("selection", "cursor")
             if self.use_color:
                 theme_engine = get_theme_engine()
                 cursor = theme_engine.apply(cursor, "accent")

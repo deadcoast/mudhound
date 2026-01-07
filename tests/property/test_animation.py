@@ -1,10 +1,14 @@
 """Property-based tests for animation system."""
 
 import time
+from io import StringIO
 
-from hypothesis import given, settings
+import pytest
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
+from mudhound.assets.manager import CACHE, AssetManager
+from mudhound.ui.animation.engine import AnimationRenderer
 from mudhound.ui.animation.timing import TimingEngine
 
 
@@ -121,11 +125,6 @@ def test_infinite_loop_with_zero_duration(total_frames, fps):
         engine.stop()
 
 
-from hypothesis import assume
-
-from mudhound.assets.manager import CACHE, AssetManager
-
-
 @given(scheme=st.sampled_from(["rainbow", "dark-rainbow", "light-rainbow", "white"]))
 @settings(max_examples=100, deadline=None)
 def test_asset_caching_behavior(scheme):
@@ -240,7 +239,7 @@ def test_fallback_asset_provision(scheme):
         banner_frames = manager.get_banner_frames(scheme)
         logo_frames = manager.get_logo_frames(scheme)
     except Exception as e:
-        assert False, f"Should provide fallback instead of raising exception: {e}"
+        pytest.fail(f"Should provide fallback instead of raising exception: {e}")
 
     # Should return non-empty frames
     assert len(banner_frames) > 0, "Should return at least one banner frame"
@@ -255,11 +254,6 @@ def test_fallback_asset_provision(scheme):
     # Frames should not be empty strings
     assert all(len(frame) > 0 for frame in banner_frames), "Banner frames should not be empty"
     assert all(len(frame) > 0 for frame in logo_frames), "Logo frames should not be empty"
-
-
-from io import StringIO
-
-from mudhound.ui.animation.engine import AnimationRenderer
 
 
 @given(
@@ -301,7 +295,7 @@ def test_animation_pause_and_resume_on_resize(total_frames, fps):
         assert not renderer.is_paused, "Animation should not be paused initially"
 
         # Get current frame before pause
-        frame_before_pause = timing_engine.get_current_frame()
+        _frame_before_pause = timing_engine.get_current_frame()
         elapsed_before_pause = timing_engine.get_elapsed_time()
 
         # Simulate terminal resize by pausing

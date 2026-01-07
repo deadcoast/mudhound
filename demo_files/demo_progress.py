@@ -16,7 +16,7 @@ def demo_bar_progress():
     progress = Progress(variant=ProgressVariant.BAR, total=100)
     progress.start()
 
-    for i in range(100):
+    for _ in range(100):
         time.sleep(0.05)
         progress.update(1)
 
@@ -29,7 +29,7 @@ def demo_spinner_progress():
     progress = Progress(variant=ProgressVariant.SPINNER, total=None)
     progress.start()
 
-    for i in range(50):
+    for _ in range(50):
         time.sleep(0.1)
         progress.update(1)
 
@@ -42,7 +42,7 @@ def demo_counter_progress():
     progress = Progress(variant=ProgressVariant.COUNTER, total=None)
     progress.start()
 
-    for i in range(30):
+    for _ in range(30):
         time.sleep(0.1)
         progress.update(1)
 
@@ -55,7 +55,7 @@ def demo_transfer_progress():
     progress = Progress(variant=ProgressVariant.TRANSFER, total=None)
     progress.start()
 
-    for i in range(40):
+    for _ in range(40):
         time.sleep(0.1)
         progress.update(1)
 
@@ -68,7 +68,7 @@ def demo_rainbow_progress():
     progress = Progress(variant=ProgressVariant.RAINBOW, total=100)
     progress.start()
 
-    for i in range(100):
+    for _ in range(100):
         time.sleep(0.05)
         progress.update(1)
 
@@ -81,7 +81,7 @@ def demo_cancellation():
     progress = Progress(variant=ProgressVariant.BAR, total=100)
     progress.start()
 
-    for i in range(30):
+    for _ in range(30):
         time.sleep(0.05)
         progress.update(1)
 

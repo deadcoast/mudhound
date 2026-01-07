@@ -54,14 +54,12 @@ The name "Crown" derives from "Triple Crown" - representing the three interconne
 
 ## Document Structure
 
-### Protocol Section (0.0.0)
+### Protocol Section
 
 Every crown document begins with a protocol section:
 
 ```markdown
-## 0.0.0
-
-### A) PROTOCOL
+### PROTOCOL
 
 > [!NOTE]
 > versioning: canonical
@@ -74,16 +72,13 @@ Every crown document begins with a protocol section:
 Each version follows this structure:
 
 ```markdown
-## X.X.X
-
 - YEAR-MM-DD
 
 > [!IMPORTANT]
 > Brief summary of this version/pass
 > [DOCUMENT.md], [ver:`X.X.X`] - Description
-> [DOCUMENT.md], [ver:`X.X.X`, sect:`Y)`] - Description
 
-### A) Section Title
+### A)
 
 [Content - tables, descriptions, etc.]
 ```
@@ -282,6 +277,56 @@ CHANGELOG.md 0.0.1 section D:
 VALIDATION.md 0.0.3 section B:
 "Table | ✅ | [TODO.md], [ver:`0.0.1`, sect:`C)`] - COMPLETED"
 ```
+
+---
+
+## File Organization & Workflow
+
+### Directory Structure
+
+```
+TODO.md                      # LIVE working document
+docs/TODO/
+├── complete/                # Completed version files
+│   ├── 0.0.1.md
+│   ├── 0.0.2.md
+│   └── ...
+└── pending/                 # Incomplete revisions
+```
+
+### Document Roles
+
+| Location | Purpose |
+| -------- | ------- |
+| `TODO.md` (root) | LIVE working document - current active tasks |
+| `docs/TODO/complete/` | Completed versions - archived when all tasks `[x]` |
+| `docs/TODO/pending/` | Incomplete revisions - tasks marked complete but need work |
+
+### Token Efficiency Design
+
+Crown documents are optimized for AI agent token usage:
+
+1. **Split files** - Each version is a separate file to avoid loading large documents
+2. **Minimal index** - Checklist contains only `sect` ID + checkbox for quick scanning
+3. **Brief descriptions** - Task sections contain essentials only
+4. **Navigation via references** - `[ver:X.X.X, sect:Y)]` provides exact location when details needed
+
+### Workflow
+
+**Active Development:**
+1. Work in root `TODO.md` (LIVE document)
+2. Add tasks with `[ ]` checkboxes
+3. Mark complete with `[x]` as work finishes
+
+**Version Completion:**
+1. When all tasks in a version are `[x]` complete
+2. Move version file to `docs/TODO/complete/`
+3. Increment version in root `TODO.md`
+
+**Revision Required:**
+1. If completed task found incomplete or needs revision
+2. Move version file to `docs/TODO/pending/`
+3. Update task status and continue work
 
 ---
 

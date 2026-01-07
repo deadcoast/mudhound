@@ -3,6 +3,7 @@
 import time
 from io import StringIO
 
+import pytest
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
@@ -43,7 +44,7 @@ def test_banner_color_cycling_rate(fps):
     )
 
     # Create banner with animated style
-    banner = Banner(
+    _banner = Banner(
         style=BannerStyle.ANIMATED,
         scheme="rainbow",
         config_manager=config,
@@ -207,7 +208,7 @@ def test_banner_style_rendering(style):
     try:
         banner.render()
     except Exception as e:
-        assert False, f"Banner rendering with style '{style}' should not raise exception: {e}"
+        pytest.fail(f"Banner rendering with style '{style}' should not raise exception: {e}")
 
     # Get output
     rendered_output = output.getvalue()

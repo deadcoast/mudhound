@@ -207,7 +207,7 @@ class SearchEngine:
                 search_query.status = SearchStatus.FAILED
                 session.completed_at = datetime.now()
                 session.error = f"Unexpected error: {str(e)}"
-                raise AdapterError(f"Unexpected error during search: {str(e)}")
+                raise AdapterError(f"Unexpected error during search: {str(e)}") from e
 
         # Should never reach here, but just in case
         search_query.status = SearchStatus.FAILED
@@ -263,6 +263,6 @@ class SearchEngine:
 
         except Exception as e:
             # Wrap unexpected errors in AdapterError
-            raise AdapterError(f"Unexpected error during search: {str(e)}")
+            raise AdapterError(f"Unexpected error during search: {str(e)}") from e
 
         return results

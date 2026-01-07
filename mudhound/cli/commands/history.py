@@ -121,7 +121,7 @@ def list(
 
     except StoreError as e:
         console_err.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -227,7 +227,7 @@ def show(
 
     except StoreError as e:
         console_err.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -297,7 +297,7 @@ def replay(
             engine = SearchEngine(adapter_name=params["engine"])
         except Exception as e:
             console_err.print(f"[red]Error:[/red] Failed to initialize search engine: {e}")
-            raise typer.Exit(1)
+            raise typer.Exit(1) from e
 
         # Execute search
         console.print("[yellow]Executing search...[/yellow]")
@@ -317,16 +317,16 @@ def replay(
             )
             console.print(f"[dim]New session ID: {session.query.id[:8]}[/dim]")
 
-        except KeyboardInterrupt:
+        except KeyboardInterrupt as e:
             console.print("\n[yellow]Search cancelled by user[/yellow]")
-            raise typer.Exit(130)
+            raise typer.Exit(130) from e
         except MudHoundError as e:
             console_err.print(f"\n[red]Error:[/red] {e}")
-            raise typer.Exit(1)
+            raise typer.Exit(1) from e
 
     except StoreError as e:
         console_err.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -393,7 +393,7 @@ def delete(
 
     except StoreError as e:
         console_err.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -426,7 +426,7 @@ def clear(
 
     except StoreError as e:
         console_err.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 if __name__ == "__main__":

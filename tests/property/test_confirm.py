@@ -95,7 +95,7 @@ def test_destructive_variant_word_confirmation(message, confirmation_word, user_
     output = StringIO()
 
     # Create confirmation with destructive variant
-    confirmation = Confirmation(
+    _confirmation = Confirmation(
         message=message,
         variant=ConfirmationVariant.DESTRUCTIVE,
         confirmation_word=confirmation_word,
@@ -106,7 +106,7 @@ def test_destructive_variant_word_confirmation(message, confirmation_word, user_
 
     # Determine expected result
     # Only exact match should confirm
-    expected_result = user_input == confirmation_word
+    _expected_result = user_input == confirmation_word
 
     # For testing, we'll simulate the confirmation logic without full prompt
     # to avoid infinite loops in property tests

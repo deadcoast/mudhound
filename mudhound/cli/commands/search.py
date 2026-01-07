@@ -117,10 +117,10 @@ def search(
             console_err.print(error_handler.format_error(e))
         else:
             console_err.print(f"Error: {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
     except Exception as e:
         console_err.print(f"[red]Error initializing search engine:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
     # Create search options
     options = SearchOptions(
@@ -230,12 +230,12 @@ def search(
             for result in session.results:
                 typer.echo(result.url)
 
-    except KeyboardInterrupt:
+    except KeyboardInterrupt as e:
         if not quiet:
             progress.cancel("Search cancelled by user")
         else:
             console.print("\nCancelled")
-        raise typer.Exit(130)
+        raise typer.Exit(130) from e
     except MudHoundError as e:
         if not quiet:
             progress.error(str(e))
@@ -243,13 +243,13 @@ def search(
         else:
             console_err.print(f"Error: {e}")
         logger.exception("Search failed")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
     except Exception as e:
         if not quiet:
             progress.error(str(e))
         console_err.print(f"[red]Search error:[/red] {e}")
         logger.exception("Search failed")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 if __name__ == "__main__":

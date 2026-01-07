@@ -83,7 +83,7 @@ def list(ctx: typer.Context):
 
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -122,7 +122,7 @@ def get(
 
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -168,7 +168,7 @@ def set(
 
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -207,7 +207,7 @@ def reset(
 
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -252,17 +252,17 @@ def edit(ctx: typer.Context):
             console.print("[green]✓[/green] Configuration file closed")
         except subprocess.CalledProcessError as e:
             console_err.print(f"[red]Error:[/red] Editor exited with error code {e.returncode}")
-            raise typer.Exit(1)
-        except FileNotFoundError:
+            raise typer.Exit(1) from e
+        except FileNotFoundError as e:
             console_err.print(f"[red]Error:[/red] Editor '{editor}' not found")
             console_err.print(
                 "[yellow]Tip:[/yellow] Set the EDITOR environment variable to your preferred editor"
             )
-            raise typer.Exit(1)
+            raise typer.Exit(1) from e
 
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 def _parse_value(value: str):

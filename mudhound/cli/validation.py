@@ -237,46 +237,46 @@ def validate_all_arguments(
     Returns:
         List of error messages (empty if all valid)
     """
-    errors = []
+    errors: List[str] = []
 
     if query is not None:
         is_valid, error = validate_query(query)
-        if not is_valid:
+        if not is_valid and error is not None:
             errors.append(error)
 
     if max_results is not None:
         is_valid, error = validate_max_results(max_results)
-        if not is_valid:
+        if not is_valid and error is not None:
             errors.append(error)
 
     if engine is not None:
         is_valid, error = validate_engine(engine)
-        if not is_valid:
+        if not is_valid and error is not None:
             errors.append(error)
 
     if region is not None:
         is_valid, error = validate_region(region)
-        if not is_valid:
+        if not is_valid and error is not None:
             errors.append(error)
 
     if safesearch is not None:
         is_valid, error = validate_safesearch(safesearch)
-        if not is_valid:
+        if not is_valid and error is not None:
             errors.append(error)
 
     if output_path is not None:
         is_valid, error = validate_output_path(output_path)
-        if not is_valid:
+        if not is_valid and error is not None:
             errors.append(error)
 
     if format_value is not None:
         is_valid, error = validate_format(format_value)
-        if not is_valid:
+        if not is_valid and error is not None:
             errors.append(error)
 
     if limit is not None:
         is_valid, error = validate_limit(limit)
-        if not is_valid:
+        if not is_valid and error is not None:
             errors.append(error)
 
     return errors

@@ -94,7 +94,7 @@ class AssetManager:
                     frame_content = self._strip_metadata(content)
                     frames.append(frame_content)
             except Exception as e:
-                raise AnimationError(f"Failed to load frame {frame_file}: {e}")
+                raise AnimationError(f"Failed to load frame {frame_file}: {e}") from e
 
         # Cache the frames
         CACHE[cache_key] = frames
@@ -130,7 +130,7 @@ class AssetManager:
                 CACHE[cache_key] = [content]
                 return content
         except Exception as e:
-            raise AnimationError(f"Failed to load static asset {asset_name}: {e}")
+            raise AnimationError(f"Failed to load static asset {asset_name}: {e}") from e
 
     def get_banner_frames(self, scheme: str = "rainbow") -> List[str]:
         """Get banner frames for the specified color scheme.
@@ -148,7 +148,7 @@ class AssetManager:
         except AnimationError:
             # Fall back to static banner
             try:
-                static_banner = self._load_static_asset("banner.txt")
+                self._load_static_asset("banner.txt")
                 # Return the cached list directly
                 return CACHE["static:banner.txt"]
             except AnimationError:
@@ -175,7 +175,7 @@ class AssetManager:
         except AnimationError:
             # Fall back to static logo
             try:
-                static_logo = self._load_static_asset("logo.txt")
+                self._load_static_asset("logo.txt")
                 # Return the cached list directly
                 return CACHE["static:logo.txt"]
             except AnimationError:

@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.0.0
+## X.X.X
 
-### A) PROTOCOL
+### PROTOCOL
 
 > [!NOTE]
 > versioning: canonical
@@ -10,8 +10,6 @@
 > status: 'tracking completed work and releases'
 
 ---
-
-## X.X.X
 
 - YEAR-MM-DD
 
