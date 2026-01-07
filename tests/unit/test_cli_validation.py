@@ -190,7 +190,8 @@ class TestQueryValidation:
         is_valid, error = validate_query(long_query)
         assert not is_valid
         assert error is not None
-        assert 'too long' in error.lower()
+        # Validator returns "Value must be at most 1000 characters"
+        assert 'at most 1000' in error.lower() or '1000' in error
 
 
 class TestOutputPathValidation:

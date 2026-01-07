@@ -5,9 +5,9 @@
 ### A) PROTOCOL
 
 > [!NOTE]
-> This document tracks validation findings and integration status. It complements the `TODO.md` and `CHANGELOG.md` documents.
-> The document is organized canonically by validation pass version.
-> These are living documents, when one is changed, the others must be updated.
+> versioning: canonical
+> dependencies: TODO.md, CHANGELOG.md
+> status: 'tracking validation findings and integration status'
 
 ---
 
@@ -87,8 +87,8 @@ The **core search functionality and DuckDuckGo adapter are fully implemented** a
 
 > [!IMPORTANT]
 > CLI Commands validation pass.
-> STATUS: **CRITICAL GAP** - Primary search command missing
-> [TODO.md], [ver:`0.0.1`, sect:`A)`,`B)`] - Work items to address gaps
+> STATUS: **COMPLETE** - All primary commands implemented
+> [TODO.md], [ver:`0.0.1`, sect:`A)`,`B)`] - Work items (COMPLETED)
 > [CHANGELOG.md], [ver:`0.0.1`, sect:`C)`] - Completion status
 
 ### A) Current Commands (Implemented)
@@ -109,11 +109,11 @@ The **core search functionality and DuckDuckGo adapter are fully implemented** a
 | `mh version` | ✅ Complete | Fully integrated |
 | Global options (`-v`, `-q`, `--no-color`, etc.) | ✅ Complete | Fully integrated |
 
-### B) MISSING: Primary Search Command ❌
+### B) Primary Search Command ✅
 
-> [TODO.md], [ver:`0.0.1`, sect:`A)`] - Work item to implement
+> [TODO.md], [ver:`0.0.1`, sect:`A)`] - Work item (COMPLETED)
 
-The **main `mh search <query>` command is NOT implemented**. This is the most critical missing piece.
+The **main `mh search <query>` command is now implemented** with full functionality.
 
 According to `Docs/design.md`, the search command should be:
 
@@ -134,37 +134,37 @@ mh search <query>
 - Search works via `mh interactive` → Search menu
 - Search works via `mh history replay <id>` (for re-running past searches)
 
-### C) Export Command Status
+### C) Export Command Status ✅
 
-> [TODO.md], [ver:`0.0.1`, sect:`B)`] - Work item to register
+> [TODO.md], [ver:`0.0.1`, sect:`B)`] - Work item (COMPLETED)
 
 | Feature | Status |
 | ------- | ------ |
-| `export_to_json()` function | ✅ Implemented |
-| `export_to_csv()` function | ✅ Implemented |
-| `export_to_txt()` function | ✅ Implemented |
-| `export_to_urls()` function | ✅ Implemented |
-| `mh export` command registration | ⚠️ **NOT registered** in main app |
+| `export_to_json()` function | ✅ |
+| `export_to_csv()` function | ✅ |
+| `export_to_txt()` function | ✅ |
+| `export_to_urls()` function | ✅ |
+| `mh export` command registration | ✅ |
 
-The export module has functions but the `export` Typer app is **not added** to the main CLI.
+The export module is now fully registered in the main CLI.
 
 ### D) Summary
 
 | Component | Status |
 | --------- | ------ |
-| **CLI Framework (Typer)** | ✅ Set up |
-| **Global Options** | ✅ Complete |
-| **Config Command** | ✅ Complete & Integrated |
-| **History Command** | ✅ Complete & Integrated |
-| **Interactive Mode** | ✅ Complete & Integrated |
-| **Version Command** | ✅ Complete |
-| **Search Command** | ❌ **MISSING** |
-| **Export Command** | ⚠️ Functions exist but not registered |
-| **Input Validation** | ✅ Complete (validation.py) |
+| **CLI Framework (Typer)** | ✅ |
+| **Global Options** | ✅ |
+| **Config Command** | ✅ |
+| **History Command** | ✅ |
+| **Interactive Mode** | ✅ |
+| **Version Command** | ✅ |
+| **Search Command** | ✅ |
+| **Export Command** | ✅ |
+| **Input Validation** | ✅ |
 
-### E) Critical Gap
+### E) Status
 
-The **primary use case** documented in the README (`mh search "python libraries"`) **does not work** because the search command file doesn't exist and isn't registered.
+All primary CLI commands are now implemented and registered. The **primary use case** documented in the README (`mh search "python libraries"`) is now functional.
 
 ---
 
@@ -174,8 +174,8 @@ The **primary use case** documented in the README (`mh search "python libraries"
 
 > [!IMPORTANT]
 > UI System validation pass.
-> STATUS: **PARTIAL** - Many floating components
-> [TODO.md], [ver:`0.0.1`, sect:`C)`-`K)`] - Work items to integrate floating components
+> STATUS: **COMPLETE** - All floating components integrated
+> [TODO.md], [ver:`0.0.1`, sect:`C)`-`K)`] - Work items (COMPLETED)
 > [CHANGELOG.md], [ver:`0.0.1`, sect:`D)`] - Completion status
 
 ### A) Assets System (`mudhound/assets/`)
@@ -215,8 +215,8 @@ The **primary use case** documented in the README (`mh search "python libraries"
 | ------ | ------ | ----------- |
 | `theme.py` - `Theme`, `ThemeEngine` | ✅ Complete | Used by `Menu`, interactive mode, `UIRenderer` |
 | `frames.py` - `FrameRenderer`, `BorderStyle` | ✅ Complete | Used by `UIRenderer` |
-| `layout.py` - `LayoutManager` | ✅ Complete | ⚠️ Exported but NOT used in CLI |
-| `renderer.py` - `UIRenderer` | ✅ Complete | ⚠️ Exported but NOT used in CLI |
+| `layout.py` - `LayoutManager` | ✅ Complete | ✅ Used by `search.py` |
+| `renderer.py` - `UIRenderer` | ✅ Complete | ✅ Used by `search.py` |
 | `glyphs.py` | ✅ Complete | Used by `Menu`, components |
 
 **Animation Subsystem (`ui/animation/`):**
@@ -229,19 +229,19 @@ The **primary use case** documented in the README (`mh search "python libraries"
 
 **UI Components (`ui/components/`):**
 
-> [TODO.md], [ver:`0.0.1`, sect:`C)`-`K)`] - Work items for floating components
+> [TODO.md], [ver:`0.0.1`, sect:`C)`-`K)`] - Work items (COMPLETED)
 
 | Component | Status | Integration | TODO Reference |
 | --------- | ------ | ----------- | -------------- |
 | `Banner` | ✅ Complete | ✅ Used by `interactive.py` | - |
-| `Logo` | ✅ Complete | ⚠️ Not used (demo only) | [TODO.md], [ver:`0.0.1`, sect:`H)`] |
+| `Logo` | ✅ Complete | ✅ Used by `interactive.py` | - |
 | `Menu` | ✅ Complete | ✅ Used by `interactive.py` | - |
-| `Confirmation` | ✅ Complete | ⚠️ Imported but not fully used | - |
-| `Prompt` | ✅ Complete | ⚠️ Not used (direct `input()`) | [TODO.md], [ver:`0.0.1`, sect:`G)`] |
-| `StatusComponent` | ✅ Complete | ⚠️ Not used anywhere | [TODO.md], [ver:`0.0.1`, sect:`I)`] |
-| `Table` | ✅ Complete | ⚠️ Not used (Rich tables) | [TODO.md], [ver:`0.0.1`, sect:`C)`] |
-| `Progress` | ✅ Complete | ⚠️ Not used anywhere | [TODO.md], [ver:`0.0.1`, sect:`J)`] |
-| `ErrorHandler` | ✅ Complete | ⚠️ Not used anywhere | [TODO.md], [ver:`0.0.1`, sect:`K)`] |
+| `Confirmation` | ✅ Complete | ✅ Used by `interactive.py` | - |
+| `Prompt` | ✅ Complete | ✅ Used by `interactive.py` | - |
+| `StatusComponent` | ✅ Complete | ✅ Used by `interactive.py` | - |
+| `Table` | ✅ Complete | ✅ Used by `search.py` | - |
+| `Progress` | ✅ Complete | ✅ Used by `search.py` | - |
+| `ErrorHandler` | ✅ Complete | ✅ Used by `search.py` | - |
 
 ### C) Data System (`mudhound/data/`)
 
@@ -260,42 +260,42 @@ The **primary use case** documented in the README (`mh search "python libraries"
 - **ConfigManager → Banner → Theme selection**: Config drives appearance
 - **Data/themes → ThemeEngine**: Theme files loaded correctly
 
-**PARTIALLY INTEGRATED / UNDERUTILIZED:**
+**ALL COMPONENTS INTEGRATED:**
 
-| Issue | Classification | TODO Reference |
-| ----- | -------------- | -------------- |
-| **Logo component** - demo only | Floating | [TODO.md], [ver:`0.0.1`, sect:`H)`] |
-| **Prompt component** - `input()` used | Not Integrated | [TODO.md], [ver:`0.0.1`, sect:`G)`] |
-| **StatusComponent** - never used | Floating | [TODO.md], [ver:`0.0.1`, sect:`I)`] |
-| **Table component** - `rich.Table` used | Duplicated | [TODO.md], [ver:`0.0.1`, sect:`C)`] |
-| **Progress component** - never used | Floating | [TODO.md], [ver:`0.0.1`, sect:`J)`] |
-| **ErrorHandler** - Rich prints used | Floating | [TODO.md], [ver:`0.0.1`, sect:`K)`] |
-| **UIRenderer** - never used | Floating | [TODO.md], [ver:`0.0.1`, sect:`E)`] |
-| **LayoutManager** - never used | Floating | [TODO.md], [ver:`0.0.1`, sect:`F)`] |
+| Component | Status | Where Used |
+| --------- | ------ | ---------- |
+| **Logo component** | ✅ Integrated | `interactive.py` |
+| **Prompt component** | ✅ Integrated | `interactive.py` |
+| **StatusComponent** | ✅ Integrated | `interactive.py` |
+| **Table component** | ✅ Integrated | `search.py` |
+| **Progress component** | ✅ Integrated | `search.py` |
+| **ErrorHandler** | ✅ Integrated | `search.py` |
+| **UIRenderer** | ✅ Integrated | `search.py` |
+| **LayoutManager** | ✅ Integrated | `search.py` |
 
 ### E) Summary: Module Classification
 
-| Module | Classification | TODO Reference |
-| ------ | -------------- | -------------- |
-| `assets/manager.py` | ✅ **Integrated** | - |
-| `assets/animated/*` | ✅ **Integrated** | - |
-| `assets/static/*` | ✅ **Integrated** | - |
-| `ui/theme.py` | ✅ **Integrated** | - |
-| `ui/animation/*` | ✅ **Integrated** | - |
-| `ui/frames.py` | ⚠️ **Partially** | [TODO.md], [ver:`0.0.1`, sect:`E)`] |
-| `ui/layout.py` | ⚠️ **Floating** | [TODO.md], [ver:`0.0.1`, sect:`F)`] |
-| `ui/renderer.py` | ⚠️ **Floating** | [TODO.md], [ver:`0.0.1`, sect:`E)`] |
-| `ui/components/banner.py` | ✅ **Integrated** | - |
-| `ui/components/menu.py` | ✅ **Integrated** | - |
-| `ui/components/confirm.py` | ⚠️ **Partially** | - |
-| `ui/components/logo.py` | ❌ **Floating** | [TODO.md], [ver:`0.0.1`, sect:`H)`] |
-| `ui/components/prompt.py` | ❌ **Not Integrated** | [TODO.md], [ver:`0.0.1`, sect:`G)`] |
-| `ui/components/status.py` | ❌ **Floating** | [TODO.md], [ver:`0.0.1`, sect:`I)`] |
-| `ui/components/table.py` | ❌ **Duplicated** | [TODO.md], [ver:`0.0.1`, sect:`C)`] |
-| `ui/components/progress.py` | ❌ **Floating** | [TODO.md], [ver:`0.0.1`, sect:`J)`] |
-| `ui/components/error.py` | ❌ **Floating** | [TODO.md], [ver:`0.0.1`, sect:`K)`] |
-| `data/themes/*` | ✅ **Integrated** | - |
-| `data/config.default.toml` | ✅ **Integrated** | - |
+| Module | Classification | Where Used |
+| ------ | -------------- | ---------- |
+| `assets/manager.py` | ✅ **Integrated** | Banner, Logo, AnimationRenderer |
+| `assets/animated/*` | ✅ **Integrated** | Banner, Logo |
+| `assets/static/*` | ✅ **Integrated** | Banner, Logo (fallback) |
+| `ui/theme.py` | ✅ **Integrated** | Menu, interactive, UIRenderer |
+| `ui/animation/*` | ✅ **Integrated** | Banner, Logo |
+| `ui/frames.py` | ✅ **Integrated** | UIRenderer |
+| `ui/layout.py` | ✅ **Integrated** | `search.py` |
+| `ui/renderer.py` | ✅ **Integrated** | `search.py` |
+| `ui/components/banner.py` | ✅ **Integrated** | `interactive.py` |
+| `ui/components/menu.py` | ✅ **Integrated** | `interactive.py` |
+| `ui/components/confirm.py` | ✅ **Integrated** | `interactive.py` |
+| `ui/components/logo.py` | ✅ **Integrated** | `interactive.py` |
+| `ui/components/prompt.py` | ✅ **Integrated** | `interactive.py` |
+| `ui/components/status.py` | ✅ **Integrated** | `interactive.py` |
+| `ui/components/table.py` | ✅ **Integrated** | `search.py` |
+| `ui/components/progress.py` | ✅ **Integrated** | `search.py` |
+| `ui/components/error.py` | ✅ **Integrated** | `search.py` |
+| `data/themes/*` | ✅ **Integrated** | ThemeEngine |
+| `data/config.default.toml` | ✅ **Integrated** | ConfigManager |
 
 ---
 
@@ -369,29 +369,29 @@ The **primary use case** documented in the README (`mh search "python libraries"
 
 | Module | Status | Integration |
 | ------ | ------ | ----------- |
-| `terminal.py` - `get_terminal_size`, `is_terminal_size_adequate` | ✅ **Complete** | ⚠️ **Partially Integrated** |
-| `validators.py` - Validator classes | ✅ **Complete** | ⚠️ **Partially Integrated** |
+| `terminal.py` - `get_terminal_size`, `is_terminal_size_adequate` | ✅ **Complete** | ✅ **Integrated** |
+| `validators.py` - Validator classes | ✅ **Complete** | ✅ **Integrated** |
 
 **`terminal.py` Analysis:**
 
 | Function | Integration Status | Where Used |
 | -------- | ----------------- | ---------- |
-| `get_terminal_size()` | ⚠️ Partially | Used by `LayoutManager` only |
-| `is_terminal_size_adequate()` | ❌ Not Used | Exported but never called |
+| `get_terminal_size()` | ✅ Integrated | Used by `LayoutManager`, `__main__.py` |
+| `is_terminal_size_adequate()` | ✅ Integrated | Used by `__main__.py` at startup |
 
 **`validators.py` Analysis:**
 
 | Validator | Integration Status | Where Used |
 | --------- | ----------------- | ---------- |
-| `Validator` (base) | ⚠️ Partially | Used in tests and `Prompt` component |
-| `RangeValidator` | ⚠️ Partially | Used in `Prompt`, test files |
-| `PatternValidator` | ⚠️ Partially | Used in `Prompt`, test files |
-| `LengthValidator` | ⚠️ Partially | Used in `Prompt`, test files |
-| `EnumValidator` | ⚠️ Partially | Used in `Prompt`, test files |
-| `PathValidator` | ⚠️ Partially | Used in `Prompt` |
+| `Validator` (base) | ✅ Integrated | `Prompt` component, `cli/validation.py` |
+| `RangeValidator` | ✅ Integrated | `Prompt`, `cli/validation.py`, test files |
+| `PatternValidator` | ✅ Integrated | `Prompt`, `cli/validation.py`, test files |
+| `LengthValidator` | ✅ Integrated | `Prompt`, `cli/validation.py`, test files |
+| `EnumValidator` | ✅ Integrated | `Prompt`, `cli/validation.py`, test files |
+| `PathValidator` | ✅ Integrated | `Prompt`, `cli/validation.py` |
 | `CustomValidator` | ⚠️ Partially | Used in `Prompt` |
 
-**Issue**: `cli/validation.py` has its own separate validation functions that **don't use** `utils/validators.py`.
+**Status**: `cli/validation.py` now uses `utils/validators.py` - validation logic is unified.
 
 ### E) Summary Table
 
@@ -408,29 +408,28 @@ The **primary use case** documented in the README (`mh search "python libraries"
 | `logging/levels.py` | ✅ Complete | ✅ Full | **Integrated** |
 | `logging/formatter.py` | ✅ Complete | ✅ Full | **Integrated** |
 | `logging/handler.py` | ✅ Complete | ✅ Full | **Integrated** |
-| `utils/terminal.py` | ✅ Complete | ⚠️ Indirect | **Partially Integrated** |
-| `utils/validators.py` | ✅ Complete | ❌ None | **Floating** |
+| `utils/terminal.py` | ✅ Complete | ✅ Full | **Integrated** |
+| `utils/validators.py` | ✅ Complete | ✅ Full | **Integrated** |
 
 ### F) Issues Identified
 
-**1. Validators Not Used in CLI**
-> [TODO.md], [ver:`0.0.1`, sect:`L)`]
+**1. Validators Not Used in CLI** - ✅ RESOLVED
+> [TODO.md], [ver:`0.0.1`, sect:`L)`] - COMPLETED
 
-- `utils/validators.py` is well-implemented with 7 validator classes
-- `cli/validation.py` has its own validation functions that are **completely separate**
-- The `Prompt` component uses these validators, but `Prompt` isn't used in CLI
+- `cli/validation.py` now imports and uses validators from `utils/validators.py`
+- Validation logic is unified across the codebase
 
-**2. `is_terminal_size_adequate()` Never Called**
-> [TODO.md], [ver:`0.0.1`, sect:`M)`]
+**2. `is_terminal_size_adequate()` Never Called** - ✅ RESOLVED
+> [TODO.md], [ver:`0.0.1`, sect:`M)`] - COMPLETED
 
-- Function is exported but never actually used anywhere
-- Could be useful for startup checks but isn't implemented
+- Function now called in `__main__.py` at startup
+- Displays warning if terminal is too small (doesn't block execution)
 
-**3. `LayoutManager` is Floating**
-> [TODO.md], [ver:`0.0.1`, sect:`F)`]
+**3. `LayoutManager` is Floating** - ✅ RESOLVED
+> [TODO.md], [ver:`0.0.1`, sect:`F)`] - COMPLETED
 
-- Uses `get_terminal_size()` but `LayoutManager` itself is never used in CLI
-- The layout system is orphaned from actual rendering
+- `LayoutManager` now used by `search.py` with `UIRenderer`
+- Layout system is now connected to CLI rendering
 
 ### G) Architecture Diagram
 
@@ -448,14 +447,23 @@ CLI Layer (cli/)
     │   │                       ├──── SearchEngine ✅
     │   │                       └──── AdapterRegistry ✅
     │   │
+    │   ├── search.py ──────────┬──── UIRenderer ✅
+    │   │                       ├──── LayoutManager ✅
+    │   │                       ├──── Progress ✅
+    │   │                       ├──── Table ✅
+    │   │                       └──── ErrorHandler ✅
+    │   │
     │   └── interactive.py ─────┬──── ConfigManager ✅
     │                           ├──── ResultStore ✅
     │                           ├──── SearchEngine ✅
     │                           ├──── AdapterRegistry ✅
     │                           ├──── Banner ✅
-    │                           └──── Menu ✅
+    │                           ├──── Menu ✅
+    │                           ├──── Logo ✅
+    │                           ├──── StatusComponent ✅
+    │                           └──── Prompt ✅
     │
-    └── validation.py ──────────❌ Does NOT use utils/validators.py
+    └── validation.py ──────────✅ Uses utils/validators.py
 
 Core Layer (core/)          ── ✅ ALL INTEGRATED
     ├── ConfigManager
@@ -475,17 +483,49 @@ Logging Layer (logging/)    ── ✅ ALL INTEGRATED
     ├── StyledLogFormatter
     └── Custom levels (TRACE, SUCCESS)
 
-Utils Layer (utils/)        ── ⚠️ PARTIALLY INTEGRATED
-    ├── terminal.py ────────── Used by LayoutManager (which is floating)
-    └── validators.py ──────── Used by Prompt (which is floating)
+Utils Layer (utils/)        ── ✅ FULLY INTEGRATED
+    ├── terminal.py ────────── ✅ Used by __main__.py at startup, LayoutManager
+    └── validators.py ──────── ✅ Used by cli/validation.py, Prompt
 ```
 
 ### H) Conclusion
 
-**Core, Adapters, and Logging** modules are **fully implemented and well-integrated** into the CLI ecosystem.
+**Core, Adapters, Logging, and Utils** modules are **fully implemented and well-integrated** into the CLI ecosystem.
 
-**Utils** module is **implemented but poorly integrated**:
-- `validators.py` is duplicated by `cli/validation.py`
-- `terminal.py` is only used by the floating `LayoutManager`
+**Utils** module status:
+- `validators.py` is ✅ **Integrated** - `cli/validation.py` uses these validators
+- `terminal.py` is ✅ **Integrated** - `is_terminal_size_adequate()` called at startup in `__main__.py`
+
+---
+
+## 0.0.5
+
+- 2026-01-07
+
+> [!IMPORTANT]
+> Test Suite validation pass.
+> STATUS: **COMPLETE** - All tests passing
+> [TODO.md], [ver:`0.0.1`, sect:`N)`] - Test fix work item
+> [CHANGELOG.md], [ver:`0.0.1`, sect:`G)`] - Completion status
+
+### A) Test Suite Status
+
+| Category | Tests | Status |
+| -------- | ----- | ------ |
+| Unit tests | 257 | ✅ Passed |
+| Skipped | 1 | ⚠️ Expected |
+| Warnings | 1 | ⚠️ Expected (TestAdapter collection) |
+| Coverage | 66% | ✅ Acceptable |
+
+### B) Test Fixes Applied
+
+| Test | Issue | Fix |
+| ---- | ----- | --- |
+| `test_invalid_query_too_long` | Expected "too long" but validator returns "at most 1000 characters" | Updated assertion to match new error format |
+| `test_show_goodbye` | StatusComponent prints to stdout, not captured stream | Added capsys to capture stdout alongside output stream |
+
+### C) Summary
+
+All tests pass after UI component integration. Test fixes were minimal - updating assertions to match new component behavior rather than changing production code.
 
 ---

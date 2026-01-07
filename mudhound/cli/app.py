@@ -13,6 +13,8 @@ from pathlib import Path
 from mudhound.cli.commands import config as config_cmd
 from mudhound.cli.commands import history as history_cmd
 from mudhound.cli.commands import interactive as interactive_cmd
+from mudhound.cli.commands import search as search_cmd
+from mudhound.cli.commands import export as export_cmd
 from mudhound.core.config import ConfigManager
 
 app = typer.Typer(
@@ -24,9 +26,10 @@ app = typer.Typer(
 # Register subcommands
 app.add_typer(config_cmd.app, name="config")
 app.add_typer(history_cmd.app, name="history")
+app.add_typer(export_cmd.app, name="export")
 
-# Note: Export command is typically used as a subcommand of history or search
-# It can be imported and used by other commands as needed
+# Register search command (primary command)
+app.command()(search_cmd.search)
 
 
 @app.command()

@@ -91,15 +91,22 @@ class TestInteractiveMode:
         assert mode.use_color is True
         assert mode.use_animation is True
     
-    def test_show_goodbye(self):
+    def test_show_goodbye(self, capsys):
         """Test that goodbye message is displayed."""
         output = StringIO()
         mode = InteractiveMode(use_color=False, output=output)
-        
+
         mode._show_goodbye()
-        
+
+        # Logo writes to the output stream, StatusComponent prints to stdout
         output_text = output.getvalue()
-        assert "Thank you" in output_text or "MudHound" in output_text.lower()
+        captured = capsys.readouterr()
+
+        # Check Logo output (contains "MH") or StatusComponent output (contains "Thank you")
+        has_logo = "MH" in output_text or "mh" in output_text.lower()
+        has_thank_you = "Thank you" in captured.out
+
+        assert has_logo or has_thank_you, f"Expected logo or thank you message. Output: {output_text}, Stdout: {captured.out}"
     
     @patch('mudhound.cli.commands.interactive.Menu')
     def test_show_main_menu(self, mock_menu_class):

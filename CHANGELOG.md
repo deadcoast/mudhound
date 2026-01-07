@@ -5,9 +5,9 @@
 ### A) PROTOCOL
 
 > [!NOTE]
-> This document tracks completed work and releases. It complements the `TODO.md` and `VALIDATION.md` documents
-> The document is organized canonically by version
-> These are living documents, when one is changed, the others must be updated
+> versioning: canonical
+> dependencies: TODO.md, VALIDATION.md
+> status: 'tracking completed work and releases'
 
 ---
 
@@ -38,7 +38,7 @@
 | Adapter Registry | ✅ | [VALIDATION.md], [ver:`0.0.1`, sect:`E)`] |
 | Plugin Discovery | ✅ | [VALIDATION.md], [ver:`0.0.4`, sect:`B)`] |
 
-### C) CLI Commands - PARTIAL
+### C) CLI Commands - COMPLETE
 
 | Component | Status | Reference |
 | --------- | ------ | --------- |
@@ -46,10 +46,10 @@
 | `mh history` | ✅ | [VALIDATION.md], [ver:`0.0.2`, sect:`A)`] |
 | `mh interactive` | ✅ | [VALIDATION.md], [ver:`0.0.2`, sect:`A)`] |
 | `mh version` | ✅ | [VALIDATION.md], [ver:`0.0.2`, sect:`A)`] |
-| `mh search` | ❌ | [TODO.md], [ver:`0.0.1`, sect:`A)`] |
-| `mh export` | ❌ | [TODO.md], [ver:`0.0.1`, sect:`B)`] |
+| `mh search` | ✅ | [VALIDATION.md], [ver:`0.0.2`, sect:`B)`] |
+| `mh export` | ✅ | [VALIDATION.md], [ver:`0.0.2`, sect:`C)`] |
 
-### D) UI System - PARTIAL
+### D) UI System - COMPLETE
 
 | Component | Status | Reference |
 | --------- | ------ | --------- |
@@ -58,7 +58,14 @@
 | Animation System | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] |
 | Banner Component | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] |
 | Menu Component | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] |
-| Floating Components | ❌ | [TODO.md], [ver:`0.0.1`, sect:`D)`-`K)`] |
+| Table Component | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] - Integrated in search |
+| Progress Component | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] - Integrated in search |
+| ErrorHandler Component | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] - Integrated in search |
+| Logo Component | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] - Integrated in interactive |
+| StatusComponent | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] - Integrated in interactive |
+| Prompt Component | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] - Integrated in interactive |
+| UIRenderer | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] - Integrated in search |
+| LayoutManager | ✅ | [VALIDATION.md], [ver:`0.0.3`, sect:`B)`] - Integrated in search |
 
 ### E) Logging System - COMPLETE
 
@@ -68,12 +75,19 @@
 | Styled Formatter | ✅ | [VALIDATION.md], [ver:`0.0.4`, sect:`C)`] |
 | File Handler | ✅ | [VALIDATION.md], [ver:`0.0.4`, sect:`C)`] |
 
-### F) Utils - PARTIAL
+### F) Utils - COMPLETE
 
 | Component | Status | Reference |
 | --------- | ------ | --------- |
-| Terminal utils | ⚠️ | [VALIDATION.md], [ver:`0.0.4`, sect:`D)`] |
-| Validators | ⚠️ | [VALIDATION.md], [ver:`0.0.4`, sect:`D)`] |
+| Terminal utils | ✅ | [VALIDATION.md], [ver:`0.0.4`, sect:`D)`] - is_terminal_size_adequate() called at startup |
+| Validators | ✅ | [VALIDATION.md], [ver:`0.0.4`, sect:`D)`] - cli/validation.py now uses utils/validators.py |
+
+### G) Test Suite - COMPLETE
+
+| Component | Status | Reference |
+| --------- | ------ | --------- |
+| Unit tests | ✅ | [VALIDATION.md], [ver:`0.0.5`, sect:`A)`] - 257 passed |
+| Test fixes after UI integration | ✅ | [TODO.md], [ver:`0.0.1`, sect:`N)`] |
 
 ---
 

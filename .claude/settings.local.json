@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest tests/ -v --tb=short)",
+      "Bash(python -m mudhound:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m pytest:*)"
+    ]
+  }
+}
