@@ -26,7 +26,8 @@ def demo_all_styles():
 
         # Simple frame
         print(renderer.top_border(title="Simple Frame", tag="v1.0"))
-        print(renderer.content_rows(["This is a simple frame with content"])[0])
+        print(renderer.content_rows(
+            ["This is a simple frame with content"])[0])
         print(renderer.bottom_border(status="Ready", pagination="1/1"))
         print()
 
@@ -84,7 +85,8 @@ def demo_truncation():
 
     renderer = FrameRenderer(BorderStyle.DOUBLE, width=40)
 
-    print(renderer.top_border(title="Very Long Title That Should Be Truncated", tag="Tag"))
+    print(renderer.top_border(
+        title="Very Long Title That Should Be Truncated", tag="Tag"))
 
     long_content = [
         "This is a very long line that will definitely be truncated because it exceeds the frame width"

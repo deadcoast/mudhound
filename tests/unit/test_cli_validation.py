@@ -328,7 +328,8 @@ class TestValidateAllArguments:
             max_results=50,
         )
 
-        assert len(errors) == 0, "Should have no errors for valid partial arguments"
+        assert len(
+            errors) == 0, "Should have no errors for valid partial arguments"
 
         # Only validate invalid query
         errors = validate_all_arguments(

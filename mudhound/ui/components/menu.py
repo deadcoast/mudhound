@@ -182,7 +182,8 @@ class Menu:
                 # Render and display menu
                 menu_text = self._render_menu()
                 self.output.write(menu_text + "\n")
-                self.output.write("\nSelect option (number/up/down/enter/esc): ")
+                self.output.write(
+                    "\nSelect option (number/up/down/enter/esc): ")
                 self.output.flush()
 
                 # Read input
@@ -198,13 +199,15 @@ class Menu:
 
                 # Handle arrow key navigation
                 if key.lower() in ("up", "u"):
-                    self.selected_index = (self.selected_index - 1) % len(self.options)
+                    self.selected_index = (
+                        self.selected_index - 1) % len(self.options)
                     # Clear previous menu display
                     self._clear_menu()
                     continue
 
                 if key.lower() in ("down", "d"):
-                    self.selected_index = (self.selected_index + 1) % len(self.options)
+                    self.selected_index = (
+                        self.selected_index + 1) % len(self.options)
                     # Clear previous menu display
                     self._clear_menu()
                     continue

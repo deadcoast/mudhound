@@ -8,7 +8,8 @@ def main():
     print("=== Menu Component Demo ===\n")
 
     # Create a simple menu
-    options = ["Search for URLs", "View history", "Export results", "Configure settings", "Quit"]
+    options = ["Search for URLs", "View history",
+               "Export results", "Configure settings", "Quit"]
 
     menu = Menu(options=options, title="Main Menu", use_color=True)
 

@@ -206,7 +206,8 @@ class ErrorHandler:
         # Verbose mode: stack trace
         if self.verbose:
             lines.append("  Stack trace:")
-            tb_lines = traceback.format_exception(type(error), error, error.__traceback__)
+            tb_lines = traceback.format_exception(
+                type(error), error, error.__traceback__)
             for tb_line in tb_lines:
                 for line in tb_line.rstrip().split("\n"):
                     lines.append(f"    {line}")
@@ -234,7 +235,8 @@ class ErrorHandler:
             import re
 
             ansi_escape = re.compile(r"\x1b\[[0-9;]*m")
-            max_line_length = max(len(ansi_escape.sub("", line)) for line in lines if line)
+            max_line_length = max(len(ansi_escape.sub("", line))
+                                  for line in lines if line)
             width = min(max_line_length + 4, 80)  # Add padding, cap at 80
 
         # Render in frame

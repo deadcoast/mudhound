@@ -167,14 +167,17 @@ def export(
         console_err.print("[red]Validation Error(s):[/red]")
         for error in errors:
             console_err.print(f"  • {error}")
-        console_err.print("\n[yellow]Tip:[/yellow] Use --help to see valid options")
+        console_err.print(
+            "\n[yellow]Tip:[/yellow] Use --help to see valid options")
         raise typer.Exit(1)
 
     # This is a placeholder - actual implementation would retrieve session from store
     # For now, we'll focus on the export functions themselves
-    typer.echo(f"Exporting session {session_id or 'latest'} to {output} as {format}")
+    typer.echo(
+        f"Exporting session {session_id or 'latest'} to {output} as {format}")
 
-    typer.echo("Export functionality will be wired up with search engine in task 38")
+    typer.echo(
+        "Export functionality will be wired up with search engine in task 38")
 
 
 if __name__ == "__main__":

@@ -49,9 +49,9 @@ def test_progress_percentage_display(current, total):
     )
 
     # Verify percentage is within valid range
-    assert (
-        0.0 <= actual_percentage <= 100.0
-    ), f"Progress percentage {actual_percentage:.2f}% is outside valid range [0, 100]"
+    assert 0.0 <= actual_percentage <= 100.0, (
+        f"Progress percentage {actual_percentage:.2f}% is outside valid range [0, 100]"
+    )
 
     # Verify rendered output contains the percentage
     rendered = output.getvalue()
@@ -125,9 +125,9 @@ def test_progress_counter_updates(initial_count, increment):
         rendered_count = int(count_match.group(1))
 
         # Verify rendered count matches current count
-        assert (
-            rendered_count == progress.current
-        ), f"Rendered count {rendered_count} does not match current count {progress.current}"
+        assert rendered_count == progress.current, (
+            f"Rendered count {rendered_count} does not match current count {progress.current}"
+        )
 
 
 @given(
@@ -156,7 +156,8 @@ def test_progress_variant_rendering(variant, total, current):
 
     # Create progress with specified variant
     output = StringIO()
-    progress = Progress(variant=variant, total=total, use_color=False, output=output)
+    progress = Progress(variant=variant, total=total,
+                        use_color=False, output=output)
 
     # Start progress
     progress.start()
@@ -174,12 +175,13 @@ def test_progress_variant_rendering(variant, total, current):
     rendered_output = output.getvalue()
 
     # Verify output is not empty
-    assert len(rendered_output) > 0, f"Variant '{variant}' should produce output"
+    assert len(
+        rendered_output) > 0, f"Variant '{variant}' should produce output"
 
     # Verify output contains the current count
-    assert (
-        str(current) in rendered_output
-    ), f"Rendered output should contain current count {current}"
+    assert str(current) in rendered_output, (
+        f"Rendered output should contain current count {current}"
+    )
 
 
 @given(total=st.integers(min_value=1, max_value=100))
@@ -192,7 +194,8 @@ def test_progress_percentage_bounds(total):
     is clamped to 100%.
     """
     output = StringIO()
-    progress = Progress(variant=ProgressVariant.BAR, total=total, use_color=False, output=output)
+    progress = Progress(variant=ProgressVariant.BAR,
+                        total=total, use_color=False, output=output)
 
     # Set current to exceed total
     progress.set_current(total + 50)
@@ -217,7 +220,8 @@ def test_progress_multiple_updates(count):
     the counter.
     """
     output = StringIO()
-    progress = Progress(variant=ProgressVariant.COUNTER, total=None, use_color=False, output=output)
+    progress = Progress(variant=ProgressVariant.COUNTER,
+                        total=None, use_color=False, output=output)
 
     # Start progress
     progress.start()
@@ -257,7 +261,8 @@ def test_progress_elapsed_time_display(variant):
     import time
 
     output = StringIO()
-    progress = Progress(variant=variant, total=100, use_color=False, output=output)
+    progress = Progress(variant=variant, total=100,
+                        use_color=False, output=output)
 
     # Start progress
     progress.start()
@@ -277,9 +282,9 @@ def test_progress_elapsed_time_display(variant):
 
     time_match = re.search(r"\d+[hms]", rendered)
 
-    assert (
-        time_match is not None
-    ), f"Elapsed time should be displayed in progress output for variant '{variant}'"
+    assert time_match is not None, (
+        f"Elapsed time should be displayed in progress output for variant '{variant}'"
+    )
 
 
 @given(total=st.integers(min_value=1, max_value=100))
@@ -291,7 +296,8 @@ def test_progress_completion_message(total):
     This ensures that when progress completes, it shows the final result count.
     """
     output = StringIO()
-    progress = Progress(variant=ProgressVariant.BAR, total=total, use_color=False, output=output)
+    progress = Progress(variant=ProgressVariant.BAR,
+                        total=total, use_color=False, output=output)
 
     # Start and complete progress
     progress.start()
@@ -308,13 +314,15 @@ def test_progress_completion_message(total):
     rendered = output.getvalue()
 
     # Verify completion message contains result count
-    assert str(total) in rendered, f"Completion message should contain final count {total}"
+    assert str(
+        total) in rendered, f"Completion message should contain final count {total}"
 
     # Verify completion message is present
     assert "complete" in rendered.lower(), "Completion message should contain 'complete'"
 
 
-@given(current=st.integers(min_value=1, max_value=50))  # Start from 1 to avoid edge case
+# Start from 1 to avoid edge case
+@given(current=st.integers(min_value=1, max_value=50))
 @settings(max_examples=100, deadline=None)
 def test_progress_cancellation(current):
     """
@@ -325,7 +333,8 @@ def test_progress_cancellation(current):
     Related to Requirements 14.5
     """
     output = StringIO()
-    progress = Progress(variant=ProgressVariant.BAR, total=100, use_color=False, output=output)
+    progress = Progress(variant=ProgressVariant.BAR,
+                        total=100, use_color=False, output=output)
 
     # Start progress
     progress.start()
@@ -345,7 +354,8 @@ def test_progress_cancellation(current):
     rendered = output.getvalue()
 
     # Verify cancellation message contains current count
-    assert str(current) in rendered, f"Cancellation message should contain current count {current}"
+    assert str(
+        current) in rendered, f"Cancellation message should contain current count {current}"
 
     # Verify cancellation message is present
     assert "cancel" in rendered.lower(), "Cancellation message should contain 'cancel'"

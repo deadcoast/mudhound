@@ -158,7 +158,8 @@ class ConfigManager:
                     return
 
                 except Exception as e:
-                    raise ConfigError(f"Failed to parse config file '{path}': {e}")
+                    raise ConfigError(
+                        f"Failed to parse config file '{path}': {e}")
 
         # No config file found, using defaults
 

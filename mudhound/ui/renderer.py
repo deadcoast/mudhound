@@ -199,13 +199,15 @@ class UIRenderer:
                 border_char = self.frame_renderer.chars["vertical"]
                 if row.startswith(border_char):
                     # Apply theme to borders only
-                    themed_border = self.apply_theme_to_text(border_char, "frame_border")
+                    themed_border = self.apply_theme_to_text(
+                        border_char, "frame_border")
                     # Replace first and last border characters
                     row = themed_border + row[1:-1] + themed_border
             frame_lines.append(row)
 
         # Bottom border
-        bottom = self.frame_renderer.bottom_border(status=status, pagination=pagination)
+        bottom = self.frame_renderer.bottom_border(
+            status=status, pagination=pagination)
         if apply_theme:
             bottom = self.apply_theme_to_text(bottom, "frame_border")
         frame_lines.append(bottom)
@@ -254,7 +256,8 @@ class UIRenderer:
         header_row = self.frame_renderer.header_row(header, align="center")
         if apply_theme:
             border_char = self.frame_renderer.chars["vertical"]
-            themed_border = self.apply_theme_to_text(border_char, "frame_border")
+            themed_border = self.apply_theme_to_text(
+                border_char, "frame_border")
             header_row = themed_border + header_row[1:-1] + themed_border
         frame_lines.append(header_row)
 
@@ -269,7 +272,8 @@ class UIRenderer:
         for row in content_rows:
             if apply_theme:
                 border_char = self.frame_renderer.chars["vertical"]
-                themed_border = self.apply_theme_to_text(border_char, "frame_border")
+                themed_border = self.apply_theme_to_text(
+                    border_char, "frame_border")
                 row = themed_border + row[1:-1] + themed_border
             frame_lines.append(row)
 

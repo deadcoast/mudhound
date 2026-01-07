@@ -10,7 +10,8 @@ from mudhound.ui.components.menu import Menu
 
 @given(
     options=st.lists(
-        st.text(min_size=1, max_size=50, alphabet=st.characters(blacklist_categories=("Cs", "Cc"))),
+        st.text(min_size=1, max_size=50, alphabet=st.characters(
+            blacklist_categories=("Cs", "Cc"))),
         min_size=1,
         max_size=20,
         unique=True,
@@ -49,9 +50,9 @@ def test_menu_option_numbering(options, selected_index):
         option_number = i + 1
 
         # Check that the option number appears in the rendered menu
-        assert (
-            f"{option_number}." in rendered_menu
-        ), f"Option {option_number} should be numbered in the menu"
+        assert f"{option_number}." in rendered_menu, (
+            f"Option {option_number} should be numbered in the menu"
+        )
 
         # Check that the option text appears in the rendered menu
         assert option in rendered_menu, f"Option text '{option}' should appear in the menu"
@@ -64,9 +65,9 @@ def test_menu_option_numbering(options, selected_index):
     cursor_count = sum(1 for line in lines if ">>>" in line)
 
     # Exactly one option should have the cursor indicator
-    assert (
-        cursor_count == 1
-    ), f"Exactly one option should have cursor indicator, found {cursor_count}"
+    assert cursor_count == 1, (
+        f"Exactly one option should have cursor indicator, found {cursor_count}"
+    )
 
     # Verify the cursor is on the correct option
     # Find the line with the cursor
@@ -84,11 +85,11 @@ def test_menu_option_numbering(options, selected_index):
 
     # The cursor line should contain the selected option text
     selected_option = options[selected_index]
-    assert (
-        selected_option in cursor_line
-    ), f"Cursor line should contain selected option text '{selected_option}'"
+    assert selected_option in cursor_line, (
+        f"Cursor line should contain selected option text '{selected_option}'"
+    )
 
     # Verify all options are present in the menu
-    assert len([line for line in lines if any(opt in line for opt in options)]) == len(
-        options
-    ), "All options should be present in the rendered menu"
+    assert len([line for line in lines if any(opt in line for opt in options)]) == len(options), (
+        "All options should be present in the rendered menu"
+    )

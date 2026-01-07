@@ -48,18 +48,24 @@ def interactive(
     no_animation = ctx.obj.get("no_animation", False) if ctx.obj else False
 
     # Run interactive mode
-    interactive_cmd.interactive_command(use_color=not no_color, use_animation=not no_animation)
+    interactive_cmd.interactive_command(
+        use_color=not no_color, use_animation=not no_animation)
 
 
 @app.callback()
 def main(
     ctx: typer.Context,
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose output"),
-    quiet: bool = typer.Option(False, "--quiet", "-q", help="Suppress non-essential output"),
-    no_color: bool = typer.Option(False, "--no-color", help="Disable colored output"),
-    no_animation: bool = typer.Option(False, "--no-animation", help="Disable animations"),
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"),
+    quiet: bool = typer.Option(
+        False, "--quiet", "-q", help="Suppress non-essential output"),
+    no_color: bool = typer.Option(
+        False, "--no-color", help="Disable colored output"),
+    no_animation: bool = typer.Option(
+        False, "--no-animation", help="Disable animations"),
     theme: Optional[str] = typer.Option(None, "--theme", help="Theme to use"),
-    config: Optional[str] = typer.Option(None, "--config", help="Path to config file"),
+    config: Optional[str] = typer.Option(
+        None, "--config", help="Path to config file"),
 ):
     """
     MudHound - Terminal-based batch URL extraction tool.
@@ -68,7 +74,8 @@ def main(
     """
     # Validate conflicting options
     if verbose and quiet:
-        typer.echo("Error: Cannot use both --verbose and --quiet options", err=True)
+        typer.echo(
+            "Error: Cannot use both --verbose and --quiet options", err=True)
         raise typer.Exit(1)
 
     # Validate config path if provided
@@ -78,7 +85,8 @@ def main(
         if config_path.exists():
             # If it exists, it must be a file
             if not config_path.is_file():
-                typer.echo(f"Error: Config path is not a file: {config}", err=True)
+                typer.echo(
+                    f"Error: Config path is not a file: {config}", err=True)
                 raise typer.Exit(1)
         else:
             # If it doesn't exist, check if parent directory exists

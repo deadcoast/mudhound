@@ -40,7 +40,6 @@ ANSI_COLORS = {
     "reset": "\033[0m",
 }
 
-
 # Default theme definition
 DEFAULT_THEME = {
     "name": "default",

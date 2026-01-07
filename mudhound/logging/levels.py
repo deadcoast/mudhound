@@ -32,7 +32,6 @@ def success(self, message, *args, **kwargs):
 logging.Logger.trace = trace
 logging.Logger.success = success
 
-
 # Level styles mapping: glyph and color per level
 LEVEL_STYLES = {
     TRACE: {

@@ -69,16 +69,14 @@ class TestConfigurationIntegration:
         """Test that ConfigManager respects CLI config path."""
         # Create a temporary config file
         config_file = tmp_path / "test_config.toml"
-        config_file.write_text(
-            """
+        config_file.write_text("""
 [general]
 engine = "test_engine"
 max_results = 100
 
 [ui]
 theme = "custom"
-"""
-        )
+""")
 
         # Initialize with CLI override
         config_manager = ConfigManager(cli_config_path=str(config_file))
@@ -228,7 +226,11 @@ class TestEndToEndIntegration:
 
     def test_full_initialization_sequence(self):
         """Test the complete initialization sequence."""
-        from mudhound.__main__ import initialize_adapters, initialize_config, initialize_logging
+        from mudhound.__main__ import (
+            initialize_adapters,
+            initialize_config,
+            initialize_logging,
+        )
 
         # Clear state
         AdapterRegistry.clear()
