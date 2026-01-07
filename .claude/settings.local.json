@@ -1,12 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -m pytest tests/ -v --tb=short)",
-      "Bash(python -m mudhound:*)",
-      "Bash(pip install:*)",
-      "Bash(python -m pytest:*)",
-      "mcp__plugin_context7_context7__resolve-library-id",
-      "mcp__plugin_context7_context7__query-docs"
+      "mcp__plugin_serena_serena__activate_project",
+      "mcp__plugin_serena_serena__list_memories",
+      "mcp__plugin_serena_serena__onboarding",
+      "mcp__plugin_serena_serena__read_file",
+      "mcp__plugin_serena_serena__write_memory",
+      "mcp__plugin_serena_serena__find_file",
+      "mcp__plugin_serena_serena__think_about_task_adherence",
+      "mcp__plugin_serena_serena__replace_content",
+      "mcp__plugin_serena_serena__find_symbol"
     ]
   }
 }

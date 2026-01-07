@@ -79,9 +79,8 @@ class DuckDuckGoAdapter(SearchAdapter):
             ddgs = DDGS()
 
             # Map our safesearch values to DDGS values
-            # DDGS expects: -2 (off), -1 (moderate), 1 (strict)
-            safesearch_map = {"off": -2, "moderate": -1, "strict": 1}
-            safesearch_value = safesearch_map.get(options.safesearch, -1)
+            # DDGS expects: "off", "moderate", "strict" (string values)
+            safesearch_value = options.safesearch if options.safesearch else "moderate"
 
             # Map time_limit to DDGS timelimit parameter
             # DDGS expects: None, 'd', 'w', 'm', 'y'

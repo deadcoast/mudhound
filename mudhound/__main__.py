@@ -13,6 +13,7 @@ It performs critical initialization tasks:
 import logging
 import sys
 from pathlib import Path
+from typing import Optional
 
 from mudhound.utils.terminal import get_terminal_size, is_terminal_size_adequate
 
@@ -84,7 +85,7 @@ def initialize_logging(verbose: bool = False, quiet: bool = False, use_color: bo
     )
 
 
-def initialize_config(config_path: str = None):
+def initialize_config(config_path: Optional[str] = None):
     """Initialize the configuration system.
 
     Args:
@@ -119,7 +120,7 @@ def main():
 
         # Initialize configuration system
         # Note: Actual config values will be loaded by CLI app based on arguments
-        config_manager = initialize_config()
+        initialize_config()
 
         # Initialize logging with defaults
         # Note: CLI app will reconfigure based on command-line arguments

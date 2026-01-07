@@ -171,7 +171,7 @@ class ConfigManager:
         Returns:
             Deep copy of the dictionary
         """
-        result = {}
+        result: Dict[str, Any] = {}
         for key, value in d.items():
             if isinstance(value, dict):
                 result[key] = self._deep_copy_dict(value)
