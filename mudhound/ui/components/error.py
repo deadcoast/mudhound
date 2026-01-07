@@ -26,7 +26,7 @@ from mudhound.ui.theme import Theme
 class ErrorHandler:
     """
     Handles error display formatting with classification and suggestions.
-    
+
     Provides:
     - Error type classification
     - Formatted error messages with frames
@@ -88,7 +88,7 @@ class ErrorHandler:
     def __init__(self, theme: Optional[Theme] = None, verbose: bool = False):
         """
         Initialize error handler.
-        
+
         Args:
             theme: Theme for color styling (optional)
             verbose: Enable verbose mode with stack traces
@@ -109,10 +109,10 @@ class ErrorHandler:
     def classify_error(self, error: Exception) -> str:
         """
         Classify error type and return display name.
-        
+
         Args:
             error: Exception to classify
-            
+
         Returns:
             Human-readable error type name
         """
@@ -142,10 +142,10 @@ class ErrorHandler:
     def get_suggestions(self, error: Exception) -> List[str]:
         """
         Get contextual suggestions for error resolution.
-        
+
         Args:
             error: Exception to get suggestions for
-            
+
         Returns:
             List of suggestion strings
         """
@@ -165,10 +165,10 @@ class ErrorHandler:
     def format_error(self, error: Exception) -> str:
         """
         Format error message with type, description, and suggestions.
-        
+
         Args:
             error: Exception to format
-            
+
         Returns:
             Formatted error message string
         """
@@ -206,9 +206,10 @@ class ErrorHandler:
         # Verbose mode: stack trace
         if self.verbose:
             lines.append("  Stack trace:")
-            tb_lines = traceback.format_exception(type(error), error, error.__traceback__)
+            tb_lines = traceback.format_exception(
+                type(error), error, error.__traceback__)
             for tb_line in tb_lines:
-                for line in tb_line.rstrip().split('\n'):
+                for line in tb_line.rstrip().split("\n"):
                     lines.append(f"    {line}")
             lines.append("")
 
@@ -217,11 +218,11 @@ class ErrorHandler:
     def display_error(self, error: Exception, width: Optional[int] = None) -> str:
         """
         Display error in a framed box.
-        
+
         Args:
             error: Exception to display
             width: Frame width (optional, auto-calculated if not provided)
-            
+
         Returns:
             Framed error message string
         """
@@ -229,11 +230,13 @@ class ErrorHandler:
 
         # Calculate width if not provided
         if width is None:
-            lines = error_message.split('\n')
+            lines = error_message.split("\n")
             # Strip ANSI codes for width calculation
             import re
-            ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
-            max_line_length = max(len(ansi_escape.sub('', line)) for line in lines if line)
+
+            ansi_escape = re.compile(r"\x1b\[[0-9;]*m")
+            max_line_length = max(len(ansi_escape.sub("", line))
+                                  for line in lines if line)
             width = min(max_line_length + 4, 80)  # Add padding, cap at 80
 
         # Render in frame
@@ -241,7 +244,7 @@ class ErrorHandler:
         renderer = FrameRenderer(style=BorderStyle.SINGLE, width=width)
 
         # Split error message into lines
-        content_lines = error_message.split('\n')
+        content_lines = error_message.split("\n")
 
         # Build frame
         frame_lines = []
@@ -249,4 +252,4 @@ class ErrorHandler:
         frame_lines.extend(renderer.content_rows(content_lines))
         frame_lines.append(renderer.bottom_border())
 
-        return '\n'.join(frame_lines)
+        return "\n".join(frame_lines)

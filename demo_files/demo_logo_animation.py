@@ -26,5 +26,6 @@ def demo_logo_animation():
     print("Animation demo complete!")
     print("=" * 60)
 
+
 if __name__ == "__main__":
     demo_logo_animation()

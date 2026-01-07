@@ -161,8 +161,8 @@ class TestCLIIntegration:
 
         # Verify app has some registered commands
         # Note: Typer registers commands dynamically, so we just verify the structure exists
-        assert hasattr(app, 'registered_commands')
-        assert hasattr(app, 'registered_groups')
+        assert hasattr(app, "registered_commands")
+        assert hasattr(app, "registered_groups")
 
 
 class TestMainEntryPoint:
@@ -226,7 +226,11 @@ class TestEndToEndIntegration:
 
     def test_full_initialization_sequence(self):
         """Test the complete initialization sequence."""
-        from mudhound.__main__ import initialize_adapters, initialize_config, initialize_logging
+        from mudhound.__main__ import (
+            initialize_adapters,
+            initialize_config,
+            initialize_logging,
+        )
 
         # Clear state
         AdapterRegistry.clear()
@@ -250,7 +254,7 @@ class TestEndToEndIntegration:
         assert logger is not None
         logger.info("Integration test complete")
 
-    @patch('mudhound.cli.app.app')
+    @patch("mudhound.cli.app.app")
     def test_main_entry_point_flow(self, mock_app):
         """Test that main entry point calls app correctly."""
         from mudhound.__main__ import main

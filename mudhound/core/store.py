@@ -22,23 +22,24 @@ from mudhound.core.result import (
 
 class StoreError(MudHoundError):
     """Errors related to result storage operations."""
+
     pass
 
 
 class ResultStore:
     """Persistent storage for search history and results.
-    
+
     Uses SQLite to store search sessions with full query parameters,
     results, and metadata. Supports listing, retrieving, replaying,
     and deleting search history.
-    
+
     Attributes:
         db_path: Path to the SQLite database file
     """
 
     def __init__(self, db_path: Optional[Path] = None):
         """Initialize the result store.
-        
+
         Args:
             db_path: Path to SQLite database. If None, uses default location
                     (~/.mudhound/history.db)
@@ -98,61 +99,69 @@ class ResultStore:
 
     def persist(self, session: SearchSession) -> None:
         """Persist a search session to the database.
-        
+
         Args:
             session: The search session to store
-            
+
         Raises:
             StoreError: If the session cannot be persisted
         """
         conn = sqlite3.connect(self.db_path)
         try:
             # Serialize options to JSON
-            options_json = json.dumps({
-                "max_results": session.query.options.max_results,
-                "region": session.query.options.region,
-                "safesearch": session.query.options.safesearch,
-                "time_limit": session.query.options.time_limit,
-            })
+            options_json = json.dumps(
+                {
+                    "max_results": session.query.options.max_results,
+                    "region": session.query.options.region,
+                    "safesearch": session.query.options.safesearch,
+                    "time_limit": session.query.options.time_limit,
+                }
+            )
 
             # Insert session record
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO search_sessions (
                     id, query, engine, options, status,
                     started_at, completed_at, error,
                     result_count, duration, created_at
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                session.query.id,
-                session.query.query,
-                session.query.engine,
-                options_json,
-                session.query.status.value,
-                session.started_at.isoformat(),
-                session.completed_at.isoformat() if session.completed_at else None,
-                session.error,
-                session.result_count,
-                session.duration,
-                session.query.created_at.isoformat(),
-            ))
+            """,
+                (
+                    session.query.id,
+                    session.query.query,
+                    session.query.engine,
+                    options_json,
+                    session.query.status.value,
+                    session.started_at.isoformat(),
+                    session.completed_at.isoformat() if session.completed_at else None,
+                    session.error,
+                    session.result_count,
+                    session.duration,
+                    session.query.created_at.isoformat(),
+                ),
+            )
 
             # Insert result records
             for result in session.results:
                 metadata_json = json.dumps(result.metadata)
-                conn.execute("""
+                conn.execute(
+                    """
                     INSERT INTO search_results (
                         session_id, url, title, snippet,
                         source, rank, metadata
                     ) VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    session.query.id,
-                    result.url,
-                    result.title,
-                    result.snippet,
-                    result.source,
-                    result.rank,
-                    metadata_json,
-                ))
+                """,
+                    (
+                        session.query.id,
+                        result.url,
+                        result.title,
+                        result.snippet,
+                        result.source,
+                        result.rank,
+                        metadata_json,
+                    ),
+                )
 
             conn.commit()
         except sqlite3.Error as e:
@@ -162,41 +171,46 @@ class ResultStore:
 
     def list(self, limit: int = 20) -> List[Dict[str, Any]]:
         """List recent search sessions.
-        
+
         Args:
             limit: Maximum number of sessions to return (default: 20)
-            
+
         Returns:
             List of session summaries with id, query, result_count,
             status, and timestamp
-            
+
         Raises:
             StoreError: If sessions cannot be retrieved
         """
         conn = sqlite3.connect(self.db_path)
         try:
             conn.row_factory = sqlite3.Row
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT id, query, engine, status, result_count,
                        started_at, completed_at, duration, error
                 FROM search_sessions
                 ORDER BY created_at DESC
                 LIMIT ?
-            """, (limit,))
+            """,
+                (limit,),
+            )
 
             sessions = []
             for row in cursor:
-                sessions.append({
-                    "id": row["id"],
-                    "query": row["query"],
-                    "engine": row["engine"],
-                    "status": row["status"],
-                    "result_count": row["result_count"],
-                    "started_at": row["started_at"],
-                    "completed_at": row["completed_at"],
-                    "duration": row["duration"],
-                    "error": row["error"],
-                })
+                sessions.append(
+                    {
+                        "id": row["id"],
+                        "query": row["query"],
+                        "engine": row["engine"],
+                        "status": row["status"],
+                        "result_count": row["result_count"],
+                        "started_at": row["started_at"],
+                        "completed_at": row["completed_at"],
+                        "duration": row["duration"],
+                        "error": row["error"],
+                    }
+                )
 
             return sessions
         except sqlite3.Error as e:
@@ -206,13 +220,13 @@ class ResultStore:
 
     def show(self, session_id: str) -> Optional[SearchSession]:
         """Retrieve full results for a specific search session.
-        
+
         Args:
             session_id: The unique identifier of the session
-            
+
         Returns:
             The complete SearchSession object, or None if not found
-            
+
         Raises:
             StoreError: If the session cannot be retrieved
         """
@@ -221,12 +235,15 @@ class ResultStore:
             conn.row_factory = sqlite3.Row
 
             # Retrieve session record
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT id, query, engine, options, status,
                        started_at, completed_at, error, created_at
                 FROM search_sessions
                 WHERE id = ?
-            """, (session_id,))
+            """,
+                (session_id,),
+            )
 
             row = cursor.fetchone()
             if row is None:
@@ -252,31 +269,39 @@ class ResultStore:
             )
 
             # Retrieve results
-            results_cursor = conn.execute("""
+            results_cursor = conn.execute(
+                """
                 SELECT url, title, snippet, source, rank, metadata
                 FROM search_results
                 WHERE session_id = ?
                 ORDER BY rank
-            """, (session_id,))
+            """,
+                (session_id,),
+            )
 
             results = []
             for result_row in results_cursor:
                 metadata = json.loads(result_row["metadata"])
-                results.append(SearchResult(
-                    url=result_row["url"],
-                    title=result_row["title"],
-                    snippet=result_row["snippet"],
-                    source=result_row["source"],
-                    rank=result_row["rank"],
-                    metadata=metadata,
-                ))
+                results.append(
+                    SearchResult(
+                        url=result_row["url"],
+                        title=result_row["title"],
+                        snippet=result_row["snippet"],
+                        source=result_row["source"],
+                        rank=result_row["rank"],
+                        metadata=metadata,
+                    )
+                )
 
             # Create SearchSession
             session = SearchSession(
                 query=query,
                 results=results,
                 started_at=datetime.fromisoformat(row["started_at"]),
-                completed_at=datetime.fromisoformat(row["completed_at"]) if row["completed_at"] else None,
+                completed_at=(
+                    datetime.fromisoformat(
+                        row["completed_at"]) if row["completed_at"] else None
+                ),
                 error=row["error"],
             )
 
@@ -288,24 +313,27 @@ class ResultStore:
 
     def replay(self, session_id: str) -> Optional[Dict[str, Any]]:
         """Retrieve original search parameters for replay.
-        
+
         Args:
             session_id: The unique identifier of the session
-            
+
         Returns:
             Dictionary with query, engine, and options, or None if not found
-            
+
         Raises:
             StoreError: If parameters cannot be retrieved
         """
         conn = sqlite3.connect(self.db_path)
         try:
             conn.row_factory = sqlite3.Row
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT query, engine, options
                 FROM search_sessions
                 WHERE id = ?
-            """, (session_id,))
+            """,
+                (session_id,),
+            )
 
             row = cursor.fetchone()
             if row is None:
@@ -326,22 +354,25 @@ class ResultStore:
 
     def delete(self, session_id: str) -> bool:
         """Delete a specific search session.
-        
+
         Args:
             session_id: The unique identifier of the session
-            
+
         Returns:
             True if the session was deleted, False if not found
-            
+
         Raises:
             StoreError: If the session cannot be deleted
         """
         conn = sqlite3.connect(self.db_path)
         try:
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 DELETE FROM search_sessions
                 WHERE id = ?
-            """, (session_id,))
+            """,
+                (session_id,),
+            )
             conn.commit()
 
             return cursor.rowcount > 0
@@ -352,10 +383,10 @@ class ResultStore:
 
     def clear(self) -> int:
         """Delete all search history.
-        
+
         Returns:
             Number of sessions deleted
-            
+
         Raises:
             StoreError: If history cannot be cleared
         """

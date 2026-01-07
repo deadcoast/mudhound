@@ -24,13 +24,13 @@ from mudhound.ui.components.status import StatusComponent
 class InteractiveSession:
     """
     Manages state for an interactive session.
-    
+
     Maintains session state across multiple operations including:
     - Last search query and results
     - Configuration settings
     - User preferences
     - Navigation history
-    
+
     Attributes:
         config_manager: Configuration manager instance
         result_store: Result store instance
@@ -44,11 +44,11 @@ class InteractiveSession:
     def __init__(
         self,
         config_manager: Optional[ConfigManager] = None,
-        result_store: Optional[ResultStore] = None
+        result_store: Optional[ResultStore] = None,
     ):
         """
         Initialize the interactive session.
-        
+
         Args:
             config_manager: ConfigManager instance (creates new if None)
             result_store: ResultStore instance (creates new if None)
@@ -66,7 +66,7 @@ class InteractiveSession:
     def update_search_state(self, query: str, session: Any) -> None:
         """
         Update session state after a search operation.
-        
+
         Args:
             query: The search query that was executed
             session: The SearchSession object with results
@@ -79,7 +79,7 @@ class InteractiveSession:
     def get_state_summary(self) -> Dict[str, Any]:
         """
         Get a summary of the current session state.
-        
+
         Returns:
             Dictionary with session state information
         """
@@ -87,7 +87,8 @@ class InteractiveSession:
             "last_query": self.last_search_query,
             "result_count": len(self.last_search_results) if self.last_search_results else 0,
             "operations": self.operation_count,
-            "has_results": self.last_search_results is not None and len(self.last_search_results) > 0,
+            "has_results": self.last_search_results is not None
+            and len(self.last_search_results) > 0,
         }
 
     def clear_search_state(self) -> None:
@@ -100,14 +101,14 @@ class InteractiveSession:
 class InteractiveMode:
     """
     Interactive TUI mode for MudHound.
-    
+
     Provides a menu-driven interface for performing multiple operations:
     - Search: Execute new searches
     - History: View and replay past searches
     - Export: Export search results
     - Config: View and modify configuration
     - Quit: Exit the application
-    
+
     Attributes:
         session: InteractiveSession managing state
         config_manager: Configuration manager
@@ -122,7 +123,7 @@ class InteractiveMode:
         session: Optional[InteractiveSession] = None,
         use_color: bool = True,
         use_animation: bool = True,
-        output: Optional[Any] = None
+        output: Optional[Any] = None,
     ):
         """
         Initialize interactive mode.
@@ -141,11 +142,10 @@ class InteractiveMode:
         self.output = output or sys.stdout
 
         # Initialize UI components
-        self.status = StatusComponent(use_color=use_color, show_timestamp=False)
+        self.status = StatusComponent(
+            use_color=use_color, show_timestamp=False)
         self.logo = Logo(
-            position=LogoPosition.INLINE,
-            config_manager=self.config_manager,
-            output=self.output
+            position=LogoPosition.INLINE, config_manager=self.config_manager, output=self.output
         )
 
     def _show_banner(self) -> None:
@@ -154,7 +154,7 @@ class InteractiveMode:
             banner = Banner(
                 style="static",  # Use static for interactive mode
                 config_manager=self.config_manager,
-                output=self.output
+                output=self.output,
             )
             banner.render()
             self.output.write("\n")
@@ -171,23 +171,17 @@ class InteractiveMode:
     def _show_main_menu(self) -> Optional[str]:
         """
         Display the main menu and get user selection.
-        
+
         Returns:
             Selected menu option or None if cancelled
         """
-        options = [
-            "Search",
-            "History",
-            "Export",
-            "Config",
-            "Quit"
-        ]
+        options = ["Search", "History", "Export", "Config", "Quit"]
 
         menu = Menu(
             options=options,
             title="MudHound - Main Menu",
             use_color=self.use_color,
-            output=self.output
+            output=self.output,
         )
 
         try:
@@ -222,7 +216,8 @@ class InteractiveMode:
 
             # Get search options (use defaults for now)
             max_results = self.config_manager.get("search.max_results", 50)
-            engine_name = self.config_manager.get("search.default_engine", "duckduckgo")
+            engine_name = self.config_manager.get(
+                "search.default_engine", "duckduckgo")
 
             # Create search engine
             try:
@@ -253,7 +248,8 @@ class InteractiveMode:
                     self.output.write(f"    {result.snippet[:100]}...\n\n")
 
                 if len(session.results) > 10:
-                    self.output.write(f"... and {len(session.results) - 10} more results\n")
+                    self.output.write(
+                        f"... and {len(session.results) - 10} more results\n")
 
                 # Persist to history
                 self.result_store.persist(session)
@@ -280,7 +276,8 @@ class InteractiveMode:
                 self.status.warning("No search history found.")
                 return
 
-            self.output.write(f"Recent searches (showing last {len(sessions)}):\n\n")
+            self.output.write(
+                f"Recent searches (showing last {len(sessions)}):\n\n")
 
             for i, session in enumerate(sessions, 1):
                 self.output.write(f"{i}. {session['query']}\n")
@@ -299,12 +296,15 @@ class InteractiveMode:
 
         # Check if we have results to export
         if not self.session.last_search_results:
-            self.status.warning("No search results to export. Please perform a search first.")
+            self.status.warning(
+                "No search results to export. Please perform a search first.")
             return
 
         self.output.write(f"Last search: {self.session.last_search_query}\n")
-        self.output.write(f"Results: {len(self.session.last_search_results)}\n\n")
-        self.status.info("Export functionality will be available in the full implementation.")
+        self.output.write(
+            f"Results: {len(self.session.last_search_results)}\n\n")
+        self.status.info(
+            "Export functionality will be available in the full implementation.")
 
     def _handle_config(self) -> None:
         """Handle config operation."""
@@ -314,7 +314,8 @@ class InteractiveMode:
 
         try:
             # Show some key config values
-            engine = self.config_manager.get("search.default_engine", "duckduckgo")
+            engine = self.config_manager.get(
+                "search.default_engine", "duckduckgo")
             max_results = self.config_manager.get("search.max_results", 50)
             theme = self.config_manager.get("ui.theme", "default")
 
@@ -329,7 +330,7 @@ class InteractiveMode:
     def _confirm_quit(self) -> bool:
         """
         Confirm quit intent with user.
-        
+
         Returns:
             True if user confirms quit, False otherwise
         """
@@ -337,7 +338,7 @@ class InteractiveMode:
             message="Are you sure you want to quit?",
             variant=ConfirmationVariant.YESNO,
             use_color=self.use_color,
-            output=self.output
+            output=self.output,
         )
 
         try:
@@ -349,7 +350,7 @@ class InteractiveMode:
     def run(self) -> None:
         """
         Run the interactive mode main loop.
-        
+
         Displays the main menu and handles user selections until quit.
         Maintains session state across operations.
         """
@@ -430,21 +431,16 @@ class InteractiveMode:
         self._show_goodbye()
 
 
-def interactive_command(
-    use_color: bool = True,
-    use_animation: bool = True
-) -> None:
+def interactive_command(use_color: bool = True, use_animation: bool = True) -> None:
     """
     Entry point for the interactive command.
-    
+
     Args:
         use_color: Whether to use colored output
         use_animation: Whether to use animations
     """
     interactive = InteractiveMode(
-        use_color=use_color,
-        use_animation=use_animation
-    )
+        use_color=use_color, use_animation=use_animation)
     interactive.run()
 
 

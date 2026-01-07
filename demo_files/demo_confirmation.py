@@ -7,8 +7,7 @@ def demo_yesno():
     """Demo standard yes/no confirmation."""
     print("\n=== Standard Yes/No Confirmation (default NO) ===")
     confirmation = Confirmation(
-        message="Do you want to proceed with this action?",
-        variant=ConfirmationVariant.YESNO
+        message="Do you want to proceed with this action?", variant=ConfirmationVariant.YESNO
     )
     # Uncomment to test interactively:
     # result = confirmation.confirm()
@@ -21,8 +20,7 @@ def demo_yesno_yes():
     """Demo yes/no confirmation with YES default."""
     print("\n=== Yes/No Confirmation (default YES) ===")
     confirmation = Confirmation(
-        message="Continue with the installation?",
-        variant=ConfirmationVariant.YESNO_YES
+        message="Continue with the installation?", variant=ConfirmationVariant.YESNO_YES
     )
     print("Prompt format:", confirmation._format_prompt())
     print("Default value:", confirmation._get_default_value())
@@ -34,7 +32,7 @@ def demo_destructive():
     confirmation = Confirmation(
         message="This will permanently delete all data!",
         variant=ConfirmationVariant.DESTRUCTIVE,
-        confirmation_word="DELETE"
+        confirmation_word="DELETE",
     )
     print("Message format:", confirmation._format_message())
     print("Prompt format:", confirmation._format_prompt())
@@ -47,7 +45,7 @@ def demo_timed():
     confirmation = Confirmation(
         message="This action will timeout in 10 seconds",
         variant=ConfirmationVariant.TIMED,
-        timeout=10.0
+        timeout=10.0,
     )
     print("Prompt format:", confirmation._format_prompt())
     print("Default value:", confirmation._get_default_value())

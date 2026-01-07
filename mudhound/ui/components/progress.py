@@ -16,6 +16,7 @@ from mudhound.ui.theme import get_theme_engine
 
 class ProgressVariant:
     """Progress display variant constants."""
+
     BAR = "bar"
     SPINNER = "spinner"
     COUNTER = "counter"
@@ -26,14 +27,14 @@ class ProgressVariant:
 class Progress:
     """
     Progress indicator component.
-    
+
     Displays operation progress with configurable variants:
     - bar: Traditional progress bar with percentage
     - spinner: Animated spinner with counter
     - counter: Simple result counter
     - transfer: Transfer-style progress with rate
     - rainbow: Rainbow-colored progress bar
-    
+
     Attributes:
         variant: Display variant (bar, spinner, counter, transfer, rainbow)
         total: Total number of items (None for indeterminate)
@@ -51,11 +52,11 @@ class Progress:
         variant: str = ProgressVariant.BAR,
         total: Optional[int] = None,
         use_color: bool = True,
-        output: Optional[TextIO] = None
+        output: Optional[TextIO] = None,
     ):
         """
         Initialize the Progress component.
-        
+
         Args:
             variant: Display variant (bar, spinner, counter, transfer, rainbow)
             total: Total number of items (None for indeterminate progress)
@@ -86,7 +87,7 @@ class Progress:
     def update(self, count: int = 1) -> None:
         """
         Update the progress by incrementing the counter.
-        
+
         Args:
             count: Number to increment by (default 1)
         """
@@ -94,15 +95,17 @@ class Progress:
 
         # Rate limit rendering
         now = datetime.now()
-        if self.last_render_time is None or \
-           (now - self.last_render_time).total_seconds() >= self.min_render_interval:
+        if (
+            self.last_render_time is None
+            or (now - self.last_render_time).total_seconds() >= self.min_render_interval
+        ):
             self.render()
             self.last_render_time = now
 
     def set_current(self, value: int) -> None:
         """
         Set the current progress value directly.
-        
+
         Args:
             value: Current progress value
         """
@@ -112,7 +115,7 @@ class Progress:
     def get_percentage(self) -> float:
         """
         Calculate the current progress percentage.
-        
+
         Returns:
             Progress percentage (0-100), or 0 if total is None
         """
@@ -123,7 +126,7 @@ class Progress:
     def get_elapsed_time(self) -> timedelta:
         """
         Get the elapsed time since progress started.
-        
+
         Returns:
             Elapsed time as timedelta
         """
@@ -134,7 +137,7 @@ class Progress:
     def format_elapsed_time(self) -> str:
         """
         Format the elapsed time as a human-readable string.
-        
+
         Returns:
             Formatted elapsed time (e.g., "1m 23s")
         """
@@ -160,7 +163,7 @@ class Progress:
     def _render_bar(self) -> str:
         """
         Render a traditional progress bar.
-        
+
         Returns:
             Formatted progress bar string
         """
@@ -180,7 +183,7 @@ class Progress:
     def _render_spinner(self) -> str:
         """
         Render an animated spinner with counter.
-        
+
         Returns:
             Formatted spinner string
         """
@@ -196,7 +199,7 @@ class Progress:
     def _render_counter(self) -> str:
         """
         Render a simple counter.
-        
+
         Returns:
             Formatted counter string
         """
@@ -211,7 +214,7 @@ class Progress:
     def _render_transfer(self) -> str:
         """
         Render transfer-style progress with rate.
-        
+
         Returns:
             Formatted transfer progress string
         """
@@ -235,7 +238,7 @@ class Progress:
     def _render_rainbow(self) -> str:
         """
         Render a rainbow-colored progress bar.
-        
+
         Returns:
             Formatted rainbow progress bar string
         """
@@ -250,6 +253,7 @@ class Progress:
         if self.use_color:
             # Apply rainbow colors to filled portion
             from mudhound.ui.animation.schemes import RAINBOW_COLORS_256
+
             colored_bar = ""
             for i, char in enumerate(bar_chars):
                 if i < filled:
@@ -265,7 +269,7 @@ class Progress:
     def render(self) -> None:
         """
         Render the progress indicator based on the variant.
-        
+
         Clears the current line and renders the appropriate progress display.
         """
         if self.cancelled:
@@ -299,7 +303,7 @@ class Progress:
     def complete(self, message: Optional[str] = None) -> None:
         """
         Mark the progress as complete and display final message.
-        
+
         Args:
             message: Optional completion message
         """
@@ -312,7 +316,8 @@ class Progress:
                 check = theme_engine.apply(check, "success")
 
             elapsed_str = self.format_elapsed_time()
-            self.output.write(f"{check} {message} ({self.current} results in {elapsed_str})\n")
+            self.output.write(
+                f"{check} {message} ({self.current} results in {elapsed_str})\n")
         else:
             self.output.write(f"Complete: {self.current} results\n")
 
@@ -321,7 +326,7 @@ class Progress:
     def cancel(self, message: Optional[str] = None) -> None:
         """
         Cancel the progress and display cancellation message.
-        
+
         Args:
             message: Optional cancellation message
         """
@@ -343,7 +348,7 @@ class Progress:
     def error(self, message: str) -> None:
         """
         Display an error message and stop progress.
-        
+
         Args:
             message: Error message to display
         """

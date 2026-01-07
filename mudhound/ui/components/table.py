@@ -19,7 +19,7 @@ from mudhound.ui.theme import get_theme_engine
 @dataclass
 class ColumnConfig:
     """Configuration for a table column.
-    
+
     Attributes:
         name: Column name/header
         width: Column width in characters (None for auto-size)
@@ -27,6 +27,7 @@ class ColumnConfig:
         max_width: Maximum column width (None for unlimited)
         align: Text alignment ("left", "center", "right")
     """
+
     name: str
     width: Optional[int] = None
     min_width: int = 5
@@ -37,11 +38,11 @@ class ColumnConfig:
 class Table:
     """
     Table component for displaying search results.
-    
+
     Renders search results in a tabular format with columns for rank, URL,
     and source. Supports auto-sizing based on terminal width, URL truncation
     with ellipsis, keyboard navigation (j/k, PgUp/PgDn), and inline filtering.
-    
+
     Attributes:
         results: List of search results to display
         layout_manager: LayoutManager for terminal dimensions
@@ -55,9 +56,11 @@ class Table:
 
     # Default column configurations
     DEFAULT_COLUMNS = [
-        ColumnConfig(name="Rank", width=6, min_width=6, max_width=6, align="right"),
+        ColumnConfig(name="Rank", width=6, min_width=6,
+                     max_width=6, align="right"),
         ColumnConfig(name="URL", min_width=20, align="left"),
-        ColumnConfig(name="Source", width=20, min_width=10, max_width=30, align="left"),
+        ColumnConfig(name="Source", width=20, min_width=10,
+                     max_width=30, align="left"),
     ]
 
     def __init__(
@@ -71,7 +74,7 @@ class Table:
     ):
         """
         Initialize the Table component.
-        
+
         Args:
             results: List of search results to display
             layout_manager: LayoutManager instance (creates default if None)
@@ -98,10 +101,10 @@ class Table:
     def _calculate_column_widths(self) -> List[int]:
         """
         Calculate column widths based on terminal width and content.
-        
+
         Auto-sizes columns to fit within terminal width while respecting
         min/max constraints.
-        
+
         Returns:
             List of column widths
         """
@@ -181,11 +184,11 @@ class Table:
     def _truncate_text(self, text: str, width: int) -> str:
         """
         Truncate text to fit within width, adding ellipsis if needed.
-        
+
         Args:
             text: Text to truncate
             width: Maximum width
-            
+
         Returns:
             Truncated text with ellipsis if needed
         """
@@ -195,17 +198,17 @@ class Table:
         if width <= 3:
             return "..."[:width]
 
-        return text[:width - 3] + "..."
+        return text[: width - 3] + "..."
 
     def _format_cell(self, text: str, width: int, align: str = "left") -> str:
         """
         Format a cell with alignment and padding.
-        
+
         Args:
             text: Cell text
             width: Cell width
             align: Alignment ("left", "center", "right")
-            
+
         Returns:
             Formatted cell text
         """
@@ -223,10 +226,10 @@ class Table:
     def _render_header(self, widths: List[int]) -> str:
         """
         Render the table header row.
-        
+
         Args:
             widths: List of column widths
-            
+
         Returns:
             Formatted header row
         """
@@ -243,10 +246,10 @@ class Table:
     def _render_separator(self, widths: List[int]) -> str:
         """
         Render a separator line between header and content.
-        
+
         Args:
             widths: List of column widths
-            
+
         Returns:
             Formatted separator line
         """
@@ -263,19 +266,16 @@ class Table:
         return line
 
     def _render_row(
-        self,
-        result: SearchResult,
-        widths: List[int],
-        is_selected: bool = False
+        self, result: SearchResult, widths: List[int], is_selected: bool = False
     ) -> str:
         """
         Render a single data row.
-        
+
         Args:
             result: Search result to render
             widths: List of column widths
             is_selected: Whether this row is currently selected
-            
+
         Returns:
             Formatted row
         """
@@ -309,7 +309,7 @@ class Table:
     def _filter_results(self) -> List[SearchResult]:
         """
         Filter results based on current filter text.
-        
+
         Returns:
             Filtered list of results
         """
@@ -321,10 +321,12 @@ class Table:
 
         for result in self.results:
             # Search in URL, title, snippet, and source
-            if (filter_lower in result.url.lower() or
-                filter_lower in result.title.lower() or
-                filter_lower in result.snippet.lower() or
-                filter_lower in result.source.lower()):
+            if (
+                filter_lower in result.url.lower()
+                or filter_lower in result.title.lower()
+                or filter_lower in result.snippet.lower()
+                or filter_lower in result.source.lower()
+            ):
                 filtered.append(result)
 
         return filtered
@@ -332,10 +334,10 @@ class Table:
     def _get_page_results(self, filtered_results: List[SearchResult]) -> List[SearchResult]:
         """
         Get results for the current page.
-        
+
         Args:
             filtered_results: Filtered results list
-            
+
         Returns:
             Results for current page
         """
@@ -346,7 +348,7 @@ class Table:
     def render(self) -> List[str]:
         """
         Render the complete table.
-        
+
         Returns:
             List of rendered table lines
         """
@@ -374,7 +376,7 @@ class Table:
             lines.append(no_results)
         else:
             for i, result in enumerate(page_results):
-                is_selected = (i == self.current_row)
+                is_selected = i == self.current_row
                 lines.append(self._render_row(result, widths, is_selected))
 
         # Add filter indicator if active
@@ -387,7 +389,8 @@ class Table:
             lines.append(filter_line)
 
         # Add pagination info
-        total_pages = (len(filtered_results) + self.page_size - 1) // self.page_size
+        total_pages = (len(filtered_results) +
+                       self.page_size - 1) // self.page_size
         if total_pages > 1:
             page_info = f"Page {self.current_page + 1}/{total_pages}"
             if self.use_color:
@@ -415,7 +418,8 @@ class Table:
             self.current_row += 1
         else:
             # Check if there's a next page
-            total_pages = (len(filtered_results) + self.page_size - 1) // self.page_size
+            total_pages = (len(filtered_results) +
+                           self.page_size - 1) // self.page_size
             if self.current_page < total_pages - 1:
                 self.current_page += 1
                 self.current_row = 0
@@ -429,7 +433,8 @@ class Table:
     def page_down(self) -> None:
         """Move down one page."""
         filtered_results = self._filter_results()
-        total_pages = (len(filtered_results) + self.page_size - 1) // self.page_size
+        total_pages = (len(filtered_results) +
+                       self.page_size - 1) // self.page_size
 
         if self.current_page < total_pages - 1:
             self.current_page += 1
@@ -438,7 +443,7 @@ class Table:
     def set_filter(self, filter_text: str) -> None:
         """
         Set the filter text and reset navigation.
-        
+
         Args:
             filter_text: Filter text to apply
         """
@@ -455,7 +460,7 @@ class Table:
     def get_selected_result(self) -> Optional[SearchResult]:
         """
         Get the currently selected search result.
-        
+
         Returns:
             Selected SearchResult or None if no selection
         """
@@ -470,17 +475,17 @@ class Table:
     def show_interactive(self) -> Optional[SearchResult]:
         """
         Display the table with interactive navigation.
-        
+
         Supports:
         - j/k: Move down/up
         - PgUp/PgDn: Page up/down
         - /: Activate inline filtering
         - Enter: Select current result
         - ESC/q: Exit without selection
-        
+
         Returns:
             Selected SearchResult or None if cancelled
-            
+
         Raises:
             KeyboardInterrupt: If user presses CTRL+C
         """
@@ -491,7 +496,9 @@ class Table:
                 for line in table_lines:
                     self.output.write(line + "\n")
 
-                self.output.write("\nNavigate: j/k, PgUp/PgDn | Filter: / | Select: Enter | Quit: q\n")
+                self.output.write(
+                    "\nNavigate: j/k, PgUp/PgDn | Filter: / | Select: Enter | Quit: q\n"
+                )
                 self.output.write("> ")
                 self.output.flush()
 
@@ -533,7 +540,7 @@ class Table:
     def _clear_display(self, line_count: int) -> None:
         """
         Clear the previous table display.
-        
+
         Args:
             line_count: Number of lines to clear
         """

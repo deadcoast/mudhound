@@ -17,6 +17,7 @@ from mudhound.ui.theme import get_theme_engine
 
 class ConfirmationVariant(Enum):
     """Confirmation variant types."""
+
     YESNO = "yesno"  # Standard yes/no, default NO
     YESNO_YES = "yesno_yes"  # Standard yes/no, default YES
     DESTRUCTIVE = "destructive"  # Requires typing confirmation word
@@ -26,13 +27,13 @@ class ConfirmationVariant(Enum):
 class Confirmation:
     """
     Confirmation prompt component for destructive actions.
-    
+
     Provides multiple confirmation variants with safety features:
     - yesno: Standard yes/no prompt, defaults to NO
     - yesno_yes: Standard yes/no prompt, defaults to YES
     - destructive: Requires typing a confirmation word
     - timed: Auto-cancels after timeout
-    
+
     Attributes:
         message: Confirmation message to display
         variant: Type of confirmation (yesno, yesno_yes, destructive, timed)
@@ -55,7 +56,7 @@ class Confirmation:
     ):
         """
         Initialize the Confirmation component.
-        
+
         Args:
             message: Confirmation message to display
             variant: Type of confirmation
@@ -77,7 +78,7 @@ class Confirmation:
     def _format_message(self) -> str:
         """
         Format the confirmation message with appropriate styling.
-        
+
         Returns:
             Formatted message string
         """
@@ -100,7 +101,7 @@ class Confirmation:
     def _format_prompt(self) -> str:
         """
         Format the prompt text based on variant.
-        
+
         Returns:
             Formatted prompt string
         """
@@ -120,11 +121,11 @@ class Confirmation:
     def _get_default_value(self) -> bool:
         """
         Get the default value based on variant.
-        
+
         For destructive actions, default is NO.
         For yesno_yes, default is YES.
         For standard yesno and timed, default is NO.
-        
+
         Returns:
             Default boolean value
         """
@@ -143,10 +144,10 @@ class Confirmation:
     def _parse_yesno_input(self, raw_input: str) -> Optional[bool]:
         """
         Parse yes/no input.
-        
+
         Args:
             raw_input: Raw input string
-            
+
         Returns:
             Boolean value or None if invalid
         """
@@ -162,16 +163,16 @@ class Confirmation:
     def confirm(self) -> bool:
         """
         Display confirmation prompt and get user response.
-        
+
         Handles different variants:
         - yesno: Standard yes/no with default NO
         - yesno_yes: Standard yes/no with default YES
         - destructive: Requires typing confirmation word
         - timed: Auto-cancels after timeout
-        
+
         Returns:
             True if confirmed, False if cancelled
-            
+
         Raises:
             KeyboardInterrupt: If user presses CTRL+C
         """
@@ -183,7 +184,8 @@ class Confirmation:
         timeout_thread = None
         if self.variant == ConfirmationVariant.TIMED and self.timeout:
             self._timed_out = False
-            timeout_thread = threading.Thread(target=self._timeout_handler, daemon=True)
+            timeout_thread = threading.Thread(
+                target=self._timeout_handler, daemon=True)
             timeout_thread.start()
 
         try:

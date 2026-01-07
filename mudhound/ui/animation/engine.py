@@ -15,10 +15,10 @@ from mudhound.ui.animation.timing import TimingEngine
 class AnimationRenderer:
     """
     Coordinates animation rendering with cursor management and frame tracking.
-    
+
     Integrates with TimingEngine for frame index calculation, AssetManager for
     frame loading, and handles terminal-specific rendering with cursor management.
-    
+
     Attributes:
         timing_engine: TimingEngine instance for frame timing
         asset_manager: AssetManager instance for loading frames
@@ -31,11 +31,11 @@ class AnimationRenderer:
         self,
         timing_engine: Optional[TimingEngine] = None,
         asset_manager: Optional[AssetManager] = None,
-        output: Optional[TextIO] = None
+        output: Optional[TextIO] = None,
     ):
         """
         Initialize the animation renderer.
-        
+
         Args:
             timing_engine: TimingEngine instance (creates default if None)
             asset_manager: AssetManager instance (creates default if None)
@@ -57,7 +57,7 @@ class AnimationRenderer:
     def load_frames(self, frames: List[str]) -> None:
         """
         Load frames for animation.
-        
+
         Args:
             frames: List of frame contents (strings)
         """
@@ -70,7 +70,7 @@ class AnimationRenderer:
     def load_banner_frames(self, scheme: str = "rainbow") -> None:
         """
         Load banner frames from asset manager.
-        
+
         Args:
             scheme: Color scheme name
         """
@@ -80,7 +80,7 @@ class AnimationRenderer:
     def load_logo_frames(self, scheme: str = "rainbow") -> None:
         """
         Load logo frames from asset manager.
-        
+
         Args:
             scheme: Color scheme name
         """
@@ -90,16 +90,16 @@ class AnimationRenderer:
     def _count_lines(self, text: str) -> int:
         """
         Count the number of lines in a text string.
-        
+
         Args:
             text: Text to count lines in
-            
+
         Returns:
             Number of lines
         """
         if not text:
             return 0
-        return text.count('\n') + 1
+        return text.count("\n") + 1
 
     def _clear_previous_frame(self) -> None:
         """Clear the previously rendered frame from the terminal."""
@@ -121,10 +121,10 @@ class AnimationRenderer:
     def render_frame(self, frame_index: Optional[int] = None) -> None:
         """
         Render a single frame with cursor management.
-        
+
         Clears the previous frame by moving cursor up and clearing lines,
         then renders the new frame.
-        
+
         Args:
             frame_index: Index of frame to render (uses timing engine if None)
         """
@@ -158,7 +158,7 @@ class AnimationRenderer:
     def pause(self) -> None:
         """
         Pause the animation.
-        
+
         Pauses the timing engine and sets the paused flag.
         Used during terminal resize events.
         """
@@ -169,7 +169,7 @@ class AnimationRenderer:
     def resume(self) -> None:
         """
         Resume the animation after pause.
-        
+
         Resumes the timing engine and clears the paused flag.
         Used after terminal resize events are handled.
         """
@@ -178,16 +178,14 @@ class AnimationRenderer:
             self._is_paused = False
 
     def animate(
-        self,
-        duration: float = 0.0,
-        on_complete: Optional[Callable[[], None]] = None
+        self, duration: float = 0.0, on_complete: Optional[Callable[[], None]] = None
     ) -> None:
         """
         Run the animation for the specified duration.
-        
+
         Integrates with TimingEngine for frame index calculation and handles
         the animation loop with proper timing.
-        
+
         Args:
             duration: Animation duration in seconds (0 = infinite loop)
             on_complete: Optional callback to invoke when animation completes
@@ -215,6 +213,7 @@ class AnimationRenderer:
 
                 # Sleep for frame duration to maintain frame rate
                 import time
+
                 time.sleep(self.timing_engine.frame_duration)
 
         finally:

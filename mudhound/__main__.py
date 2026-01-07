@@ -56,7 +56,7 @@ def initialize_adapters():
 
 def initialize_logging(verbose: bool = False, quiet: bool = False, use_color: bool = True):
     """Initialize the logging system.
-    
+
     Args:
         verbose: Enable verbose (DEBUG) logging
         quiet: Suppress most logging output
@@ -73,7 +73,7 @@ def initialize_logging(verbose: bool = False, quiet: bool = False, use_color: bo
         level = logging.INFO
 
     # Get log file path from config or use default
-    log_file = Path.home() / '.mudhound' / 'logs' / 'mudhound.log'
+    log_file = Path.home() / ".mudhound" / "logs" / "mudhound.log"
 
     # Configure logging
     configure_logging(
@@ -86,10 +86,10 @@ def initialize_logging(verbose: bool = False, quiet: bool = False, use_color: bo
 
 def initialize_config(config_path: str = None):
     """Initialize the configuration system.
-    
+
     Args:
         config_path: Optional path to configuration file
-        
+
     Returns:
         ConfigManager instance
     """

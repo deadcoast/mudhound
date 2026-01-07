@@ -6,6 +6,7 @@ from typing import Dict, List, Optional
 
 class BorderStyle(Enum):
     """Available border character sets."""
+
     DOUBLE = "double"
     SINGLE = "single"
     BOLD = "bold"
@@ -86,14 +87,14 @@ BORDER_CHARS: Dict[BorderStyle, Dict[str, str]] = {
 class FrameRenderer:
     """
     Renders terminal frames with borders, headers, footers, and content.
-    
+
     Supports multiple border styles and dynamic width adjustment.
     """
 
     def __init__(self, style: BorderStyle = BorderStyle.DOUBLE, width: Optional[int] = None):
         """
         Initialize the frame renderer.
-        
+
         Args:
             style: Border style to use
             width: Frame width in columns (None for dynamic)
@@ -105,7 +106,7 @@ class FrameRenderer:
     def set_width(self, width: int) -> None:
         """
         Set the frame width.
-        
+
         Args:
             width: Frame width in columns
         """
@@ -114,7 +115,7 @@ class FrameRenderer:
     def set_style(self, style: BorderStyle) -> None:
         """
         Change the border style.
-        
+
         Args:
             style: New border style
         """
@@ -122,19 +123,16 @@ class FrameRenderer:
         self.chars = BORDER_CHARS[style]
 
     def top_border(
-        self,
-        width: Optional[int] = None,
-        title: Optional[str] = None,
-        tag: Optional[str] = None
+        self, width: Optional[int] = None, title: Optional[str] = None, tag: Optional[str] = None
     ) -> str:
         """
         Render the top border of a frame.
-        
+
         Args:
             width: Frame width (uses instance width if None)
             title: Optional title to display in the border
             tag: Optional tag to display on the right side
-            
+
         Returns:
             str: Formatted top border line
         """
@@ -220,16 +218,16 @@ class FrameRenderer:
         self,
         width: Optional[int] = None,
         status: Optional[str] = None,
-        pagination: Optional[str] = None
+        pagination: Optional[str] = None,
     ) -> str:
         """
         Render the bottom border of a frame.
-        
+
         Args:
             width: Frame width (uses instance width if None)
             status: Optional status text to display
             pagination: Optional pagination info (e.g., "1/10")
-            
+
         Returns:
             str: Formatted bottom border line
         """
@@ -312,12 +310,12 @@ class FrameRenderer:
     def header_row(self, text: str, width: Optional[int] = None, align: str = "left") -> str:
         """
         Render a header row with text inside the frame.
-        
+
         Args:
             text: Header text to display
             width: Frame width (uses instance width if None)
             align: Text alignment ("left", "center", "right")
-            
+
         Returns:
             str: Formatted header row
         """
@@ -329,7 +327,7 @@ class FrameRenderer:
 
         # Truncate text if too long
         if len(text) > inner_width:
-            text = text[:inner_width - 3] + "..."
+            text = text[: inner_width - 3] + "..."
 
         # Apply alignment
         if align == "center":
@@ -344,12 +342,12 @@ class FrameRenderer:
     def footer_row(self, text: str, width: Optional[int] = None, align: str = "left") -> str:
         """
         Render a footer row with text inside the frame.
-        
+
         Args:
             text: Footer text to display
             width: Frame width (uses instance width if None)
             align: Text alignment ("left", "center", "right")
-            
+
         Returns:
             str: Formatted footer row
         """
@@ -359,11 +357,11 @@ class FrameRenderer:
     def divider(self, width: Optional[int] = None, text: Optional[str] = None) -> str:
         """
         Render a horizontal divider line.
-        
+
         Args:
             width: Frame width (uses instance width if None)
             text: Optional text to display in the divider
-            
+
         Returns:
             str: Formatted divider line
         """
@@ -406,19 +404,16 @@ class FrameRenderer:
         return line
 
     def content_rows(
-        self,
-        lines: List[str],
-        width: Optional[int] = None,
-        padding: int = 1
+        self, lines: List[str], width: Optional[int] = None, padding: int = 1
     ) -> List[str]:
         """
         Render multiple content rows with borders.
-        
+
         Args:
             lines: List of content lines to render
             width: Frame width (uses instance width if None)
             padding: Left/right padding in spaces
-            
+
         Returns:
             List[str]: Formatted content rows
         """
@@ -432,7 +427,7 @@ class FrameRenderer:
         for line in lines:
             # Truncate if too long
             if len(line) > inner_width:
-                line = line[:inner_width - 3] + "..."
+                line = line[: inner_width - 3] + "..."
 
             # Pad to full width
             line = line.ljust(inner_width)
@@ -452,10 +447,10 @@ class FrameRenderer:
     def empty_row(self, width: Optional[int] = None) -> str:
         """
         Render an empty content row.
-        
+
         Args:
             width: Frame width (uses instance width if None)
-            
+
         Returns:
             str: Formatted empty row
         """
@@ -469,23 +464,24 @@ class FrameRenderer:
 
 # Convenience functions for quick frame rendering
 
+
 def render_simple_frame(
     content: List[str],
     width: int,
     style: BorderStyle = BorderStyle.DOUBLE,
     title: Optional[str] = None,
-    status: Optional[str] = None
+    status: Optional[str] = None,
 ) -> List[str]:
     """
     Render a simple frame with content.
-    
+
     Args:
         content: List of content lines
         width: Frame width
         style: Border style
         title: Optional title
         status: Optional status text
-        
+
     Returns:
         List[str]: Complete frame as list of lines
     """
@@ -504,18 +500,18 @@ def render_frame_with_header(
     content: List[str],
     width: int,
     style: BorderStyle = BorderStyle.DOUBLE,
-    title: Optional[str] = None
+    title: Optional[str] = None,
 ) -> List[str]:
     """
     Render a frame with a header section.
-    
+
     Args:
         header: Header text
         content: List of content lines
         width: Frame width
         style: Border style
         title: Optional title
-        
+
     Returns:
         List[str]: Complete frame as list of lines
     """

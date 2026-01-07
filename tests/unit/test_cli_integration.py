@@ -119,7 +119,8 @@ class TestCLIValidationIntegration:
 
     def test_global_options_invalid_config_path(self):
         """Test that invalid config paths are rejected."""
-        result = runner.invoke(app, ["--config", "/nonexistent/path/config.toml", "version"])
+        result = runner.invoke(
+            app, ["--config", "/nonexistent/path/config.toml", "version"])
 
         # Should exit with error
         assert result.exit_code != 0

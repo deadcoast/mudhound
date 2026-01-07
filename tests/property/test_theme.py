@@ -19,37 +19,50 @@ from mudhound.ui.theme import ANSI_COLORS, ThemeEngine
 ansi_color_names = st.sampled_from(list(ANSI_COLORS.keys()))
 
 # Strategy for semantic color names
-semantic_color_names = st.sampled_from([
-    "primary", "secondary", "accent",
-    "success", "error", "warning", "info",
-    "frame_border", "frame_title", "frame_content",
-    "text", "text_dim", "highlight"
-])
+semantic_color_names = st.sampled_from(
+    [
+        "primary",
+        "secondary",
+        "accent",
+        "success",
+        "error",
+        "warning",
+        "info",
+        "frame_border",
+        "frame_title",
+        "frame_content",
+        "text",
+        "text_dim",
+        "highlight",
+    ]
+)
 
 # Strategy for animation color schemes
 animation_schemes = st.one_of(
-    st.none(),
-    st.sampled_from(["rainbow", "dark-rainbow", "light-rainbow", "white", "theme"])
+    st.none(), st.sampled_from(
+        ["rainbow", "dark-rainbow", "light-rainbow", "white", "theme"])
 )
 
 
 @given(
-    theme_name=st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=("Lu", "Ll", "Nd"), whitelist_characters="-_")),
-    colors=st.dictionaries(
-        keys=semantic_color_names,
-        values=ansi_color_names,
+    theme_name=st.text(
         min_size=1,
-        max_size=15
+        max_size=50,
+        alphabet=st.characters(whitelist_categories=(
+            "Lu", "Ll", "Nd"), whitelist_characters="-_"),
     ),
-    animation_scheme=animation_schemes
+    colors=st.dictionaries(
+        keys=semantic_color_names, values=ansi_color_names, min_size=1, max_size=15
+    ),
+    animation_scheme=animation_schemes,
 )
 def test_theme_toml_loading(theme_name, colors, animation_scheme):
     """
     Feature: mudhound-full-implementation, Property 52: Theme TOML loading
-    
+
     For any valid theme TOML file in the themes directory, the theme engine
     should load it successfully.
-    
+
     Validates: Requirements 17.1
     """
     # Create a temporary directory for themes
@@ -82,16 +95,14 @@ def test_theme_toml_loading(theme_name, colors, animation_scheme):
         assert loaded_theme.animation_scheme == animation_scheme
 
 
-@given(
-    semantic_name=semantic_color_names
-)
+@given(semantic_name=semantic_color_names)
 def test_semantic_color_resolution(semantic_name):
     """
     Feature: mudhound-full-implementation, Property 53: Semantic color resolution
-    
+
     For any semantic color name (success, error, warning, info), the theme engine
     should resolve it to a valid terminal escape code.
-    
+
     Validates: Requirements 17.2
     """
     # Create a theme engine with default theme
@@ -109,15 +120,20 @@ def test_semantic_color_resolution(semantic_name):
 
 
 @given(
-    requested_theme=st.text(min_size=1, max_size=50, alphabet=st.characters(whitelist_categories=("Lu", "Ll", "Nd"), whitelist_characters="-_"))
+    requested_theme=st.text(
+        min_size=1,
+        max_size=50,
+        alphabet=st.characters(whitelist_categories=(
+            "Lu", "Ll", "Nd"), whitelist_characters="-_"),
+    )
 )
 def test_theme_fallback_behavior(requested_theme):
     """
     Feature: mudhound-full-implementation, Property 56: Theme fallback behavior
-    
+
     For any requested theme that does not exist, the theme engine should fall back
     to the default theme.
-    
+
     Validates: Requirements 17.5
     """
     # Create a temporary empty directory for themes
@@ -141,30 +157,32 @@ def test_theme_fallback_behavior(requested_theme):
         assert "info" in loaded_theme.colors
 
 
-
 @given(
     content_lines=st.lists(
-        st.text(min_size=1, max_size=50, alphabet=st.characters(blacklist_categories=("Cc", "Cs"))),
+        st.text(min_size=1, max_size=50, alphabet=st.characters(
+            blacklist_categories=("Cc", "Cs"))),
         min_size=1,
-        max_size=10
+        max_size=10,
     ),
     title=st.one_of(
         st.none(),
-        st.text(min_size=1, max_size=30, alphabet=st.characters(blacklist_categories=("Cc", "Cs")))
+        st.text(min_size=1, max_size=30, alphabet=st.characters(
+            blacklist_categories=("Cc", "Cs"))),
     ),
     status=st.one_of(
         st.none(),
-        st.text(min_size=1, max_size=30, alphabet=st.characters(blacklist_categories=("Cc", "Cs")))
+        st.text(min_size=1, max_size=30, alphabet=st.characters(
+            blacklist_categories=("Cc", "Cs"))),
     ),
-    border_style=st.sampled_from(list(BorderStyle))
+    border_style=st.sampled_from(list(BorderStyle)),
 )
 def test_theme_application_to_frames(content_lines, title, status, border_style):
     """
     Feature: mudhound-full-implementation, Property 3: Theme application to frames
-    
+
     For any frame and any active theme, rendering the frame should apply the
     theme's color palette to all frame elements.
-    
+
     Validates: Requirements 1.4
     """
     # Create a temporary directory for themes
@@ -179,7 +197,7 @@ def test_theme_application_to_frames(content_lines, title, status, border_style)
                 "frame_title": "bright_white",
                 "frame_content": "white",
                 "primary": "bright_magenta",
-            }
+            },
         }
 
         theme_path = themes_dir / "test_theme.toml"
@@ -195,20 +213,12 @@ def test_theme_application_to_frames(content_lines, title, status, border_style)
 
         # Render a frame with theme application enabled
         frame_with_theme = renderer.render_frame(
-            content=content_lines,
-            title=title,
-            status=status,
-            style=border_style,
-            apply_theme=True
+            content=content_lines, title=title, status=status, style=border_style, apply_theme=True
         )
 
         # Render the same frame without theme application
         frame_without_theme = renderer.render_frame(
-            content=content_lines,
-            title=title,
-            status=status,
-            style=border_style,
-            apply_theme=False
+            content=content_lines, title=title, status=status, style=border_style, apply_theme=False
         )
 
         # Verify that frames are different (theme was applied)
@@ -228,4 +238,6 @@ def test_theme_application_to_frames(content_lines, title, status, border_style)
         # Verify that non-themed frame does NOT contain the specific theme color
         frame_text_no_theme = "\n".join(frame_without_theme)
         # Non-themed frame should not have ANSI codes (or at least not our specific theme color)
-        assert expected_color not in frame_text_no_theme, "Non-themed frame should not have theme color"
+        assert expected_color not in frame_text_no_theme, (
+            "Non-themed frame should not have theme color"
+        )

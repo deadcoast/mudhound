@@ -12,7 +12,7 @@ results = [
         snippet="This is a snippet from example page 1",
         source="example.com",
         rank=1,
-        metadata={}
+        metadata={},
     ),
     SearchResult(
         url="https://www.verylongdomainname.com/very/long/path/to/resource",
@@ -20,7 +20,7 @@ results = [
         snippet="This demonstrates URL truncation",
         source="verylongdomainname.com",
         rank=2,
-        metadata={}
+        metadata={},
     ),
     SearchResult(
         url="https://www.python.org/docs",
@@ -28,7 +28,7 @@ results = [
         snippet="Official Python documentation",
         source="python.org",
         rank=3,
-        metadata={}
+        metadata={},
     ),
     SearchResult(
         url="https://github.com/python/cpython",
@@ -36,7 +36,7 @@ results = [
         snippet="The Python programming language",
         source="github.com",
         rank=4,
-        metadata={}
+        metadata={},
     ),
     SearchResult(
         url="https://stackoverflow.com/questions/tagged/python",
@@ -44,7 +44,7 @@ results = [
         snippet="Questions tagged with python",
         source="stackoverflow.com",
         rank=5,
-        metadata={}
+        metadata={},
     ),
 ]
 
@@ -52,12 +52,8 @@ results = [
 layout_manager = LayoutManager()
 
 # Create table
-table = Table(
-    results=results,
-    layout_manager=layout_manager,
-    use_color=True,
-    page_size=10
-)
+table = Table(results=results, layout_manager=layout_manager,
+              use_color=True, page_size=10)
 
 # Render the table
 print("Table Component Demo")

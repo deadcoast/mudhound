@@ -13,7 +13,12 @@ import typer
 from rich.console import Console
 
 from mudhound.adapters.registry import AdapterRegistry
-from mudhound.cli.commands.export import export_csv, export_json, export_txt, export_urls
+from mudhound.cli.commands.export import (
+    export_csv,
+    export_json,
+    export_txt,
+    export_urls,
+)
 from mudhound.cli.validation import (
     validate_engine,
     validate_format,
@@ -38,15 +43,25 @@ logger = logging.getLogger("mudhound.cli.search")
 @app.command()
 def search(
     query: str = typer.Argument(..., help="Search query"),
-    max_results: int = typer.Option(50, "--max", "-m", help="Maximum number of results"),
-    engine: str = typer.Option("duckduckgo", "--engine", "-e", help="Search engine adapter"),
+    max_results: int = typer.Option(
+        50, "--max", "-m", help="Maximum number of results"),
+    engine: str = typer.Option(
+        "duckduckgo", "--engine", "-e", help="Search engine adapter"),
     region: str = typer.Option("wt-wt", "--region", "-r", help="Region code"),
-    safesearch: str = typer.Option("moderate", "--safesearch", "-s", help="Safe search level (off|moderate|strict)"),
-    time_limit: Optional[str] = typer.Option(None, "--time", "-t", help="Time filter (d|w|m|y)"),
-    output: Optional[str] = typer.Option(None, "--output", "-o", help="Output file path"),
-    format: str = typer.Option("json", "--format", "-f", help="Output format (json|csv|txt|urls)"),
-    quiet: bool = typer.Option(False, "--quiet", "-q", help="Suppress UI, output only"),
-    interactive_results: bool = typer.Option(False, "--interactive", "-i", help="Interactive results with navigation"),
+    safesearch: str = typer.Option(
+        "moderate", "--safesearch", "-s", help="Safe search level (off|moderate|strict)"
+    ),
+    time_limit: Optional[str] = typer.Option(
+        None, "--time", "-t", help="Time filter (d|w|m|y)"),
+    output: Optional[str] = typer.Option(
+        None, "--output", "-o", help="Output file path"),
+    format: str = typer.Option(
+        "json", "--format", "-f", help="Output format (json|csv|txt|urls)"),
+    quiet: bool = typer.Option(
+        False, "--quiet", "-q", help="Suppress UI, output only"),
+    interactive_results: bool = typer.Option(
+        False, "--interactive", "-i", help="Interactive results with navigation"
+    ),
 ):
     """
     Execute a search query and display results.
@@ -84,19 +99,24 @@ def search(
     # Validate safesearch
     valid_safesearch = ["off", "moderate", "strict"]
     if safesearch.lower() not in valid_safesearch:
-        errors.append(f"Invalid safesearch value: {safesearch}. Must be one of: {', '.join(valid_safesearch)}")
+        errors.append(
+            f"Invalid safesearch value: {safesearch}. Must be one of: {', '.join(valid_safesearch)}"
+        )
 
     # Validate time_limit
     if time_limit:
         valid_time = ["d", "w", "m", "y"]
         if time_limit.lower() not in valid_time:
-            errors.append(f"Invalid time filter: {time_limit}. Must be one of: {', '.join(valid_time)}")
+            errors.append(
+                f"Invalid time filter: {time_limit}. Must be one of: {', '.join(valid_time)}"
+            )
 
     if errors:
         console_err.print("[red]Validation Error(s):[/red]")
         for error in errors:
             console_err.print(f"  [red]•[/red] {error}")
-        console_err.print("\n[yellow]Tip:[/yellow] Use --help to see valid options")
+        console_err.print(
+            "\n[yellow]Tip:[/yellow] Use --help to see valid options")
         raise typer.Exit(1)
 
     # Initialize search engine
@@ -134,10 +154,7 @@ def search(
             f"Engine: {engine} | Max: {max_results} | Region: {region}",
         ]
         ui_renderer.render_and_flush(
-            content=search_info,
-            title="Search",
-            apply_theme=True
-        )
+            content=search_info, title="Search", apply_theme=True)
         console.print()
 
     # Initialize progress component
@@ -175,27 +192,37 @@ def search(
                     use_color=True,
                     page_size=10,
                 )
-                console.print("[dim]Interactive mode: Navigate with j/k, filter with /, select with Enter[/dim]\n")
+                console.print(
+                    "[dim]Interactive mode: Navigate with j/k, filter with /, select with Enter[/dim]\n"
+                )
                 selected = table.show_interactive()
                 if selected:
                     console.print(f"\n[green]Selected:[/green] {selected.url}")
             else:
                 # Standard display
                 for result in session.results[:10]:
-                    console.print(f"[bold cyan][{result.rank}][/bold cyan] {result.title}")
-                    console.print(f"    [link={result.url}]{result.url}[/link]")
-                    snippet = result.snippet[:150] + "..." if len(result.snippet) > 150 else result.snippet
+                    console.print(
+                        f"[bold cyan][{result.rank}][/bold cyan] {result.title}")
+                    console.print(
+                        f"    [link={result.url}]{result.url}[/link]")
+                    snippet = (
+                        result.snippet[:150] + "..."
+                        if len(result.snippet) > 150
+                        else result.snippet
+                    )
                     console.print(f"    [dim]{snippet}[/dim]\n")
 
                 if len(session.results) > 10:
-                    console.print(f"[dim]... and {len(session.results) - 10} more results[/dim]\n")
+                    console.print(
+                        f"[dim]... and {len(session.results) - 10} more results[/dim]\n")
 
         # Save to history
         store = ResultStore()
         store.persist(session)
 
         if not quiet:
-            console.print(f"[dim]Search saved to history (ID: {session.query.id[:8]}...)[/dim]")
+            console.print(
+                f"[dim]Search saved to history (ID: {session.query.id[:8]}...)[/dim]")
 
         # Export if output path provided
         if output:

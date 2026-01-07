@@ -17,11 +17,13 @@ class MudHoundError(Exception):
 
 class ConfigError(MudHoundError):
     """Configuration file parsing, validation, or access errors."""
+
     pass
 
 
 class AdapterError(MudHoundError):
     """Base exception for search adapter errors."""
+
     pass
 
 
@@ -44,6 +46,7 @@ class RateLimitError(AdapterError):
 
 class NetworkError(AdapterError):
     """Network connectivity or timeout issues."""
+
     pass
 
 
@@ -58,9 +61,11 @@ class ValidationError(MudHoundError):
 
 class ExportError(MudHoundError):
     """Export operation failures (file I/O, format errors)."""
+
     pass
 
 
 class AnimationError(MudHoundError):
     """Animation system errors (asset loading, rendering)."""
+
     pass

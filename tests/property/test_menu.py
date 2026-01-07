@@ -10,21 +10,22 @@ from mudhound.ui.components.menu import Menu
 
 @given(
     options=st.lists(
-        st.text(min_size=1, max_size=50, alphabet=st.characters(blacklist_categories=('Cs', 'Cc'))),
+        st.text(min_size=1, max_size=50, alphabet=st.characters(
+            blacklist_categories=("Cs", "Cc"))),
         min_size=1,
         max_size=20,
-        unique=True
+        unique=True,
     ),
-    selected_index=st.integers(min_value=0, max_value=19)
+    selected_index=st.integers(min_value=0, max_value=19),
 )
 @settings(max_examples=100, deadline=None)
 def test_menu_option_numbering(options, selected_index):
     """
     Feature: mudhound-full-implementation, Property 34: Menu option numbering
-    
+
     For any menu displayed, all options should be numbered sequentially
     and a cursor indicator should be visible.
-    
+
     Validates: Requirements 11.1
     """
     # Ensure selected_index is valid for the options list
@@ -38,7 +39,7 @@ def test_menu_option_numbering(options, selected_index):
         options=options,
         selected_index=selected_index,
         use_color=False,  # Disable color for easier testing
-        output=output
+        output=output,
     )
 
     # Render the menu
@@ -54,13 +55,11 @@ def test_menu_option_numbering(options, selected_index):
         )
 
         # Check that the option text appears in the rendered menu
-        assert option in rendered_menu, (
-            f"Option text '{option}' should appear in the menu"
-        )
+        assert option in rendered_menu, f"Option text '{option}' should appear in the menu"
 
     # Verify cursor indicator is present for selected option
     # The cursor indicator should be ">>>" (from GLYPHS)
-    lines = rendered_menu.split('\n')
+    lines = rendered_menu.split("\n")
 
     # Count how many lines have the cursor indicator
     cursor_count = sum(1 for line in lines if ">>>" in line)
@@ -82,9 +81,7 @@ def test_menu_option_numbering(options, selected_index):
 
     # The cursor line should contain the selected option number
     selected_number = selected_index + 1
-    assert f"{selected_number}." in cursor_line, (
-        f"Cursor should be on option {selected_number}"
-    )
+    assert f"{selected_number}." in cursor_line, f"Cursor should be on option {selected_number}"
 
     # The cursor line should contain the selected option text
     selected_option = options[selected_index]

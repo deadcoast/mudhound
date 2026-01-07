@@ -39,7 +39,7 @@ def interactive(
 ):
     """
     Launch interactive mode with menu-driven interface.
-    
+
     Interactive mode allows you to perform multiple operations
     (search, history, export, config) without re-launching the application.
     """
@@ -49,29 +49,33 @@ def interactive(
 
     # Run interactive mode
     interactive_cmd.interactive_command(
-        use_color=not no_color,
-        use_animation=not no_animation
-    )
+        use_color=not no_color, use_animation=not no_animation)
 
 
 @app.callback()
 def main(
     ctx: typer.Context,
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose output"),
-    quiet: bool = typer.Option(False, "--quiet", "-q", help="Suppress non-essential output"),
-    no_color: bool = typer.Option(False, "--no-color", help="Disable colored output"),
-    no_animation: bool = typer.Option(False, "--no-animation", help="Disable animations"),
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"),
+    quiet: bool = typer.Option(
+        False, "--quiet", "-q", help="Suppress non-essential output"),
+    no_color: bool = typer.Option(
+        False, "--no-color", help="Disable colored output"),
+    no_animation: bool = typer.Option(
+        False, "--no-animation", help="Disable animations"),
     theme: Optional[str] = typer.Option(None, "--theme", help="Theme to use"),
-    config: Optional[str] = typer.Option(None, "--config", help="Path to config file"),
+    config: Optional[str] = typer.Option(
+        None, "--config", help="Path to config file"),
 ):
     """
     MudHound - Terminal-based batch URL extraction tool.
-    
+
     A modular search tool with animated UI and multiple search engine support.
     """
     # Validate conflicting options
     if verbose and quiet:
-        typer.echo("Error: Cannot use both --verbose and --quiet options", err=True)
+        typer.echo(
+            "Error: Cannot use both --verbose and --quiet options", err=True)
         raise typer.Exit(1)
 
     # Validate config path if provided
@@ -81,7 +85,8 @@ def main(
         if config_path.exists():
             # If it exists, it must be a file
             if not config_path.is_file():
-                typer.echo(f"Error: Config path is not a file: {config}", err=True)
+                typer.echo(
+                    f"Error: Config path is not a file: {config}", err=True)
                 raise typer.Exit(1)
         else:
             # If it doesn't exist, check if parent directory exists
@@ -103,7 +108,7 @@ def main(
         level = logging.INFO
 
     # Reconfigure logging with CLI options
-    log_file = Path.home() / '.mudhound' / 'logs' / 'mudhound.log'
+    log_file = Path.home() / ".mudhound" / "logs" / "mudhound.log"
     configure_logging(
         level=level,
         use_color=not no_color,
@@ -126,13 +131,16 @@ def main(
 
     # Get logger
     logger = logging.getLogger("mudhound")
-    logger.debug(f"MudHound starting with options: verbose={verbose}, quiet={quiet}, no_color={no_color}, no_animation={no_animation}")
+    logger.debug(
+        f"MudHound starting with options: verbose={verbose}, quiet={quiet}, no_color={no_color}, no_animation={no_animation}"
+    )
 
     if config:
         logger.debug(f"Using config file: {config}")
 
     # Log available adapters
     from mudhound.adapters.registry import AdapterRegistry
+
     available_adapters = AdapterRegistry.list_available()
     logger.debug(f"Available search adapters: {', '.join(available_adapters)}")
 
@@ -141,6 +149,7 @@ def main(
 def version():
     """Display version information."""
     from mudhound import __version__
+
     typer.echo(f"MudHound version {__version__}")
 
 
