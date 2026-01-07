@@ -10,7 +10,8 @@ import tempfile
 from pathlib import Path
 
 import tomli_w
-from hypothesis import given, strategies as st
+from hypothesis import given
+from hypothesis import strategies as st
 
 from mudhound.core.config import ConfigManager
 
@@ -31,49 +32,49 @@ def test_config_priority_chain(config_value, key_name):
     """
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir_path = Path(tmpdir)
-        
+
         # Create two config files with different values
         cli_config_path = tmpdir_path / "cli_config.toml"
         env_config_path = tmpdir_path / "env_config.toml"
-        
+
         # CLI config has priority
         cli_config = {"general": {key_name: f"cli_{config_value}"}}
         with open(cli_config_path, "wb") as f:
             tomli_w.dump(cli_config, f)
-        
+
         # Env config has lower priority
         env_config = {"general": {key_name: f"env_{config_value}"}}
         with open(env_config_path, "wb") as f:
             tomli_w.dump(env_config, f)
-        
+
         # Test 1: CLI override takes precedence over env var
         old_env = os.environ.get("MUDHOUND_CONFIG")
         try:
             os.environ["MUDHOUND_CONFIG"] = str(env_config_path)
-            
+
             # Load with CLI path - should use CLI config
             manager = ConfigManager(cli_config_path=str(cli_config_path))
-            
+
             # Should get the CLI value, not the env value
             assert manager.get(f"general.{key_name}") == f"cli_{config_value}"
-            
+
         finally:
             if old_env is None:
                 os.environ.pop("MUDHOUND_CONFIG", None)
             else:
                 os.environ["MUDHOUND_CONFIG"] = old_env
-        
+
         # Test 2: Env var takes precedence when no CLI path
         old_env = os.environ.get("MUDHOUND_CONFIG")
         try:
             os.environ["MUDHOUND_CONFIG"] = str(env_config_path)
-            
+
             # Load without CLI path - should use env config
             manager = ConfigManager()
-            
+
             # Should get the env value
             assert manager.get(f"general.{key_name}") == f"env_{config_value}"
-            
+
         finally:
             if old_env is None:
                 os.environ.pop("MUDHOUND_CONFIG", None)
@@ -105,13 +106,13 @@ def test_config_set_get_round_trip(key, value):
     Validates: Requirements 7.3
     """
     manager = ConfigManager()
-    
+
     # Set the value
     manager.set(key, value)
-    
+
     # Get the value back
     retrieved = manager.get(key)
-    
+
     # Should be equal
     assert retrieved == value
 
@@ -131,16 +132,16 @@ def test_config_nested_key_creation(nested_key, value):
     dictionaries as needed.
     """
     manager = ConfigManager()
-    
+
     # Create a nested key path
     key_path = f"custom.{nested_key}.setting"
-    
+
     # Set the value
     manager.set(key_path, value)
-    
+
     # Should be able to retrieve it
     assert manager.get(key_path) == value
-    
+
     # Intermediate dictionaries should exist
     assert isinstance(manager.get("custom"), dict)
     assert isinstance(manager.get(f"custom.{nested_key}"), dict)
@@ -169,19 +170,19 @@ def test_config_save_load_round_trip(config_data):
     """
     with tempfile.TemporaryDirectory() as tmpdir:
         config_path = Path(tmpdir) / "test_config.toml"
-        
+
         # Create manager and set values
         manager1 = ConfigManager()
         for section, settings in config_data.items():
             for key, value in settings.items():
                 manager1.set(f"{section}.{key}", value)
-        
+
         # Save to file
         manager1.save(config_path)
-        
+
         # Load from file
         manager2 = ConfigManager(cli_config_path=str(config_path))
-        
+
         # All values should match
         for section, settings in config_data.items():
             for key, value in settings.items():

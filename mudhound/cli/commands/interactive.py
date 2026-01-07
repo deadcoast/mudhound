@@ -6,20 +6,19 @@ multiple operations without re-launching the application.
 """
 
 import sys
-from typing import Optional, Dict, Any
-from io import StringIO
+from typing import Any, Dict, Optional
 
-from mudhound.ui.components.menu import Menu
-from mudhound.ui.components.confirm import Confirmation, ConfirmationVariant
-from mudhound.ui.components.banner import Banner
-from mudhound.ui.components.logo import Logo, LogoPosition
-from mudhound.ui.components.status import StatusComponent
-from mudhound.ui.components.prompt import Prompt, PromptType
+from mudhound.adapters.registry import AdapterRegistry
 from mudhound.core.config import ConfigManager
-from mudhound.core.store import ResultStore
 from mudhound.core.engine import SearchEngine
 from mudhound.core.result import SearchOptions
-from mudhound.adapters.registry import AdapterRegistry
+from mudhound.core.store import ResultStore
+from mudhound.ui.components.banner import Banner
+from mudhound.ui.components.confirm import Confirmation, ConfirmationVariant
+from mudhound.ui.components.logo import Logo, LogoPosition
+from mudhound.ui.components.menu import Menu
+from mudhound.ui.components.prompt import Prompt, PromptType
+from mudhound.ui.components.status import StatusComponent
 
 
 class InteractiveSession:
@@ -41,7 +40,7 @@ class InteractiveSession:
         operation_count: Number of operations performed in this session
         session_data: Additional session data storage
     """
-    
+
     def __init__(
         self,
         config_manager: Optional[ConfigManager] = None,
@@ -56,14 +55,14 @@ class InteractiveSession:
         """
         self.config_manager = config_manager or ConfigManager()
         self.result_store = result_store or ResultStore()
-        
+
         # Session state
         self.last_search_query: Optional[str] = None
         self.last_search_results: Optional[list] = None
         self.last_search_session: Optional[Any] = None
         self.operation_count: int = 0
         self.session_data: Dict[str, Any] = {}
-    
+
     def update_search_state(self, query: str, session: Any) -> None:
         """
         Update session state after a search operation.
@@ -76,7 +75,7 @@ class InteractiveSession:
         self.last_search_session = session
         self.last_search_results = session.results if session else []
         self.operation_count += 1
-    
+
     def get_state_summary(self) -> Dict[str, Any]:
         """
         Get a summary of the current session state.
@@ -90,7 +89,7 @@ class InteractiveSession:
             "operations": self.operation_count,
             "has_results": self.last_search_results is not None and len(self.last_search_results) > 0,
         }
-    
+
     def clear_search_state(self) -> None:
         """Clear search-related state."""
         self.last_search_query = None
@@ -117,7 +116,7 @@ class InteractiveMode:
         use_animation: Whether to use animations
         output: Output stream
     """
-    
+
     def __init__(
         self,
         session: Optional[InteractiveSession] = None,
@@ -148,7 +147,7 @@ class InteractiveMode:
             config_manager=self.config_manager,
             output=self.output
         )
-    
+
     def _show_banner(self) -> None:
         """Display the application banner."""
         if self.use_animation:
@@ -160,7 +159,7 @@ class InteractiveMode:
             banner.render()
             self.output.write("\n")
             self.output.flush()
-    
+
     def _show_goodbye(self) -> None:
         """Display goodbye message when exiting."""
         self.output.write("\n")
@@ -168,7 +167,7 @@ class InteractiveMode:
         self.output.write(" ")
         self.status.success("Thank you for using MudHound!")
         self.output.flush()
-    
+
     def _show_main_menu(self) -> Optional[str]:
         """
         Display the main menu and get user selection.
@@ -183,14 +182,14 @@ class InteractiveMode:
             "Config",
             "Quit"
         ]
-        
+
         menu = Menu(
             options=options,
             title="MudHound - Main Menu",
             use_color=self.use_color,
             output=self.output
         )
-        
+
         try:
             index = menu.show()
             if index is not None:
@@ -199,7 +198,7 @@ class InteractiveMode:
         except KeyboardInterrupt:
             # User pressed CTRL+C
             return "quit"
-    
+
     def _handle_search(self) -> None:
         """Handle search operation."""
         self.output.write("\n")
@@ -267,7 +266,7 @@ class InteractiveMode:
 
         except KeyboardInterrupt:
             self.status.warning("Search cancelled.")
-    
+
     def _handle_history(self) -> None:
         """Handle history operation."""
         self.output.write("\n")
@@ -326,7 +325,7 @@ class InteractiveMode:
 
         except Exception as e:
             self.status.error(f"Error loading configuration: {e}")
-    
+
     def _confirm_quit(self) -> bool:
         """
         Confirm quit intent with user.
@@ -340,13 +339,13 @@ class InteractiveMode:
             use_color=self.use_color,
             output=self.output
         )
-        
+
         try:
             return confirmation.confirm()
         except KeyboardInterrupt:
             # CTRL+C during confirmation means yes, quit
             return True
-    
+
     def run(self) -> None:
         """
         Run the interactive mode main loop.
@@ -356,39 +355,39 @@ class InteractiveMode:
         """
         # Show banner
         self._show_banner()
-        
+
         # Main loop
         running = True
-        
+
         while running:
             try:
                 # Show main menu
                 selection = self._show_main_menu()
-                
+
                 if selection is None:
                     # User cancelled menu (ESC)
                     if self._confirm_quit():
                         running = False
                     continue
-                
+
                 # Handle selection
                 if selection == "search":
                     self._handle_search()
-                
+
                 elif selection == "history":
                     self._handle_history()
-                
+
                 elif selection == "export":
                     self._handle_export()
-                
+
                 elif selection == "config":
                     self._handle_config()
-                
+
                 elif selection == "quit":
                     if self._confirm_quit():
                         running = False
                     continue
-                
+
                 # Wait for user to press Enter before showing menu again
                 if running and selection != "quit":
                     self.output.write("\n")
@@ -426,7 +425,7 @@ class InteractiveMode:
                 except KeyboardInterrupt:
                     if self._confirm_quit():
                         running = False
-        
+
         # Show goodbye message
         self._show_goodbye()
 

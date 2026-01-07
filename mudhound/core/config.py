@@ -21,7 +21,6 @@ import tomli_w
 
 from mudhound.core.exceptions import ConfigError
 
-
 # Default configuration schema
 DEFAULT_CONFIG = {
     "general": {
@@ -84,7 +83,7 @@ class ConfigManager:
         config: The loaded configuration dictionary
         config_path: Path to the configuration file that was loaded (None for defaults)
     """
-    
+
     def __init__(self, cli_config_path: Optional[str] = None):
         """Initialize the ConfigManager.
         
@@ -94,7 +93,7 @@ class ConfigManager:
         self.config: Dict[str, Any] = {}
         self.config_path: Optional[Path] = None
         self._load_config(cli_config_path)
-    
+
     def _get_config_search_paths(self, cli_path: Optional[str] = None) -> List[Path]:
         """Get the list of paths to search for configuration files in priority order.
         
@@ -105,32 +104,32 @@ class ConfigManager:
             List of Path objects to search in priority order
         """
         paths = []
-        
+
         # 1. CLI override
         if cli_path:
             paths.append(Path(cli_path).expanduser().resolve())
-        
+
         # 2. Environment variable
         env_path = os.environ.get("MUDHOUND_CONFIG")
         if env_path:
             paths.append(Path(env_path).expanduser().resolve())
-        
+
         # 3. Current directory
         paths.append(Path.cwd() / "mudhound.toml")
         paths.append(Path.cwd() / ".mudhound" / "config.toml")
-        
+
         # 4. XDG standard
         xdg_config_home = os.environ.get("XDG_CONFIG_HOME")
         if xdg_config_home:
             paths.append(Path(xdg_config_home) / "mudhound" / "config.toml")
         else:
             paths.append(Path.home() / ".config" / "mudhound" / "config.toml")
-        
+
         # 5. Legacy location
         paths.append(Path.home() / ".mudhound" / "config.toml")
-        
+
         return paths
-    
+
     def _load_config(self, cli_path: Optional[str] = None) -> None:
         """Load configuration from the first available source.
         
@@ -143,26 +142,26 @@ class ConfigManager:
         # Start with defaults
         self.config = self._deep_copy_dict(DEFAULT_CONFIG)
         self.config_path = None
-        
+
         # Search for config files
         search_paths = self._get_config_search_paths(cli_path)
-        
+
         for path in search_paths:
             if path.exists() and path.is_file():
                 try:
                     with open(path, "rb") as f:
                         user_config = tomllib.load(f)
-                    
+
                     # Merge user config with defaults
                     self._merge_config(self.config, user_config)
                     self.config_path = path
                     return
-                    
+
                 except Exception as e:
                     raise ConfigError(f"Failed to parse config file '{path}': {e}")
-        
+
         # No config file found, using defaults
-    
+
     def _deep_copy_dict(self, d: Dict[str, Any]) -> Dict[str, Any]:
         """Create a deep copy of a dictionary.
         
@@ -181,7 +180,7 @@ class ConfigManager:
             else:
                 result[key] = value
         return result
-    
+
     def _merge_config(self, base: Dict[str, Any], override: Dict[str, Any]) -> None:
         """Merge override config into base config (modifies base in place).
         
@@ -194,7 +193,7 @@ class ConfigManager:
                 self._merge_config(base[key], value)
             else:
                 base[key] = value
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get a configuration value by key.
         
@@ -209,15 +208,15 @@ class ConfigManager:
         """
         keys = key.split(".")
         value = self.config
-        
+
         for k in keys:
             if isinstance(value, dict) and k in value:
                 value = value[k]
             else:
                 return default
-        
+
         return value
-    
+
     def set(self, key: str, value: Any) -> None:
         """Set a configuration value by key.
         
@@ -230,7 +229,7 @@ class ConfigManager:
         """
         keys = key.split(".")
         config = self.config
-        
+
         # Navigate to the parent dictionary
         for k in keys[:-1]:
             if k not in config:
@@ -238,10 +237,10 @@ class ConfigManager:
             elif not isinstance(config[k], dict):
                 config[k] = {}
             config = config[k]
-        
+
         # Set the value
         config[keys[-1]] = value
-    
+
     def list(self) -> Dict[str, Any]:
         """Get all configuration keys and values.
         
@@ -249,7 +248,7 @@ class ConfigManager:
             Complete configuration dictionary
         """
         return self._deep_copy_dict(self.config)
-    
+
     def save(self, path: Optional[Path] = None) -> None:
         """Save configuration to a TOML file.
         
@@ -269,20 +268,20 @@ class ConfigManager:
                     path = Path(xdg_config_home) / "mudhound" / "config.toml"
                 else:
                     path = Path.home() / ".config" / "mudhound" / "config.toml"
-        
+
         try:
             # Ensure parent directory exists
             path.parent.mkdir(parents=True, exist_ok=True)
-            
+
             # Write config
             with open(path, "wb") as f:
                 tomli_w.dump(self.config, f)
-            
+
             self.config_path = path
-            
+
         except Exception as e:
             raise ConfigError(f"Failed to save config to '{path}': {e}")
-    
+
     def reset(self) -> None:
         """Reset configuration to defaults."""
         self.config = self._deep_copy_dict(DEFAULT_CONFIG)

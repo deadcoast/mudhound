@@ -9,7 +9,7 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from mudhound.logging.levels import get_level_style, TRACE, SUCCESS
+from mudhound.logging.levels import SUCCESS, TRACE, get_level_style
 from mudhound.ui.theme import get_theme_engine
 
 
@@ -27,7 +27,7 @@ class StatusComponent:
         show_timestamp: Whether to show timestamps
         datefmt: Date format string for timestamps
     """
-    
+
     def __init__(
         self,
         use_color: bool = True,
@@ -44,7 +44,7 @@ class StatusComponent:
         self.use_color = use_color
         self.show_timestamp = show_timestamp
         self.datefmt = datefmt
-    
+
     def format_message(
         self,
         message: str,
@@ -65,30 +65,30 @@ class StatusComponent:
         style = get_level_style(level)
         glyph = style["glyph"]
         color_name = style["color"]
-        
+
         # Format timestamp
         if timestamp is None:
             timestamp = datetime.now()
-        
+
         timestamp_str = timestamp.strftime(self.datefmt)
-        
+
         # Get level name
         level_name = logging.getLevelName(level)
-        
+
         # Apply color if enabled
         if self.use_color:
             theme_engine = get_theme_engine()
             glyph = theme_engine.apply(glyph, color_name)
             level_name = theme_engine.apply(level_name, color_name)
-        
+
         # Construct status line
         if self.show_timestamp:
             status_line = f"{timestamp_str} {glyph} {level_name}: {message}"
         else:
             status_line = f"{glyph} {level_name}: {message}"
-        
+
         return status_line
-    
+
     def display(
         self,
         message: str,
@@ -104,7 +104,7 @@ class StatusComponent:
         """
         formatted = self.format_message(message, level, timestamp)
         print(formatted)
-    
+
     def success(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display a success message.
         
@@ -113,7 +113,7 @@ class StatusComponent:
             timestamp: Optional timestamp
         """
         self.display(message, SUCCESS, timestamp)
-    
+
     def info(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display an info message.
         
@@ -122,7 +122,7 @@ class StatusComponent:
             timestamp: Optional timestamp
         """
         self.display(message, logging.INFO, timestamp)
-    
+
     def warning(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display a warning message.
         
@@ -131,7 +131,7 @@ class StatusComponent:
             timestamp: Optional timestamp
         """
         self.display(message, logging.WARNING, timestamp)
-    
+
     def error(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display an error message.
         
@@ -140,7 +140,7 @@ class StatusComponent:
             timestamp: Optional timestamp
         """
         self.display(message, logging.ERROR, timestamp)
-    
+
     def debug(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display a debug message.
         
@@ -149,7 +149,7 @@ class StatusComponent:
             timestamp: Optional timestamp
         """
         self.display(message, logging.DEBUG, timestamp)
-    
+
     def trace(self, message: str, timestamp: Optional[datetime] = None) -> None:
         """Display a trace message.
         

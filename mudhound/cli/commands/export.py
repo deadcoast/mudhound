@@ -16,8 +16,7 @@ from typing import List, Optional
 import typer
 
 from mudhound.core.exceptions import ExportError
-from mudhound.core.result import SearchResult, SearchSession
-
+from mudhound.core.result import SearchResult
 
 app = typer.Typer(help="Export search results to various formats")
 
@@ -44,11 +43,11 @@ def export_json(results: List[SearchResult], output_path: Path) -> None:
             }
             for result in results
         ]
-        
+
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
-            
-    except (IOError, OSError) as e:
+
+    except OSError as e:
         raise ExportError(f"Failed to write JSON file: {e}")
 
 
@@ -66,7 +65,7 @@ def export_csv(results: List[SearchResult], output_path: Path) -> None:
         with open(output_path, "w", encoding="utf-8", newline="") as f:
             fieldnames = ["rank", "url", "title", "snippet", "source"]
             writer = csv.DictWriter(f, fieldnames=fieldnames)
-            
+
             writer.writeheader()
             for result in results:
                 writer.writerow({
@@ -76,8 +75,8 @@ def export_csv(results: List[SearchResult], output_path: Path) -> None:
                     "snippet": result.snippet,
                     "source": result.source,
                 })
-                
-    except (IOError, OSError) as e:
+
+    except OSError as e:
         raise ExportError(f"Failed to write CSV file: {e}")
 
 
@@ -99,8 +98,8 @@ def export_txt(results: List[SearchResult], output_path: Path) -> None:
                 f.write(f"Source: {result.source}\n")
                 f.write(f"Snippet: {result.snippet}\n")
                 f.write("\n" + "-" * 80 + "\n\n")
-                
-    except (IOError, OSError) as e:
+
+    except OSError as e:
         raise ExportError(f"Failed to write TXT file: {e}")
 
 
@@ -118,8 +117,8 @@ def export_urls(results: List[SearchResult], output_path: Path) -> None:
         with open(output_path, "w", encoding="utf-8") as f:
             for result in results:
                 f.write(f"{result.url}\n")
-                
-    except (IOError, OSError) as e:
+
+    except OSError as e:
         raise ExportError(f"Failed to write URLs file: {e}")
 
 
@@ -139,23 +138,24 @@ def export(
     - urls: Simple list of URLs (one per line)
     """
     from rich.console import Console
+
     from mudhound.cli.validation import validate_format, validate_output_path
-    
+
     console_err = Console(stderr=True)
-    
+
     # Validate arguments
     errors = []
-    
+
     # Validate format
     is_valid_format, format_error = validate_format(format)
     if not is_valid_format:
         errors.append(format_error)
-    
+
     # Validate output path
     is_valid_output, output_error = validate_output_path(output)
     if not is_valid_output:
         errors.append(output_error)
-    
+
     # If there are validation errors, display them and exit
     if errors:
         console_err.print("[red]Validation Error(s):[/red]")
@@ -163,11 +163,11 @@ def export(
             console_err.print(f"  • {error}")
         console_err.print("\n[yellow]Tip:[/yellow] Use --help to see valid options")
         raise typer.Exit(1)
-    
+
     # This is a placeholder - actual implementation would retrieve session from store
     # For now, we'll focus on the export functions themselves
     typer.echo(f"Exporting session {session_id or 'latest'} to {output} as {format}")
-    
+
     typer.echo("Export functionality will be wired up with search engine in task 38")
 
 

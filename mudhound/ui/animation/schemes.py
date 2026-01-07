@@ -74,18 +74,18 @@ def generate_rainbow_frame(
         ColorScheme.LIGHT_RAINBOW: LIGHT_RAINBOW_COLORS_256,
         ColorScheme.WHITE: WHITE_COLORS,
     }.get(scheme, RAINBOW_COLORS_256)
-    
+
     if scheme == ColorScheme.THEME:
         # THEME scheme should use theme colors, but for now default to rainbow
         # This will be integrated with the theme engine later
         colors = RAINBOW_COLORS_256
-    
+
     result_lines = []
     char_index = 0
-    
+
     for line in base_art.split('\n'):
         colored_line = []
-        
+
         for char in line:
             # Skip coloring whitespace to avoid visual artifacts
             if char in (' ', '\t'):
@@ -94,17 +94,17 @@ def generate_rainbow_frame(
                 # Calculate color index with offset for animation
                 color_idx = (char_index + color_offset) % len(colors)
                 color_code = colors[color_idx]
-                
+
                 # Apply ANSI 256-color foreground code
                 colored_char = f"\033[38;5;{color_code}m{char}"
                 colored_line.append(colored_char)
-                
+
                 char_index += 1
-        
+
         # Reset color at end of each line
         if colored_line:
             result_lines.append(''.join(colored_line) + "\033[0m")
         else:
             result_lines.append('')
-    
+
     return '\n'.join(result_lines)

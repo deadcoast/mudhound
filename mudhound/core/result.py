@@ -17,7 +17,7 @@ from typing import Any, Dict, List, Optional
 
 class SearchStatus(Enum):
     """Status of a search operation."""
-    
+
     PENDING = "pending"
     RUNNING = "running"
     COMPLETE = "complete"
@@ -37,7 +37,7 @@ class SearchResult:
         rank: The position in search results (1-indexed)
         metadata: Additional metadata specific to the search engine
     """
-    
+
     url: str
     title: str
     snippet: str
@@ -56,7 +56,7 @@ class SearchOptions:
         safesearch: Safe search level - "off", "moderate", or "strict" (default: "moderate")
         time_limit: Time limit for results - None, "d" (day), "w" (week), "m" (month), "y" (year)
     """
-    
+
     max_results: int = 50
     region: str = "wt-wt"
     safesearch: str = "moderate"
@@ -75,7 +75,7 @@ class SearchQuery:
         created_at: Timestamp when the query was created
         status: Current status of the search operation
     """
-    
+
     id: str
     query: str
     engine: str
@@ -95,13 +95,13 @@ class SearchSession:
         completed_at: Timestamp when the search completed (None if still running)
         error: Error message if the search failed (None if successful)
     """
-    
+
     query: SearchQuery
     results: List[SearchResult]
     started_at: datetime
     completed_at: Optional[datetime] = None
     error: Optional[str] = None
-    
+
     @property
     def duration(self) -> Optional[float]:
         """Calculate the duration of the search session in seconds.
@@ -112,7 +112,7 @@ class SearchSession:
         if self.completed_at is None:
             return None
         return (self.completed_at - self.started_at).total_seconds()
-    
+
     @property
     def result_count(self) -> int:
         """Get the number of results in this session.

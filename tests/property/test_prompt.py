@@ -1,13 +1,16 @@
 """Property-based tests for prompt component."""
 
 from io import StringIO
-from hypothesis import given, strategies as st, settings, assume
+
+from hypothesis import assume, given, settings
+from hypothesis import strategies as st
+
 from mudhound.ui.components.prompt import Prompt, PromptType
 from mudhound.utils.validators import (
-    RangeValidator,
-    PatternValidator,
-    LengthValidator,
     EnumValidator,
+    LengthValidator,
+    PatternValidator,
+    RangeValidator,
 )
 
 
@@ -26,7 +29,7 @@ def test_prompt_text_and_cursor_display(prompt_text, default_value):
     """
     # Create output stream
     output = StringIO()
-    
+
     # Create prompt
     prompt = Prompt(
         prompt_text=prompt_text,
@@ -35,27 +38,27 @@ def test_prompt_text_and_cursor_display(prompt_text, default_value):
         use_color=False,  # Disable color for easier testing
         output=output
     )
-    
+
     # Format the prompt (this is what gets displayed)
     formatted_prompt = prompt._format_prompt()
-    
+
     # Verify prompt text is present
     assert prompt_text in formatted_prompt, (
         f"Prompt text '{prompt_text}' should be visible in formatted prompt"
     )
 
-    
+
     # Verify cursor indicator (colon and space) is present
     assert ": " in formatted_prompt, (
         "Cursor indicator ': ' should be visible in formatted prompt"
     )
-    
+
     # If default value is provided, verify it's shown
     if default_value is not None:
         assert f"[{default_value}]" in formatted_prompt, (
             f"Default value '[{default_value}]' should be visible in formatted prompt"
         )
-    
+
     # Verify the formatted prompt is not empty
     assert len(formatted_prompt) > 0, "Formatted prompt should not be empty"
 
@@ -77,10 +80,10 @@ def test_validation_error_feedback(prompt_text, invalid_input, min_length):
     """
     # Only test cases where input is actually invalid (shorter than min_length)
     assume(len(invalid_input) < min_length)
-    
+
     # Create output stream
     output = StringIO()
-    
+
     # Create prompt with length validator
     prompt = Prompt(
         prompt_text=prompt_text,
@@ -89,31 +92,31 @@ def test_validation_error_feedback(prompt_text, invalid_input, min_length):
         use_color=False,  # Disable color for easier testing
         output=output
     )
-    
+
     # Test validation directly (not the full prompt flow to avoid hanging)
     is_valid, error_message = prompt._validate_input(invalid_input)
-    
+
     # Verify validation failed
     assert not is_valid, (
         f"Input '{invalid_input}' with length {len(invalid_input)} should fail validation (min_length={min_length})"
     )
-    
+
     # Verify error message is provided
     assert error_message is not None, (
         "Error message should be provided for invalid input"
     )
-    
+
     # Verify error message mentions the constraint
     assert str(min_length) in error_message, (
         f"Error message should mention the minimum length {min_length}"
     )
-    
+
     # Test that error formatting works
     formatted_error = prompt._format_error(error_message)
     assert len(formatted_error) > 0, (
         "Formatted error message should not be empty"
     )
-    
+
     # Verify error indicator is present (glyph or text)
     assert "[!]" in formatted_error or "error" in formatted_error.lower(), (
         "Formatted error should contain error indicator"
@@ -140,13 +143,13 @@ def test_validation_rule_application_range(min_value, max_value, test_value):
     """
     # Ensure min < max
     assume(min_value < max_value)
-    
+
     # Create range validator
     validator = RangeValidator(min_value=min_value, max_value=max_value)
-    
+
     # Create output stream
     output = StringIO()
-    
+
     # Create prompt with range validator
     prompt = Prompt(
         prompt_text="Enter number",
@@ -155,18 +158,18 @@ def test_validation_rule_application_range(min_value, max_value, test_value):
         use_color=False,
         output=output
     )
-    
+
     # Test validation directly
     is_valid, error_message = prompt._validate_input(test_value)
-    
+
     # Determine expected validity
     expected_valid = min_value <= test_value <= max_value
-    
+
     # Verify validation result matches expectation
     assert is_valid == expected_valid, (
         f"Validation of {test_value} should be {expected_valid} for range [{min_value}, {max_value}]"
     )
-    
+
     # If invalid, verify error message is provided
     if not expected_valid:
         assert error_message is not None, (
@@ -192,13 +195,13 @@ def test_validation_rule_application_pattern(pattern, test_input):
     Validates: Requirements 12.5
     """
     import re
-    
+
     # Create pattern validator
     validator = PatternValidator(pattern=pattern)
-    
+
     # Create output stream
     output = StringIO()
-    
+
     # Create prompt with pattern validator
     prompt = Prompt(
         prompt_text="Enter text",
@@ -207,18 +210,18 @@ def test_validation_rule_application_pattern(pattern, test_input):
         use_color=False,
         output=output
     )
-    
+
     # Test validation directly
     is_valid, error_message = prompt._validate_input(test_input)
-    
+
     # Determine expected validity
     expected_valid = bool(re.match(pattern, test_input))
-    
+
     # Verify validation result matches expectation
     assert is_valid == expected_valid, (
         f"Validation of '{test_input}' should be {expected_valid} for pattern '{pattern}'"
     )
-    
+
     # If invalid, verify error message is provided
     if not expected_valid:
         assert error_message is not None, (
@@ -247,16 +250,16 @@ def test_validation_rule_application_length(min_length, max_length, test_length)
     """
     # Ensure min < max
     assume(min_length < max_length)
-    
+
     # Create length validator
     validator = LengthValidator(min_length=min_length, max_length=max_length)
-    
+
     # Create test input of specified length
     test_input = "x" * test_length
-    
+
     # Create output stream
     output = StringIO()
-    
+
     # Create prompt with length validator
     prompt = Prompt(
         prompt_text="Enter text",
@@ -265,18 +268,18 @@ def test_validation_rule_application_length(min_length, max_length, test_length)
         use_color=False,
         output=output
     )
-    
+
     # Test validation directly
     is_valid, error_message = prompt._validate_input(test_input)
-    
+
     # Determine expected validity
     expected_valid = min_length <= test_length <= max_length
-    
+
     # Verify validation result matches expectation
     assert is_valid == expected_valid, (
         f"Validation of input with length {test_length} should be {expected_valid} for range [{min_length}, {max_length}]"
     )
-    
+
     # If invalid, verify error message is provided
     if not expected_valid:
         assert error_message is not None, (
@@ -304,19 +307,19 @@ def test_validation_rule_application_enum(choices, choice_index, invalid_choice)
     """
     # Ensure choice_index is valid
     assume(choice_index < len(choices))
-    
+
     # Ensure invalid_choice is actually invalid
     assume(invalid_choice not in choices)
-    
+
     # Create enum validator
     validator = EnumValidator(allowed_values=choices)
-    
+
     # Select a valid choice
     valid_choice = choices[choice_index]
-    
+
     # Create output stream
     output = StringIO()
-    
+
     # Create prompt with enum validator
     prompt = Prompt(
         prompt_text="Select option",
@@ -325,20 +328,20 @@ def test_validation_rule_application_enum(choices, choice_index, invalid_choice)
         use_color=False,
         output=output
     )
-    
+
     # Test validation of valid choice
     is_valid, error_message = prompt._validate_input(valid_choice)
-    
+
     assert is_valid, (
         f"Valid choice '{valid_choice}' should pass validation"
     )
     assert error_message is None, (
         "No error message should be provided for valid choice"
     )
-    
+
     # Test validation of invalid choice
     is_valid_invalid, error_message_invalid = prompt._validate_input(invalid_choice)
-    
+
     assert not is_valid_invalid, (
         f"Invalid choice '{invalid_choice}' should fail validation"
     )

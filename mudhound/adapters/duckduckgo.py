@@ -6,14 +6,17 @@ It supports streaming results, rate limit detection, and comprehensive error han
 """
 
 from typing import Generator, List
-import time
 
 from duckduckgo_search import DDGS
-from duckduckgo_search.exceptions import DuckDuckGoSearchException, RatelimitException, TimeoutException
+from duckduckgo_search.exceptions import (
+    DuckDuckGoSearchException,
+    RatelimitException,
+    TimeoutException,
+)
 
 from mudhound.adapters.base import SearchAdapter
-from mudhound.core.result import SearchResult, SearchOptions
 from mudhound.core.exceptions import NetworkError, RateLimitError
+from mudhound.core.result import SearchOptions, SearchResult
 
 
 class DuckDuckGoAdapter(SearchAdapter):
@@ -29,7 +32,7 @@ class DuckDuckGoAdapter(SearchAdapter):
         - Network error handling
         - Support for max_results, region, safesearch, time_limit options
     """
-    
+
     @property
     def name(self) -> str:
         """Internal identifier for the adapter.
@@ -38,7 +41,7 @@ class DuckDuckGoAdapter(SearchAdapter):
             "duckduckgo"
         """
         return "duckduckgo"
-    
+
     @property
     def display_name(self) -> str:
         """Human-readable name for the adapter.
@@ -47,7 +50,7 @@ class DuckDuckGoAdapter(SearchAdapter):
             "DuckDuckGo"
         """
         return "DuckDuckGo"
-    
+
     def search(
         self,
         query: str,
@@ -74,11 +77,11 @@ class DuckDuckGoAdapter(SearchAdapter):
         errors = self.validate_options(options)
         if errors:
             raise NetworkError(f"Invalid search options: {', '.join(errors)}")
-        
+
         try:
             # Create DDGS instance
             ddgs = DDGS()
-            
+
             # Map our safesearch values to DDGS values
             # DDGS expects: -2 (off), -1 (moderate), 1 (strict)
             safesearch_map = {
@@ -87,11 +90,11 @@ class DuckDuckGoAdapter(SearchAdapter):
                 "strict": 1
             }
             safesearch_value = safesearch_map.get(options.safesearch, -1)
-            
+
             # Map time_limit to DDGS timelimit parameter
             # DDGS expects: None, 'd', 'w', 'm', 'y'
             timelimit = options.time_limit
-            
+
             # Execute search with text method
             # The text method returns an iterator of results
             results = ddgs.text(
@@ -101,7 +104,7 @@ class DuckDuckGoAdapter(SearchAdapter):
                 timelimit=timelimit,
                 max_results=options.max_results
             )
-            
+
             # Yield results one at a time
             rank = 1
             for result in results:
@@ -110,10 +113,10 @@ class DuckDuckGoAdapter(SearchAdapter):
                 url = result.get('href', '')
                 title = result.get('title', '')
                 snippet = result.get('body', '')
-                
+
                 # Extract source from URL (domain name)
                 source = self._extract_source(url)
-                
+
                 # Create SearchResult and yield it
                 search_result = SearchResult(
                     url=url,
@@ -123,11 +126,11 @@ class DuckDuckGoAdapter(SearchAdapter):
                     rank=rank,
                     metadata=result  # Store full result as metadata
                 )
-                
+
                 yield search_result
                 rank += 1
-                
-        except RatelimitException as e:
+
+        except RatelimitException:
             # DuckDuckGo rate limit exceeded
             # Suggest waiting 60 seconds by default
             retry_after = self.on_rate_limit(60)
@@ -135,19 +138,19 @@ class DuckDuckGoAdapter(SearchAdapter):
                 f"DuckDuckGo rate limit exceeded. Please wait {retry_after} seconds.",
                 retry_after=retry_after
             )
-            
+
         except TimeoutException as e:
             # Network timeout
             raise NetworkError(f"Network timeout while searching DuckDuckGo: {str(e)}")
-            
+
         except DuckDuckGoSearchException as e:
             # Other DuckDuckGo-specific errors
             raise NetworkError(f"DuckDuckGo search error: {str(e)}")
-            
+
         except Exception as e:
             # Catch-all for unexpected errors
             raise NetworkError(f"Unexpected error during DuckDuckGo search: {str(e)}")
-    
+
     def validate_options(self, options: SearchOptions) -> List[str]:
         """Validate search options for DuckDuckGo.
         
@@ -164,26 +167,26 @@ class DuckDuckGoAdapter(SearchAdapter):
             List of error messages (empty if valid)
         """
         errors = []
-        
+
         # Validate max_results
         if options.max_results < 1:
             errors.append("max_results must be at least 1")
-        
+
         # Validate safesearch
         if options.safesearch not in ["off", "moderate", "strict"]:
             errors.append("safesearch must be 'off', 'moderate', or 'strict'")
-        
+
         # Validate time_limit
         if options.time_limit is not None:
             if options.time_limit not in ["d", "w", "m", "y"]:
                 errors.append("time_limit must be None, 'd', 'w', 'm', or 'y'")
-        
+
         # Validate region (basic check - should be non-empty string)
         if not isinstance(options.region, str) or len(options.region) == 0:
             errors.append("region must be a non-empty string")
-        
+
         return errors
-    
+
     def _extract_source(self, url: str) -> str:
         """Extract the source domain from a URL.
         
@@ -197,15 +200,15 @@ class DuckDuckGoAdapter(SearchAdapter):
             # Simple extraction: remove protocol and path
             if "://" in url:
                 url = url.split("://", 1)[1]
-            
+
             # Remove path
             if "/" in url:
                 url = url.split("/", 1)[0]
-            
+
             # Remove port
             if ":" in url:
                 url = url.split(":", 1)[0]
-            
+
             return url
         except Exception:
             # If extraction fails, return the original URL

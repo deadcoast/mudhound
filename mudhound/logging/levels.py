@@ -7,7 +7,6 @@ including TRACE and SUCCESS levels.
 
 import logging
 
-
 # Define custom log levels
 TRACE = 5      # Below DEBUG (10)
 SUCCESS = 25   # Between INFO (20) and WARNING (30)

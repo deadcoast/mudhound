@@ -4,23 +4,22 @@ Property-based tests for error handling.
 Tests error message formatting and classification.
 """
 
-import pytest
-from hypothesis import given, strategies as st
+from hypothesis import given
+from hypothesis import strategies as st
 
 from mudhound.core.exceptions import (
-    MudHoundError,
-    ConfigError,
     AdapterError,
     AdapterNotFoundError,
-    RateLimitError,
-    NetworkError,
-    ValidationError,
-    ExportError,
     AnimationError,
+    ConfigError,
+    ExportError,
+    MudHoundError,
+    NetworkError,
+    RateLimitError,
+    ValidationError,
 )
 from mudhound.ui.components.error import ErrorHandler
 from mudhound.ui.glyphs import GLYPHS
-
 
 # Strategy for generating error messages
 error_messages = st.text(min_size=1, max_size=200)
@@ -41,20 +40,20 @@ def test_property_57_error_message_formatting(message):
     """
     # Create an error
     error = MudHoundError(message)
-    
+
     # Create error handler
     handler = ErrorHandler(verbose=False)
-    
+
     # Format the error
     formatted = handler.format_error(error)
-    
+
     # Verify formatted message contains error type
     error_type = handler.classify_error(error)
     assert error_type in formatted, f"Error type '{error_type}' not found in formatted message"
-    
+
     # Verify formatted message contains the error message
     assert message in formatted, f"Error message '{message}' not found in formatted output"
-    
+
     # Verify formatted message contains error glyph
     error_glyph = GLYPHS["decorative"]["cross"]
     assert error_glyph in formatted, f"Error glyph '{error_glyph}' not found in formatted message"
@@ -72,7 +71,7 @@ def test_property_57_config_error_formatting(message):
     error = ConfigError(message)
     handler = ErrorHandler(verbose=False)
     formatted = handler.format_error(error)
-    
+
     # Should contain error type
     assert "Configuration Error" in formatted
     # Should contain message
@@ -93,7 +92,7 @@ def test_property_57_network_error_formatting(message):
     error = NetworkError(message)
     handler = ErrorHandler(verbose=False)
     formatted = handler.format_error(error)
-    
+
     # Should contain error type
     assert "Network Error" in formatted
     # Should contain message
@@ -112,7 +111,7 @@ def test_property_57_rate_limit_error_formatting(message, retry_after):
     error = RateLimitError(message, retry_after=retry_after)
     handler = ErrorHandler(verbose=False)
     formatted = handler.format_error(error)
-    
+
     # Should contain error type
     assert "Rate Limit" in formatted
     # Should contain message
@@ -134,9 +133,9 @@ def test_property_60_error_type_classification_config(message):
     """
     error = ConfigError(message)
     handler = ErrorHandler()
-    
+
     error_type = handler.classify_error(error)
-    
+
     assert error_type == "Configuration Error"
 
 
@@ -152,9 +151,9 @@ def test_property_60_error_type_classification_adapter_not_found(message):
     # AdapterNotFoundError has specific constructor
     error = AdapterNotFoundError("test_adapter")
     handler = ErrorHandler()
-    
+
     error_type = handler.classify_error(error)
-    
+
     assert error_type == "Adapter Not Found"
 
 
@@ -169,9 +168,9 @@ def test_property_60_error_type_classification_rate_limit(message):
     """
     error = RateLimitError(message)
     handler = ErrorHandler()
-    
+
     error_type = handler.classify_error(error)
-    
+
     assert error_type == "Rate Limit Exceeded"
 
 
@@ -186,9 +185,9 @@ def test_property_60_error_type_classification_network(message):
     """
     error = NetworkError(message)
     handler = ErrorHandler()
-    
+
     error_type = handler.classify_error(error)
-    
+
     assert error_type == "Network Error"
 
 
@@ -203,9 +202,9 @@ def test_property_60_error_type_classification_validation(message):
     """
     error = ValidationError(message)
     handler = ErrorHandler()
-    
+
     error_type = handler.classify_error(error)
-    
+
     assert error_type == "Validation Error"
 
 
@@ -220,9 +219,9 @@ def test_property_60_error_type_classification_export(message):
     """
     error = ExportError(message)
     handler = ErrorHandler()
-    
+
     error_type = handler.classify_error(error)
-    
+
     assert error_type == "Export Error"
 
 
@@ -237,9 +236,9 @@ def test_property_60_error_type_classification_animation(message):
     """
     error = AnimationError(message)
     handler = ErrorHandler()
-    
+
     error_type = handler.classify_error(error)
-    
+
     assert error_type == "Animation Error"
 
 
@@ -254,9 +253,9 @@ def test_property_60_error_type_classification_adapter(message):
     """
     error = AdapterError(message)
     handler = ErrorHandler()
-    
+
     error_type = handler.classify_error(error)
-    
+
     assert error_type == "Adapter Error"
 
 
@@ -271,9 +270,9 @@ def test_property_60_error_type_classification_mudhound(message):
     """
     error = MudHoundError(message)
     handler = ErrorHandler()
-    
+
     error_type = handler.classify_error(error)
-    
+
     assert error_type == "MudHound Error"
 
 
@@ -288,9 +287,9 @@ def test_error_suggestions_provided(message):
     """
     error = NetworkError(message)
     handler = ErrorHandler()
-    
+
     suggestions = handler.get_suggestions(error)
-    
+
     # NetworkError should have suggestions
     assert len(suggestions) > 0
     assert any("internet connection" in s.lower() for s in suggestions)
@@ -306,10 +305,10 @@ def test_verbose_mode_includes_stack_trace(message):
     error = ConfigError(message)
     handler_verbose = ErrorHandler(verbose=True)
     handler_normal = ErrorHandler(verbose=False)
-    
+
     formatted_verbose = handler_verbose.format_error(error)
     formatted_normal = handler_normal.format_error(error)
-    
+
     # Verbose should include stack trace
     assert "Stack trace" in formatted_verbose
     # Normal should not

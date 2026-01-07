@@ -5,12 +5,12 @@ Shows various error types and formatting options.
 """
 
 from mudhound.core.exceptions import (
+    AnimationError,
     ConfigError,
+    ExportError,
     NetworkError,
     RateLimitError,
     ValidationError,
-    ExportError,
-    AnimationError,
 )
 from mudhound.ui.components.error import ErrorHandler
 
@@ -21,19 +21,19 @@ def demo_basic_errors():
     print("BASIC ERROR FORMATTING")
     print("=" * 80)
     print()
-    
+
     handler = ErrorHandler(verbose=False)
-    
+
     # Config error
     error = ConfigError("Invalid TOML syntax in configuration file")
     print(handler.display_error(error, width=70))
     print()
-    
+
     # Network error
     error = NetworkError("Connection timeout after 30 seconds")
     print(handler.display_error(error, width=70))
     print()
-    
+
     # Validation error
     error = ValidationError("Input must be between 1 and 100", field="max_results")
     print(handler.display_error(error, width=70))
@@ -46,7 +46,7 @@ def demo_rate_limit_error():
     print("RATE LIMIT ERROR WITH RETRY_AFTER")
     print("=" * 80)
     print()
-    
+
     handler = ErrorHandler(verbose=False)
     error = RateLimitError("Too many requests to search API", retry_after=120.0)
     print(handler.display_error(error, width=70))
@@ -59,9 +59,9 @@ def demo_verbose_mode():
     print("VERBOSE MODE WITH STACK TRACE")
     print("=" * 80)
     print()
-    
+
     handler = ErrorHandler(verbose=True)
-    
+
     try:
         # Create a real exception with stack trace
         raise ExportError("Failed to write to /protected/file.json: Permission denied")
@@ -76,9 +76,9 @@ def demo_all_error_types():
     print("ERROR TYPE CLASSIFICATION")
     print("=" * 80)
     print()
-    
+
     handler = ErrorHandler(verbose=False)
-    
+
     errors = [
         ConfigError("Config error example"),
         NetworkError("Network error example"),
@@ -87,7 +87,7 @@ def demo_all_error_types():
         ExportError("Export error example"),
         AnimationError("Animation error example"),
     ]
-    
+
     for error in errors:
         error_type = handler.classify_error(error)
         print(f"{type(error).__name__:25} -> {error_type}")

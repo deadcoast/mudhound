@@ -6,14 +6,13 @@ from typing import Dict, List, Optional
 
 from mudhound.core.exceptions import AnimationError
 
-
 # Global cache for loaded assets
 CACHE: Dict[str, List[str]] = {}
 
 
 class AssetManager:
     """Manages loading and caching of ANSI frame files for animations."""
-    
+
     def __init__(self, assets_dir: Optional[Path] = None):
         """Initialize the AssetManager.
         
@@ -26,10 +25,10 @@ class AssetManager:
             self.assets_dir = Path(__file__).parent
         else:
             self.assets_dir = Path(assets_dir)
-        
+
         self.animated_dir = self.assets_dir / "animated"
         self.static_dir = self.assets_dir / "static"
-    
+
     def _strip_metadata(self, content: str) -> str:
         """Strip metadata header from ANSI frame file.
         
@@ -43,21 +42,21 @@ class AssetManager:
             Content with metadata header stripped
         """
         lines = content.split('\n')
-        
+
         # Find the separator line
         separator_index = -1
         for i, line in enumerate(lines):
             if line.strip() == '---':
                 separator_index = i
                 break
-        
+
         # If separator found, return content after it
         if separator_index >= 0:
             return '\n'.join(lines[separator_index + 1:])
-        
+
         # No separator found, return original content
         return content
-    
+
     def _load_animated_asset(self, asset_name: str, pattern: str) -> List[str]:
         """Load animated asset frames using glob pattern matching.
         
@@ -75,33 +74,33 @@ class AssetManager:
         cache_key = f"animated:{asset_name}"
         if cache_key in CACHE:
             return CACHE[cache_key]
-        
+
         # Build full pattern path
         pattern_path = self.animated_dir / pattern
-        
+
         # Find all matching files
         frame_files = sorted(glob.glob(str(pattern_path)))
-        
+
         if not frame_files:
             raise AnimationError(f"No frames found for pattern: {pattern}")
-        
+
         # Load and parse each frame
         frames = []
         for frame_file in frame_files:
             try:
-                with open(frame_file, 'r', encoding='utf-8') as f:
+                with open(frame_file, encoding='utf-8') as f:
                     content = f.read()
                     # Strip metadata header
                     frame_content = self._strip_metadata(content)
                     frames.append(frame_content)
             except Exception as e:
                 raise AnimationError(f"Failed to load frame {frame_file}: {e}")
-        
+
         # Cache the frames
         CACHE[cache_key] = frames
-        
+
         return frames
-    
+
     def _load_static_asset(self, asset_name: str) -> str:
         """Load a static asset file.
         
@@ -119,11 +118,11 @@ class AssetManager:
         if cache_key in CACHE:
             # Static assets are cached as single-item lists for consistency
             return CACHE[cache_key][0]
-        
+
         asset_path = self.static_dir / asset_name
-        
+
         try:
-            with open(asset_path, 'r', encoding='utf-8') as f:
+            with open(asset_path, encoding='utf-8') as f:
                 content = f.read()
                 # Strip metadata if present
                 content = self._strip_metadata(content)
@@ -132,7 +131,7 @@ class AssetManager:
                 return content
         except Exception as e:
             raise AnimationError(f"Failed to load static asset {asset_name}: {e}")
-    
+
     def get_banner_frames(self, scheme: str = "rainbow") -> List[str]:
         """Get banner frames for the specified color scheme.
         
@@ -159,7 +158,7 @@ class AssetManager:
                 if cache_key not in CACHE:
                     CACHE[cache_key] = [self._get_minimal_banner()]
                 return CACHE[cache_key]
-    
+
     def get_logo_frames(self, scheme: str = "rainbow") -> List[str]:
         """Get logo frames for the specified color scheme.
         
@@ -186,7 +185,7 @@ class AssetManager:
                 if cache_key not in CACHE:
                     CACHE[cache_key] = [self._get_minimal_logo()]
                 return CACHE[cache_key]
-    
+
     def _get_minimal_banner(self) -> str:
         """Get a minimal text-only banner as last resort fallback.
         
@@ -194,7 +193,7 @@ class AssetManager:
             Minimal banner string
         """
         return "MUDHOUND"
-    
+
     def _get_minimal_logo(self) -> str:
         """Get a minimal text-only logo as last resort fallback.
         
@@ -202,7 +201,7 @@ class AssetManager:
             Minimal logo string
         """
         return "[MH]"
-    
+
     def clear_cache(self):
         """Clear the asset cache."""
         CACHE.clear()

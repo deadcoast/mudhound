@@ -7,7 +7,7 @@ color themes to terminal UI components.
 
 import sys
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 # Handle Python 3.11+ where tomllib is built-in
 if sys.version_info >= (3, 11):
@@ -16,7 +16,6 @@ else:
     import tomli as tomllib
 
 from mudhound.core.exceptions import ConfigError
-
 
 # ANSI color codes
 ANSI_COLORS = {
@@ -37,7 +36,7 @@ ANSI_COLORS = {
     "bright_magenta": "\033[95m",
     "bright_cyan": "\033[96m",
     "bright_white": "\033[97m",
-    
+
     # Reset
     "reset": "\033[0m",
 }
@@ -50,18 +49,18 @@ DEFAULT_THEME = {
         "primary": "bright_cyan",
         "secondary": "cyan",
         "accent": "bright_magenta",
-        
+
         # Semantic colors
         "success": "bright_green",
         "error": "bright_red",
         "warning": "bright_yellow",
         "info": "bright_blue",
-        
+
         # Frame colors
         "frame_border": "bright_cyan",
         "frame_title": "bright_white",
         "frame_content": "white",
-        
+
         # Content colors
         "text": "white",
         "text_dim": "bright_black",
@@ -81,7 +80,7 @@ class Theme:
         colors: Dictionary mapping semantic color names to ANSI color names
         animation_scheme: Optional animation color scheme override
     """
-    
+
     def __init__(self, name: str, colors: Dict[str, str], animation_scheme: Optional[str] = None):
         """Initialize a Theme.
         
@@ -93,7 +92,7 @@ class Theme:
         self.name = name
         self.colors = colors
         self.animation_scheme = animation_scheme
-    
+
     def get_color(self, semantic_name: str) -> str:
         """Get ANSI escape code for a semantic color name.
         
@@ -105,10 +104,10 @@ class Theme:
         """
         # Get the ANSI color name from the theme
         ansi_color_name = self.colors.get(semantic_name, "white")
-        
+
         # Resolve to ANSI escape code
         return ANSI_COLORS.get(ansi_color_name, ANSI_COLORS["white"])
-    
+
     def apply(self, text: str, semantic_name: str) -> str:
         """Apply theme color to text.
         
@@ -122,7 +121,7 @@ class Theme:
         color_code = self.get_color(semantic_name)
         reset_code = ANSI_COLORS["reset"]
         return f"{color_code}{text}{reset_code}"
-    
+
     @classmethod
     def from_dict(cls, theme_dict: Dict[str, Any]) -> "Theme":
         """Create a Theme from a dictionary (typically loaded from TOML).
@@ -136,7 +135,7 @@ class Theme:
         name = theme_dict.get("name", "unnamed")
         colors = theme_dict.get("colors", {})
         animation_scheme = theme_dict.get("animation", {}).get("color_scheme")
-        
+
         return cls(name, colors, animation_scheme)
 
 
@@ -151,7 +150,7 @@ class ThemeEngine:
         themes: Dictionary of loaded themes
         active_theme: Currently active theme
     """
-    
+
     def __init__(self, themes_dir: Optional[Path] = None):
         """Initialize the ThemeEngine.
         
@@ -163,14 +162,14 @@ class ThemeEngine:
             # Default to package data directory
             package_dir = Path(__file__).parent.parent
             themes_dir = package_dir / "data" / "themes"
-        
+
         self.themes_dir = Path(themes_dir)
         self.themes: Dict[str, Theme] = {}
         self.active_theme: Theme = Theme.from_dict(DEFAULT_THEME)
-        
+
         # Load default theme
         self.themes["default"] = self.active_theme
-    
+
     def load_theme(self, theme_name: str) -> Theme:
         """Load a theme from a TOML file.
         
@@ -184,22 +183,22 @@ class ThemeEngine:
             ConfigError: If theme file cannot be loaded or parsed
         """
         theme_path = self.themes_dir / f"{theme_name}.toml"
-        
+
         if not theme_path.exists():
             # Return default theme as fallback
             return self.themes["default"]
-        
+
         try:
             with open(theme_path, "rb") as f:
                 theme_dict = tomllib.load(f)
-            
+
             theme = Theme.from_dict(theme_dict)
             self.themes[theme_name] = theme
             return theme
-            
+
         except Exception as e:
             raise ConfigError(f"Failed to load theme '{theme_name}': {e}")
-    
+
     def set_active_theme(self, theme_name: str) -> None:
         """Set the active theme.
         
@@ -211,9 +210,9 @@ class ThemeEngine:
             theme = self.load_theme(theme_name)
         else:
             theme = self.themes[theme_name]
-        
+
         self.active_theme = theme
-    
+
     def get_color(self, semantic_name: str) -> str:
         """Get ANSI escape code for a semantic color name from active theme.
         
@@ -224,7 +223,7 @@ class ThemeEngine:
             ANSI escape code string
         """
         return self.active_theme.get_color(semantic_name)
-    
+
     def apply(self, text: str, semantic_name: str) -> str:
         """Apply active theme color to text.
         
@@ -236,7 +235,7 @@ class ThemeEngine:
             Text with ANSI color codes applied
         """
         return self.active_theme.apply(text, semantic_name)
-    
+
     def get_animation_scheme(self) -> Optional[str]:
         """Get animation color scheme override from active theme.
         

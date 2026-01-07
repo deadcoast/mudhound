@@ -4,12 +4,12 @@ MudHound exception hierarchy.
 All custom exceptions inherit from MudHoundError base class.
 """
 
-from typing import Optional, Any
+from typing import Optional
 
 
 class MudHoundError(Exception):
     """Base exception for all MudHound errors."""
-    
+
     def __init__(self, message: str):
         self.message = message
         super().__init__(message)
@@ -27,7 +27,7 @@ class AdapterError(MudHoundError):
 
 class AdapterNotFoundError(AdapterError):
     """Raised when a requested adapter is not registered."""
-    
+
     def __init__(self, adapter_name: str):
         self.adapter_name = adapter_name
         message = f"Adapter '{adapter_name}' not found in registry"
@@ -36,7 +36,7 @@ class AdapterNotFoundError(AdapterError):
 
 class RateLimitError(AdapterError):
     """Raised when rate limit is exceeded."""
-    
+
     def __init__(self, message: str, retry_after: Optional[float] = None):
         self.retry_after = retry_after
         super().__init__(message)
@@ -49,7 +49,7 @@ class NetworkError(AdapterError):
 
 class ValidationError(MudHoundError):
     """Input validation failures."""
-    
+
     def __init__(self, message: str, field: Optional[str] = None):
         self.field = field
         self.message = message

@@ -57,12 +57,12 @@ def demo_timed():
 if __name__ == "__main__":
     print("Confirmation Component Demo")
     print("=" * 50)
-    
+
     demo_yesno()
     demo_yesno_yes()
     demo_destructive()
     demo_timed()
-    
+
     print("\n" + "=" * 50)
     print("All demos completed!")
     print("\nTo test interactively, uncomment the confirmation.confirm() calls")

@@ -1,7 +1,7 @@
 """Demo script for the Table component."""
 
-from mudhound.ui.components.table import Table
 from mudhound.core.result import SearchResult
+from mudhound.ui.components.table import Table
 from mudhound.ui.layout import LayoutManager
 
 # Create some sample search results

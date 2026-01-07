@@ -6,20 +6,17 @@ support for different input types and validation rules.
 """
 
 import sys
-from typing import Optional, List, Any, TextIO, Callable
 from pathlib import Path
+from typing import Any, List, Optional, TextIO
 
+from mudhound.ui.glyphs import GLYPHS
+from mudhound.ui.theme import get_theme_engine
 from mudhound.utils.validators import (
-    Validator,
-    RangeValidator,
-    PatternValidator,
-    LengthValidator,
     EnumValidator,
     PathValidator,
-    CustomValidator,
+    RangeValidator,
+    Validator,
 )
-from mudhound.ui.theme import get_theme_engine
-from mudhound.ui.glyphs import GLYPHS
 
 
 class PromptType:
@@ -48,7 +45,7 @@ class Prompt:
         output: Output stream for rendering
         input_stream: Input stream for reading user input
     """
-    
+
     def __init__(
         self,
         prompt_text: str,
@@ -78,7 +75,7 @@ class Prompt:
         self.use_color = use_color
         self.output = output or sys.stdout
         self.input_stream = input_stream or sys.stdin
-    
+
     def _format_prompt(self) -> str:
         """
         Format the prompt text with cursor indicator.
@@ -91,14 +88,14 @@ class Prompt:
             prompt = f"{self.prompt_text} [{self.default}]: "
         else:
             prompt = f"{self.prompt_text}: "
-        
+
         # Apply color if enabled
         if self.use_color:
             theme_engine = get_theme_engine()
             prompt = theme_engine.apply(prompt, "info")
-        
+
         return prompt
-    
+
     def _format_error(self, error_message: str) -> str:
         """
         Format an error message.
@@ -110,14 +107,14 @@ class Prompt:
             Formatted error string
         """
         error_glyph = GLYPHS["status"]["error"]
-        
+
         if self.use_color:
             theme_engine = get_theme_engine()
             error_glyph = theme_engine.apply(error_glyph, "error")
             error_message = theme_engine.apply(error_message, "error")
-        
+
         return f"{error_glyph} {error_message}"
-    
+
     def _validate_input(self, value: Any) -> tuple[bool, Optional[str]]:
         """
         Validate input against all validators.
@@ -132,9 +129,9 @@ class Prompt:
             is_valid, error_message = validator.validate(value)
             if not is_valid:
                 return False, error_message
-        
+
         return True, None
-    
+
     def _convert_value(self, raw_value: str) -> Any:
         """
         Convert raw input string to appropriate type.
@@ -154,10 +151,10 @@ class Prompt:
                 return int(raw_value)
             except ValueError:
                 return float(raw_value)
-        
+
         elif self.prompt_type == PromptType.PATH:
             return Path(raw_value)
-        
+
         elif self.prompt_type == PromptType.CONFIRM:
             # Convert to boolean
             lower_value = raw_value.lower()
@@ -167,11 +164,11 @@ class Prompt:
                 return False
             else:
                 raise ValueError("Invalid confirmation value")
-        
+
         else:
             # TEXT and CHOICE remain as strings
             return raw_value
-    
+
     def prompt(self) -> Any:
         """
         Display the prompt and collect user input.
@@ -190,21 +187,21 @@ class Prompt:
                 # Display prompt
                 self.output.write(self._format_prompt())
                 self.output.flush()
-                
+
                 # Read input
                 raw_input = self.input_stream.readline().strip()
-                
+
                 # Handle empty input with default
                 if not raw_input and self.default is not None:
                     return self.default
-                
+
                 # Handle empty input without default
                 if not raw_input:
                     error_msg = self._format_error("Input cannot be empty")
                     self.output.write(error_msg + "\n")
                     self.output.flush()
                     continue
-                
+
                 # Convert value to appropriate type
                 try:
                     value = self._convert_value(raw_input)
@@ -213,10 +210,10 @@ class Prompt:
                     self.output.write(error_msg + "\n")
                     self.output.flush()
                     continue
-                
+
                 # Validate input
                 is_valid, error_message = self._validate_input(value)
-                
+
                 if is_valid:
                     return value
                 else:
@@ -224,13 +221,13 @@ class Prompt:
                     error_msg = self._format_error(error_message)
                     self.output.write(error_msg + "\n")
                     self.output.flush()
-            
+
             except KeyboardInterrupt:
                 # User pressed CTRL+C
                 self.output.write("\n")
                 self.output.flush()
                 raise
-    
+
     def prompt_text_input(self) -> str:
         """
         Prompt for text input.
@@ -240,7 +237,7 @@ class Prompt:
         """
         self.prompt_type = PromptType.TEXT
         return self.prompt()
-    
+
     def prompt_number(self, min_value: Optional[float] = None, max_value: Optional[float] = None) -> float:
         """
         Prompt for numeric input.
@@ -253,13 +250,13 @@ class Prompt:
             Numeric input
         """
         self.prompt_type = PromptType.NUMBER
-        
+
         # Add range validator if bounds specified
         if min_value is not None or max_value is not None:
             self.validators.append(RangeValidator(min_value, max_value))
-        
+
         return self.prompt()
-    
+
     def prompt_choice(self, choices: List[Any], case_sensitive: bool = True) -> Any:
         """
         Prompt for choice from a list of options.
@@ -272,12 +269,12 @@ class Prompt:
             Selected choice
         """
         self.prompt_type = PromptType.CHOICE
-        
+
         # Add enum validator
         self.validators.append(EnumValidator(choices, case_sensitive))
-        
+
         return self.prompt()
-    
+
     def prompt_path(
         self,
         must_exist: bool = False,
@@ -296,12 +293,12 @@ class Prompt:
             Path object
         """
         self.prompt_type = PromptType.PATH
-        
+
         # Add path validator
         self.validators.append(PathValidator(must_exist, must_be_file, must_be_dir))
-        
+
         return self.prompt()
-    
+
     def prompt_confirm(self, default: Optional[bool] = None) -> bool:
         """
         Prompt for yes/no confirmation.
@@ -314,7 +311,7 @@ class Prompt:
         """
         self.prompt_type = PromptType.CONFIRM
         self.default = default
-        
+
         return self.prompt()
 
 

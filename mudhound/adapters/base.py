@@ -9,7 +9,7 @@ validation, and rate limit handling.
 from abc import ABC, abstractmethod
 from typing import Generator, List
 
-from mudhound.core.result import SearchResult, SearchOptions
+from mudhound.core.result import SearchOptions, SearchResult
 
 
 class SearchAdapter(ABC):
@@ -28,7 +28,7 @@ class SearchAdapter(ABC):
         validate_options: Validate search options and return error messages
         on_rate_limit: Handle rate limit events (optional override)
     """
-    
+
     @property
     @abstractmethod
     def name(self) -> str:
@@ -41,7 +41,7 @@ class SearchAdapter(ABC):
             The adapter's internal name (e.g., "duckduckgo")
         """
         pass
-    
+
     @property
     @abstractmethod
     def display_name(self) -> str:
@@ -53,7 +53,7 @@ class SearchAdapter(ABC):
             The adapter's display name (e.g., "DuckDuckGo")
         """
         pass
-    
+
     @abstractmethod
     def search(
         self,
@@ -79,7 +79,7 @@ class SearchAdapter(ABC):
             AdapterError: For other adapter-specific errors
         """
         pass
-    
+
     @abstractmethod
     def validate_options(self, options: SearchOptions) -> List[str]:
         """Validate search options and return error messages.
@@ -95,7 +95,7 @@ class SearchAdapter(ABC):
             List of error messages (empty if valid)
         """
         pass
-    
+
     def on_rate_limit(self, retry_after: int) -> int:
         """Handle rate limit events.
         

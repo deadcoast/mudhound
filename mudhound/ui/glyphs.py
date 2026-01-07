@@ -17,7 +17,7 @@ GLYPHS = {
         "debug": "[.]",        # Debug message
         "question": "[?]",     # Question or prompt
     },
-    
+
     # Progress glyphs - used for progress indicators and animations
     "progress": {
         "spinner": ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],  # Braille spinner frames
@@ -26,7 +26,7 @@ GLYPHS = {
         "arrow": "→",          # Arrow indicator
         "pointer": "▶",        # Pointer/play symbol
     },
-    
+
     # Selection glyphs - used for menus and interactive selections
     "selection": {
         "checked": "[x]",      # Checked checkbox
@@ -35,7 +35,7 @@ GLYPHS = {
         "radio_unselected": "( )",  # Unselected radio button
         "cursor": ">>>",       # Menu cursor indicator
     },
-    
+
     # Decorative glyphs - used for visual separation and feedback
     "decorative": {
         "divider": "─",        # Horizontal divider line
@@ -44,7 +44,7 @@ GLYPHS = {
         "cross": "✗",          # Cross/X mark
         "dot": "·",            # Middle dot
     },
-    
+
     # Data flow glyphs - used for showing data movement and operations
     "dataflow": {
         "input": "←",          # Input indicator

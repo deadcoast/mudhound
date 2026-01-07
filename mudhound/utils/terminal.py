@@ -1,6 +1,5 @@
 """Terminal utility functions for size detection and management."""
 
-import os
 import shutil
 from typing import Tuple
 

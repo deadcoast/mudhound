@@ -7,8 +7,8 @@ to the terminal and optionally to files with rotation support.
 
 import logging
 import sys
-from pathlib import Path
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
 from typing import Optional
 
 from mudhound.logging.formatter import StyledLogFormatter
@@ -23,7 +23,7 @@ class StyledLogHandler(logging.StreamHandler):
     Attributes:
         formatter: StyledLogFormatter instance
     """
-    
+
     def __init__(self, use_color: bool = True):
         """Initialize the handler.
         
@@ -53,7 +53,7 @@ def setup_file_logging(
     """
     # Ensure log directory exists
     log_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Create rotating file handler
     file_handler = RotatingFileHandler(
         log_file,
@@ -61,13 +61,13 @@ def setup_file_logging(
         backupCount=backup_count,
         encoding="utf-8",
     )
-    
+
     # Set level
     file_handler.setLevel(level)
-    
+
     # Use formatter without color for file output
     file_handler.setFormatter(StyledLogFormatter(use_color=False))
-    
+
     return file_handler
 
 
@@ -93,24 +93,24 @@ def configure_logging(
         Configured logger instance
     """
     from mudhound.logging.levels import TRACE
-    
+
     # Get or create logger
     logger = logging.getLogger("mudhound")
     logger.setLevel(TRACE)  # Set to lowest level, handlers will filter
-    
+
     # Remove existing handlers
     logger.handlers.clear()
-    
+
     # Add console handler
     console_handler = StyledLogHandler(use_color=use_color)
     console_handler.setLevel(level)
     logger.addHandler(console_handler)
-    
+
     # Add file handler if requested
     if log_file:
         if file_level is None:
             file_level = level
-        
+
         file_handler = setup_file_logging(
             log_file,
             level=file_level,
@@ -118,10 +118,10 @@ def configure_logging(
             backup_count=backup_count,
         )
         logger.addHandler(file_handler)
-    
+
     # Prevent propagation to root logger
     logger.propagate = False
-    
+
     return logger
 
 

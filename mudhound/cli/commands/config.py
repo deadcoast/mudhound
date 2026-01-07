@@ -12,8 +12,6 @@ Provides functionality to manage application configuration:
 import os
 import subprocess
 import sys
-from pathlib import Path
-from typing import Optional
 
 import typer
 from rich.console import Console
@@ -21,7 +19,6 @@ from rich.table import Table
 
 from mudhound.core.config import ConfigManager
 from mudhound.core.exceptions import ConfigError
-
 
 app = typer.Typer(help="Manage MudHound configuration")
 console = Console()
@@ -41,7 +38,7 @@ def get_config_manager(ctx: typer.Context) -> ConfigManager:
     config_path = None
     if ctx.parent and ctx.parent.obj:
         config_path = ctx.parent.obj.get("config")
-    
+
     return ConfigManager(cli_config_path=config_path)
 
 
@@ -55,12 +52,12 @@ def list(ctx: typer.Context):
     try:
         config_manager = get_config_manager(ctx)
         config_dict = config_manager.list()
-        
+
         # Create a table for display
         table = Table(title="MudHound Configuration", show_header=True, header_style="bold magenta")
         table.add_column("Key", style="cyan", no_wrap=True)
         table.add_column("Value", style="green")
-        
+
         # Flatten nested config for display
         def flatten_dict(d, parent_key=""):
             items = []
@@ -71,19 +68,19 @@ def list(ctx: typer.Context):
                 else:
                     items.append((new_key, str(v)))
             return items
-        
+
         flattened = flatten_dict(config_dict)
         for key, value in sorted(flattened):
             table.add_row(key, value)
-        
+
         console.print(table)
-        
+
         # Show config file location
         if config_manager.config_path:
             console.print(f"\n[dim]Configuration loaded from: {config_manager.config_path}[/dim]")
         else:
             console.print("\n[dim]Using default configuration (no config file found)[/dim]")
-            
+
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)
@@ -104,15 +101,15 @@ def get(
         console_err.print("[red]Error:[/red] Configuration key cannot be empty")
         console_err.print("[yellow]Tip:[/yellow] Use 'mh config list' to see all available keys")
         raise typer.Exit(1)
-    
+
     try:
         config_manager = get_config_manager(ctx)
         value = config_manager.get(key)
-        
+
         if value is None:
             console_err.print(f"[yellow]Warning:[/yellow] Key '{key}' not found in configuration")
             raise typer.Exit(1)
-        
+
         # Format output based on value type
         if isinstance(value, dict):
             console.print(f"[cyan]{key}[/cyan]:")
@@ -120,7 +117,7 @@ def get(
                 console.print(f"  {k}: {v}")
         else:
             console.print(f"[cyan]{key}[/cyan]: {value}")
-            
+
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)
@@ -144,29 +141,29 @@ def set(
         console_err.print("[red]Error:[/red] Configuration key cannot be empty")
         console_err.print("[yellow]Tip:[/yellow] Use 'mh config list' to see all available keys")
         raise typer.Exit(1)
-    
+
     # Validate value is not empty
     if not value or len(value.strip()) == 0:
         console_err.print("[red]Error:[/red] Configuration value cannot be empty")
         raise typer.Exit(1)
-    
+
     try:
         config_manager = get_config_manager(ctx)
-        
+
         # Try to parse value as appropriate type
         parsed_value = _parse_value(value)
-        
+
         # Set the value
         config_manager.set(key, parsed_value)
-        
+
         # Save to disk
         config_manager.save()
-        
+
         console.print(f"[green]✓[/green] Set [cyan]{key}[/cyan] = {parsed_value}")
-        
+
         if config_manager.config_path:
             console.print(f"[dim]Configuration saved to: {config_manager.config_path}[/dim]")
-        
+
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)
@@ -185,7 +182,7 @@ def reset(
     """
     try:
         config_manager = get_config_manager(ctx)
-        
+
         # Confirm destructive action
         if not yes:
             confirm = typer.confirm(
@@ -195,18 +192,18 @@ def reset(
             if not confirm:
                 console.print("[yellow]Reset cancelled[/yellow]")
                 raise typer.Exit(0)
-        
+
         # Reset to defaults
         config_manager.reset()
-        
+
         # Save the defaults to disk
         config_manager.save()
-        
+
         console.print("[green]✓[/green] Configuration reset to defaults")
-        
+
         if config_manager.config_path:
             console.print(f"[dim]Configuration saved to: {config_manager.config_path}[/dim]")
-            
+
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)
@@ -225,27 +222,27 @@ def edit(ctx: typer.Context):
     """
     try:
         config_manager = get_config_manager(ctx)
-        
+
         # Ensure config file exists
         if config_manager.config_path is None:
             # Create default config file
             config_manager.save()
             console.print(f"[green]✓[/green] Created configuration file at: {config_manager.config_path}")
-        
+
         config_path = config_manager.config_path
-        
+
         # Get editor from environment
         editor = os.environ.get("EDITOR")
-        
+
         if not editor:
             # Fall back to platform defaults
             if sys.platform == "win32":
                 editor = "notepad"
             else:
                 editor = "nano"
-        
+
         console.print(f"[dim]Opening {config_path} in {editor}...[/dim]")
-        
+
         # Open editor
         try:
             subprocess.run([editor, str(config_path)], check=True)
@@ -257,7 +254,7 @@ def edit(ctx: typer.Context):
             console_err.print(f"[red]Error:[/red] Editor '{editor}' not found")
             console_err.print("[yellow]Tip:[/yellow] Set the EDITOR environment variable to your preferred editor")
             raise typer.Exit(1)
-            
+
     except ConfigError as e:
         console_err.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)
@@ -283,19 +280,19 @@ def _parse_value(value: str):
         return True
     if value.lower() in ("false", "no", "off", "0"):
         return False
-    
+
     # Try integer
     try:
         return int(value)
     except ValueError:
         pass
-    
+
     # Try float
     try:
         return float(value)
     except ValueError:
         pass
-    
+
     # Return as string
     return value
 

@@ -14,7 +14,7 @@ import importlib.util
 import pkgutil
 import sys
 from pathlib import Path
-from typing import Dict, List, Type, Optional
+from typing import Dict, List, Type
 
 from mudhound.adapters.base import SearchAdapter
 from mudhound.core.exceptions import AdapterNotFoundError
@@ -34,9 +34,9 @@ class AdapterRegistry:
     Attributes:
         _adapters: Dictionary mapping adapter names to adapter classes
     """
-    
+
     _adapters: Dict[str, Type[SearchAdapter]] = {}
-    
+
     @classmethod
     def register(cls, adapter_class: Type[SearchAdapter]) -> None:
         """Register a search adapter.
@@ -54,13 +54,13 @@ class AdapterRegistry:
             raise TypeError(
                 f"{adapter_class.__name__} must be a subclass of SearchAdapter"
             )
-        
+
         # Instantiate to get the name property
         instance = adapter_class()
         adapter_name = instance.name
-        
+
         cls._adapters[adapter_name] = adapter_class
-    
+
     @classmethod
     def get(cls, adapter_name: str) -> Type[SearchAdapter]:
         """Retrieve an adapter by name.
@@ -76,9 +76,9 @@ class AdapterRegistry:
         """
         if adapter_name not in cls._adapters:
             raise AdapterNotFoundError(adapter_name)
-        
+
         return cls._adapters[adapter_name]
-    
+
     @classmethod
     def list_available(cls) -> List[str]:
         """List all available adapter names.
@@ -87,7 +87,7 @@ class AdapterRegistry:
             List of registered adapter names
         """
         return list(cls._adapters.keys())
-    
+
     @classmethod
     def discover_builtin(cls) -> None:
         """Discover and register built-in adapters.
@@ -96,38 +96,38 @@ class AdapterRegistry:
         automatically registers any SearchAdapter subclasses found.
         """
         import mudhound.adapters
-        
+
         # Get the adapters package path
         adapters_path = Path(mudhound.adapters.__file__).parent
-        
+
         # Iterate through all Python files in the adapters directory
         for module_info in pkgutil.iter_modules([str(adapters_path)]):
             module_name = module_info.name
-            
+
             # Skip base, registry, and __init__ modules
             if module_name in ('base', 'registry', '__init__'):
                 continue
-            
+
             try:
                 # Import the module
                 full_module_name = f'mudhound.adapters.{module_name}'
                 module = importlib.import_module(full_module_name)
-                
+
                 # Look for SearchAdapter subclasses in the module
                 for attr_name in dir(module):
                     attr = getattr(module, attr_name)
-                    
+
                     # Check if it's a class, a SearchAdapter subclass, and not the base class
-                    if (isinstance(attr, type) and 
-                        issubclass(attr, SearchAdapter) and 
+                    if (isinstance(attr, type) and
+                        issubclass(attr, SearchAdapter) and
                         attr is not SearchAdapter):
                         cls.register(attr)
-                        
+
             except Exception:
                 # Silently skip modules that fail to import
                 # This allows the system to continue even if some adapters are broken
                 pass
-    
+
     @classmethod
     def discover_plugins(cls) -> None:
         """Discover and register plugin adapters.
@@ -146,20 +146,20 @@ class AdapterRegistry:
                 try:
                     # Import the plugin package
                     plugin_module = importlib.import_module(name)
-                    
+
                     # Look for SearchAdapter subclasses
                     for attr_name in dir(plugin_module):
                         attr = getattr(plugin_module, attr_name)
-                        
-                        if (isinstance(attr, type) and 
-                            issubclass(attr, SearchAdapter) and 
+
+                        if (isinstance(attr, type) and
+                            issubclass(attr, SearchAdapter) and
                             attr is not SearchAdapter):
                             cls.register(attr)
-                            
+
                 except Exception:
                     # Silently skip plugins that fail to load
                     pass
-    
+
     @classmethod
     def discover_user_adapters(cls) -> None:
         """Discover and register user-defined adapters.
@@ -173,52 +173,52 @@ class AdapterRegistry:
         """
         # Get the user adapters directory
         user_adapters_dir = Path.home() / '.mudhound' / 'adapters'
-        
+
         # Check if the directory exists
         if not user_adapters_dir.exists() or not user_adapters_dir.is_dir():
             return
-        
+
         # Add the directory to sys.path temporarily
         user_adapters_str = str(user_adapters_dir)
         if user_adapters_str not in sys.path:
             sys.path.insert(0, user_adapters_str)
-        
+
         try:
             # Iterate through Python files in the directory
             for py_file in user_adapters_dir.glob('*.py'):
                 if py_file.name.startswith('_'):
                     continue
-                
+
                 try:
                     # Load the module from file
                     module_name = py_file.stem
                     spec = importlib.util.spec_from_file_location(
-                        module_name, 
+                        module_name,
                         py_file
                     )
-                    
+
                     if spec and spec.loader:
                         module = importlib.util.module_from_spec(spec)
                         spec.loader.exec_module(module)
-                        
+
                         # Look for SearchAdapter subclasses
                         for attr_name in dir(module):
                             attr = getattr(module, attr_name)
-                            
-                            if (isinstance(attr, type) and 
-                                issubclass(attr, SearchAdapter) and 
+
+                            if (isinstance(attr, type) and
+                                issubclass(attr, SearchAdapter) and
                                 attr is not SearchAdapter):
                                 cls.register(attr)
-                                
+
                 except Exception:
                     # Silently skip files that fail to load
                     pass
-                    
+
         finally:
             # Remove the directory from sys.path
             if user_adapters_str in sys.path:
                 sys.path.remove(user_adapters_str)
-    
+
     @classmethod
     def discover_all(cls) -> None:
         """Discover and register all adapters from all sources.
@@ -231,7 +231,7 @@ class AdapterRegistry:
         cls.discover_builtin()
         cls.discover_plugins()
         cls.discover_user_adapters()
-    
+
     @classmethod
     def clear(cls) -> None:
         """Clear all registered adapters.

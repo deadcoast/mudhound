@@ -1,7 +1,10 @@
 """Property-based tests for confirmation component."""
 
 from io import StringIO
-from hypothesis import given, strategies as st, settings, assume
+
+from hypothesis import given, settings
+from hypothesis import strategies as st
+
 from mudhound.ui.components.confirm import Confirmation, ConfirmationVariant
 
 
@@ -21,7 +24,7 @@ def test_destructive_action_confirmation_display(message, confirmation_word):
     """
     # Create output stream
     output = StringIO()
-    
+
     # Create confirmation with destructive variant
     confirmation = Confirmation(
         message=message,
@@ -30,36 +33,36 @@ def test_destructive_action_confirmation_display(message, confirmation_word):
         use_color=False,  # Disable color for easier testing
         output=output
     )
-    
+
     # Format the message (this is what gets displayed)
     formatted_message = confirmation._format_message()
-    
+
     # Verify message is present
     assert message in formatted_message, (
         f"Confirmation message '{message}' should be visible in formatted output"
     )
-    
+
     # Verify warning indicator is present for destructive actions
     assert "[~]" in formatted_message or "warning" in formatted_message.lower(), (
         "Warning indicator should be visible for destructive actions"
     )
-    
+
     # Format the prompt
     formatted_prompt = confirmation._format_prompt()
-    
+
     # Verify prompt asks for confirmation
     assert "confirm" in formatted_prompt.lower(), (
         "Prompt should ask for confirmation"
     )
-    
+
     # Verify confirmation word is mentioned in prompt
     assert confirmation_word in formatted_prompt, (
         f"Confirmation word '{confirmation_word}' should be visible in prompt"
     )
-    
+
     # Verify the formatted message is not empty
     assert len(formatted_message) > 0, "Formatted message should not be empty"
-    
+
     # Verify the formatted prompt is not empty
     assert len(formatted_prompt) > 0, "Formatted prompt should not be empty"
 
@@ -82,7 +85,7 @@ def test_destructive_variant_word_confirmation(message, confirmation_word, user_
     # Create input and output streams
     input_stream = StringIO(user_input + "\n")
     output = StringIO()
-    
+
     # Create confirmation with destructive variant
     confirmation = Confirmation(
         message=message,
@@ -92,14 +95,14 @@ def test_destructive_variant_word_confirmation(message, confirmation_word, user_
         output=output,
         input_stream=input_stream
     )
-    
+
     # Determine expected result
     # Only exact match should confirm
     expected_result = (user_input == confirmation_word)
-    
+
     # For testing, we'll simulate the confirmation logic without full prompt
     # to avoid infinite loops in property tests
-    
+
     # Test the word matching logic
     if user_input == confirmation_word:
         # Should accept
@@ -111,7 +114,7 @@ def test_destructive_variant_word_confirmation(message, confirmation_word, user_
         assert user_input != confirmation_word, (
             f"Non-matching input '{user_input}' should not equal confirmation word '{confirmation_word}'"
         )
-    
+
     # Verify that the confirmation word is required (not just yes/no)
     # The destructive variant should not accept simple "yes" or "no"
     if user_input.lower() in ("y", "yes", "n", "no"):
@@ -142,7 +145,7 @@ def test_destructive_action_default_no(message, variant):
     """
     # Create output stream
     output = StringIO()
-    
+
     # Create confirmation
     confirmation = Confirmation(
         message=message,
@@ -150,25 +153,25 @@ def test_destructive_action_default_no(message, variant):
         use_color=False,
         output=output
     )
-    
+
     # Get the default value
     default_value = confirmation._get_default_value()
-    
+
     # For all variants except YESNO_YES, default should be False (NO)
     if variant == ConfirmationVariant.YESNO_YES:
         # This variant defaults to YES
         assert default_value is True, (
-            f"YESNO_YES variant should default to True (YES)"
+            "YESNO_YES variant should default to True (YES)"
         )
     else:
         # All other variants (YESNO, DESTRUCTIVE, TIMED) default to NO
         assert default_value is False, (
             f"Variant {variant.value} should default to False (NO)"
         )
-    
+
     # Verify the prompt reflects the default
     formatted_prompt = confirmation._format_prompt()
-    
+
     if variant == ConfirmationVariant.YESNO_YES:
         # Should show [Y/n] indicating YES is default
         assert "[Y/n]" in formatted_prompt or "Y/n" in formatted_prompt, (
@@ -199,7 +202,7 @@ def test_yesno_input_parsing(message, variant, user_input):
     """
     # Create output stream
     output = StringIO()
-    
+
     # Create confirmation
     confirmation = Confirmation(
         message=message,
@@ -207,11 +210,11 @@ def test_yesno_input_parsing(message, variant, user_input):
         use_color=False,
         output=output
     )
-    
+
     # Test input parsing
     if user_input:
         result = confirmation._parse_yesno_input(user_input)
-        
+
         if user_input.lower() in ("y", "yes"):
             assert result is True, (
                 f"Input '{user_input}' should be parsed as True (YES)"

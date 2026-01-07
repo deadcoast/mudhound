@@ -10,11 +10,11 @@ It performs critical initialization tasks:
 - Launches the CLI application
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
 
-from mudhound.utils.terminal import is_terminal_size_adequate, get_terminal_size
+from mudhound.utils.terminal import get_terminal_size, is_terminal_size_adequate
 
 
 def check_terminal_size():
@@ -63,8 +63,7 @@ def initialize_logging(verbose: bool = False, quiet: bool = False, use_color: bo
         use_color: Enable colored log output
     """
     from mudhound.logging import configure_logging
-    from mudhound.logging.levels import TRACE
-    
+
     # Determine log level
     if quiet:
         level = logging.ERROR
@@ -72,10 +71,10 @@ def initialize_logging(verbose: bool = False, quiet: bool = False, use_color: bo
         level = logging.DEBUG
     else:
         level = logging.INFO
-    
+
     # Get log file path from config or use default
     log_file = Path.home() / '.mudhound' / 'logs' / 'mudhound.log'
-    
+
     # Configure logging
     configure_logging(
         level=level,
@@ -95,10 +94,10 @@ def initialize_config(config_path: str = None):
         ConfigManager instance
     """
     from mudhound.core.config import ConfigManager
-    
+
     # Create config manager with optional CLI override
     config_manager = ConfigManager(cli_config_path=config_path)
-    
+
     return config_manager
 
 
@@ -131,12 +130,12 @@ def main():
         from mudhound.cli.app import app
 
         app()
-        
+
     except KeyboardInterrupt:
         # Handle CTRL+C gracefully
         print("\n\nOperation cancelled by user.")
         sys.exit(130)  # Standard exit code for SIGINT
-        
+
     except Exception as e:
         # Handle unexpected errors
         logger = logging.getLogger("mudhound")

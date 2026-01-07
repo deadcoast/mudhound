@@ -7,20 +7,17 @@ they meet requirements before command execution.
 Uses validators from mudhound.utils.validators for reusable validation logic.
 """
 
-import re
 from pathlib import Path
 from typing import List, Optional, Tuple
 
 from mudhound.adapters.registry import AdapterRegistry
-from mudhound.core.exceptions import ValidationError
 from mudhound.utils.validators import (
-    RangeValidator,
     EnumValidator,
     LengthValidator,
-    PatternValidator,
     PathValidator,
+    PatternValidator,
+    RangeValidator,
 )
-
 
 # Pre-configured validators for CLI arguments
 _format_validator = EnumValidator(['json', 'csv', 'txt', 'urls'], case_sensitive=False)

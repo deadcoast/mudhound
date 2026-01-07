@@ -13,18 +13,22 @@ import typer
 from rich.console import Console
 
 from mudhound.adapters.registry import AdapterRegistry
-from mudhound.cli.validation import validate_max_results, validate_engine, validate_format, validate_output_path
+from mudhound.cli.commands.export import export_csv, export_json, export_txt, export_urls
+from mudhound.cli.validation import (
+    validate_engine,
+    validate_format,
+    validate_max_results,
+    validate_output_path,
+)
 from mudhound.core.engine import SearchEngine
+from mudhound.core.exceptions import MudHoundError
 from mudhound.core.result import SearchOptions
 from mudhound.core.store import ResultStore
-from mudhound.core.exceptions import MudHoundError
-from mudhound.cli.commands.export import export_json, export_csv, export_txt, export_urls
-from mudhound.ui.components.progress import Progress, ProgressVariant
 from mudhound.ui.components.error import ErrorHandler
+from mudhound.ui.components.progress import Progress, ProgressVariant
 from mudhound.ui.components.table import Table
-from mudhound.ui.renderer import UIRenderer
 from mudhound.ui.layout import LayoutManager
-
+from mudhound.ui.renderer import UIRenderer
 
 app = typer.Typer(help="Search for URLs using various search engines")
 
@@ -159,7 +163,7 @@ def search(
         )
 
         if not quiet:
-            progress.complete(f"Search complete")
+            progress.complete("Search complete")
             console.print()
 
         # Display results based on mode
