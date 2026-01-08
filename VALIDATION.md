@@ -1,6 +1,6 @@
 # Validation
 
-## 0.1.0
+## 0.1.1
 
 ### PROTOCOL
 
@@ -8,5 +8,140 @@
 > versioning: canonical
 > dependencies: TODO.md, CHANGELOG.md
 > status: 'tracking validation findings and integration status'
+
+---
+
+- 2026-01-07
+
+### A) SD Workflow Spec - VERIFIED
+
+> [!NOTE]
+> Added SD workflow specification to crowndoc-plugin resources.
+> [TODO.md], [ver:`0.0.7`, sect:`A)`]
+> [CHANGELOG.md], [ver:`0.0.6`, sect:`A)`]
+
+**Verification:**
+- File exists: crowndoc-plugin/resources/SD-workflow.md ✅
+- Contains all phases: R, S, F, X, V ✅
+- Tool usage documented ✅
+- Decision tree included ✅
+
+### B) Hooks - VERIFIED
+
+> [!NOTE]
+> Created hooks for cross-reference validation.
+> [TODO.md], [ver:`0.0.7`, sect:`B)`]
+> [CHANGELOG.md], [ver:`0.0.6`, sect:`B)`]
+
+**Verification:**
+- crowndoc-plugin/hooks/hooks.json ✅
+- 3 hooks defined:
+  - crowndoc-xref-validate ✅
+  - crowndoc-todo-complete ✅
+  - crowndoc-version-archive ✅
+
+### C) Examples - VERIFIED
+
+> [!NOTE]
+> Added real examples from mudhound.
+> [TODO.md], [ver:`0.0.7`, sect:`C)`]
+> [CHANGELOG.md], [ver:`0.0.6`, sect:`C)`]
+
+**Verification:**
+- crowndoc-plugin/examples/ directory ✅
+- TODO-example.md ✅
+- SD-pass-example.md ✅
+- cross-reference-patterns.md ✅
+
+### D) Plugin Structure - VERIFIED
+
+> [!NOTE]
+> Plugin follows Claude Code conventions.
+> [TODO.md], [ver:`0.0.7`, sect:`D)`]
+> [CHANGELOG.md], [ver:`0.0.6`, sect:`D)`]
+
+**Verification:**
+- .claude-plugin/plugin.json ✅
+- skills/ (2 SKILL.md files) ✅
+- commands/ (6 command files) ✅
+- agents/ (1 agent file) ✅
+- hooks/ (hooks.json) ✅
+- resources/ (spec, workflow, templates) ✅
+- examples/ (3 example files) ✅
+- README.md ✅
+
+### E) Commands - VERIFIED
+
+> [!NOTE]
+> All 6 commands properly defined.
+> [TODO.md], [ver:`0.0.7`, sect:`E)`]
+> [CHANGELOG.md], [ver:`0.0.6`, sect:`E)`]
+
+**Verification:**
+- /crowndoc:init ✅
+- /crowndoc:status ✅
+- /crowndoc:TODO ✅
+- /crowndoc:SD ✅
+- /crowndoc:validate ✅
+- /crowndoc:continue ✅
+
+---
+
+## 0.1.0
+
+- 2026-01-07
+
+### A) SD:S Q3 - UI Integration Verified
+
+> [!NOTE]
+> workflow: SD
+> pass: [docs/SD/complete/0.0.1-Q3.md]
+> status: COMPLETE
+
+**Verification:**
+- pytest: 150 passed
+- ruff (F401,F811): All checks passed
+- All 20 Q3 files integrated
+
+**Cross-references:**
+- [TODO.md], [ver:`0.0.1`, sect:`C)`-`N)`] - Original integration tasks
+- [CHANGELOG.md], [ver:`0.0.1`, sect:`D)`] - UI System completion
+- [SD.md], [ver:`0.0.1`] - SD pass record
+
+---
+
+## 0.1.2
+
+- 2026-01-07
+
+### A) Comprehensive Plugin Documentation - VERIFIED
+
+> [!NOTE]
+> All crowndoc-plugin files rewritten to comprehensive specifications.
+> [TODO.md], [ver:`0.0.8`, sect:`A)`]
+> [CHANGELOG.md], [ver:`0.0.7`, sect:`A)`]
+
+**Verification:**
+- All 8 files rewritten with comprehensive content
+- Average file size: 400-600 lines
+- Full execution details included
+- Edge cases documented
+- Cross-references complete
+
+**Files Verified:**
+| File | Lines | Status |
+|------|-------|--------|
+| skills/crowndoc-workflows/SKILL.md | ~500 | ✅ |
+| commands/init.md | ~400 | ✅ |
+| commands/status.md | ~350 | ✅ |
+| commands/TODO.md | ~450 | ✅ |
+| commands/SD.md | ~600 | ✅ |
+| commands/validate.md | ~400 | ✅ |
+| commands/continue.md | ~450 | ✅ |
+| agents/crowndoc-workflow.md | ~500 | ✅ |
+
+**Cross-references:**
+- [TODO.md], [ver:`0.0.8`, sect:`A)`] - Task completion
+- [CHANGELOG.md], [ver:`0.0.7`, sect:`A)`,`B)`] - Completion record
 
 ---

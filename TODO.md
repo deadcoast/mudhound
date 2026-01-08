@@ -1,6 +1,6 @@
 # TODO.md
 
-## 0.0.6
+## 0.0.9
 
 ### PROTOCOL
 
@@ -15,6 +15,8 @@
 
 > [!TIP]
 > All previous tasks complete. Ready for new work items.
+> Previous version: [docs/TODO/complete/0.0.8.md]
 > Completed versions: [docs/TODO/complete/](docs/TODO/complete/)
 
 ---
+

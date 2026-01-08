@@ -1,0 +1,9 @@
+{
+  "name": "crowndoc",
+  "version": "0.1.0",
+  "description": "AI-optimized documentation ecosystem with cross-referenced workflows for TODO, CHANGELOG, VALIDATION, and SeekAndDestroy codebase review",
+  "author": {
+    "name": "crowndoc",
+    "email": "crowndoc@local"
+  }
+}
