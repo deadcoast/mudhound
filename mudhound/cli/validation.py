@@ -169,7 +169,7 @@ def validate_output_path(output_path: str) -> Tuple[bool, Optional[str]]:
     max_path_length = 260 if os.name == "nt" else 4096
     if len(output_path) > max_path_length:
         return False, (
-            f"Output path is too long ({len(output_path)} characters, " f"max {max_path_length})"
+            f"Output path is too long ({len(output_path)} characters, max {max_path_length})"
         )
 
     # Use PathValidator for basic path validation

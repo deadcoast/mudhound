@@ -232,6 +232,6 @@ def test_theme_application_to_frames(content_lines, title, status, border_style)
         # Verify that non-themed frame does NOT contain the specific theme color
         frame_text_no_theme = "\n".join(frame_without_theme)
         # Non-themed frame should not have ANSI codes (or at least not our specific theme color)
-        assert (
-            expected_color not in frame_text_no_theme
-        ), "Non-themed frame should not have theme color"
+        assert expected_color not in frame_text_no_theme, (
+            "Non-themed frame should not have theme color"
+        )

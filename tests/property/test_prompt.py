@@ -48,18 +48,18 @@ def test_prompt_text_and_cursor_display(prompt_text, default_value):
     formatted_prompt = prompt._format_prompt()
 
     # Verify prompt text is present
-    assert (
-        prompt_text in formatted_prompt
-    ), f"Prompt text '{prompt_text}' should be visible in formatted prompt"
+    assert prompt_text in formatted_prompt, (
+        f"Prompt text '{prompt_text}' should be visible in formatted prompt"
+    )
 
     # Verify cursor indicator (colon and space) is present
     assert ": " in formatted_prompt, "Cursor indicator ': ' should be visible in formatted prompt"
 
     # If default value is provided, verify it's shown
     if default_value is not None:
-        assert (
-            f"[{default_value}]" in formatted_prompt
-        ), f"Default value '[{default_value}]' should be visible in formatted prompt"
+        assert f"[{default_value}]" in formatted_prompt, (
+            f"Default value '[{default_value}]' should be visible in formatted prompt"
+        )
 
     # Verify the formatted prompt is not empty
     assert len(formatted_prompt) > 0, "Formatted prompt should not be empty"
@@ -103,26 +103,26 @@ def test_validation_error_feedback(prompt_text, invalid_input, min_length):
     is_valid, error_message = prompt._validate_input(invalid_input)
 
     # Verify validation failed
-    assert (
-        not is_valid
-    ), f"Input '{invalid_input}' with length {len(invalid_input)} should fail validation (min_length={min_length})"
+    assert not is_valid, (
+        f"Input '{invalid_input}' with length {len(invalid_input)} should fail validation (min_length={min_length})"
+    )
 
     # Verify error message is provided
     assert error_message is not None, "Error message should be provided for invalid input"
 
     # Verify error message mentions the constraint
-    assert (
-        str(min_length) in error_message
-    ), f"Error message should mention the minimum length {min_length}"
+    assert str(min_length) in error_message, (
+        f"Error message should mention the minimum length {min_length}"
+    )
 
     # Test that error formatting works
     formatted_error = prompt._format_error(error_message)
     assert len(formatted_error) > 0, "Formatted error message should not be empty"
 
     # Verify error indicator is present (glyph or text)
-    assert (
-        "[!]" in formatted_error or "error" in formatted_error.lower()
-    ), "Formatted error should contain error indicator"
+    assert "[!]" in formatted_error or "error" in formatted_error.lower(), (
+        "Formatted error should contain error indicator"
+    )
 
 
 @given(
@@ -167,17 +167,17 @@ def test_validation_rule_application_range(min_value, max_value, test_value):
     expected_valid = min_value <= test_value <= max_value
 
     # Verify validation result matches expectation
-    assert (
-        is_valid == expected_valid
-    ), f"Validation of {test_value} should be {expected_valid} for range [{min_value}, {max_value}]"
+    assert is_valid == expected_valid, (
+        f"Validation of {test_value} should be {expected_valid} for range [{min_value}, {max_value}]"
+    )
 
     # If invalid, verify error message is provided
     if not expected_valid:
         assert error_message is not None, "Error message should be provided for out-of-range value"
         # Error message should mention the constraint
-        assert (
-            "at least" in error_message or "at most" in error_message
-        ), "Error message should mention the range constraint"
+        assert "at least" in error_message or "at most" in error_message, (
+            "Error message should mention the range constraint"
+        )
 
 
 @given(
@@ -219,19 +219,19 @@ def test_validation_rule_application_pattern(pattern, test_input):
     expected_valid = bool(re.match(pattern, test_input))
 
     # Verify validation result matches expectation
-    assert (
-        is_valid == expected_valid
-    ), f"Validation of '{test_input}' should be {expected_valid} for pattern '{pattern}'"
+    assert is_valid == expected_valid, (
+        f"Validation of '{test_input}' should be {expected_valid} for pattern '{pattern}'"
+    )
 
     # If invalid, verify error message is provided
     if not expected_valid:
-        assert (
-            error_message is not None
-        ), "Error message should be provided for non-matching pattern"
+        assert error_message is not None, (
+            "Error message should be provided for non-matching pattern"
+        )
         # Error message should mention pattern or matching
-        assert (
-            "pattern" in error_message.lower() or "match" in error_message.lower()
-        ), "Error message should mention pattern matching"
+        assert "pattern" in error_message.lower() or "match" in error_message.lower(), (
+            "Error message should mention pattern matching"
+        )
 
 
 @given(
@@ -276,17 +276,17 @@ def test_validation_rule_application_length(min_length, max_length, test_length)
     expected_valid = min_length <= test_length <= max_length
 
     # Verify validation result matches expectation
-    assert (
-        is_valid == expected_valid
-    ), f"Validation of input with length {test_length} should be {expected_valid} for range [{min_length}, {max_length}]"
+    assert is_valid == expected_valid, (
+        f"Validation of input with length {test_length} should be {expected_valid} for range [{min_length}, {max_length}]"
+    )
 
     # If invalid, verify error message is provided
     if not expected_valid:
         assert error_message is not None, "Error message should be provided for invalid length"
         # Error message should mention the length constraint
-        assert (
-            "characters" in error_message.lower() or "length" in error_message.lower()
-        ), "Error message should mention length constraint"
+        assert "characters" in error_message.lower() or "length" in error_message.lower(), (
+            "Error message should mention length constraint"
+        )
 
 
 @given(

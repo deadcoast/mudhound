@@ -42,14 +42,14 @@ def test_destructive_action_confirmation_display(message, confirmation_word):
     formatted_message = confirmation._format_message()
 
     # Verify message is present
-    assert (
-        message in formatted_message
-    ), f"Confirmation message '{message}' should be visible in formatted output"
+    assert message in formatted_message, (
+        f"Confirmation message '{message}' should be visible in formatted output"
+    )
 
     # Verify warning indicator is present for destructive actions
-    assert (
-        "[~]" in formatted_message or "warning" in formatted_message.lower()
-    ), "Warning indicator should be visible for destructive actions"
+    assert "[~]" in formatted_message or "warning" in formatted_message.lower(), (
+        "Warning indicator should be visible for destructive actions"
+    )
 
     # Format the prompt
     formatted_prompt = confirmation._format_prompt()
@@ -58,9 +58,9 @@ def test_destructive_action_confirmation_display(message, confirmation_word):
     assert "confirm" in formatted_prompt.lower(), "Prompt should ask for confirmation"
 
     # Verify confirmation word is mentioned in prompt
-    assert (
-        confirmation_word in formatted_prompt
-    ), f"Confirmation word '{confirmation_word}' should be visible in prompt"
+    assert confirmation_word in formatted_prompt, (
+        f"Confirmation word '{confirmation_word}' should be visible in prompt"
+    )
 
     # Verify the formatted message is not empty
     assert len(formatted_message) > 0, "Formatted message should not be empty"
@@ -114,23 +114,21 @@ def test_destructive_variant_word_confirmation(message, confirmation_word, user_
     # Test the word matching logic
     if user_input == confirmation_word:
         # Should accept
-        assert (
-            user_input == confirmation_word
-        ), f"Exact match '{user_input}' should equal confirmation word '{confirmation_word}'"
+        assert user_input == confirmation_word, (
+            f"Exact match '{user_input}' should equal confirmation word '{confirmation_word}'"
+        )
     else:
         # Should reject
-        assert (
-            user_input != confirmation_word
-        ), f"Non-matching input '{user_input}' should not equal confirmation word '{confirmation_word}'"
+        assert user_input != confirmation_word, (
+            f"Non-matching input '{user_input}' should not equal confirmation word '{confirmation_word}'"
+        )
 
     # Verify that the confirmation word is required (not just yes/no)
     # The destructive variant should not accept simple "yes" or "no"
     if user_input.lower() in ("y", "yes", "n", "no"):
         # These should only work if they happen to match the confirmation word
         should_accept = user_input == confirmation_word
-        assert (
-            user_input == confirmation_word
-        ) == should_accept, (
+        assert (user_input == confirmation_word) == should_accept, (
             f"Simple yes/no input '{user_input}' should only work if it matches confirmation word"
         )
 
@@ -175,14 +173,14 @@ def test_destructive_action_default_no(message, variant):
 
     if variant == ConfirmationVariant.YESNO_YES:
         # Should show [Y/n] indicating YES is default
-        assert (
-            "[Y/n]" in formatted_prompt or "Y/n" in formatted_prompt
-        ), "YESNO_YES variant should show [Y/n] in prompt"
+        assert "[Y/n]" in formatted_prompt or "Y/n" in formatted_prompt, (
+            "YESNO_YES variant should show [Y/n] in prompt"
+        )
     elif variant == ConfirmationVariant.YESNO or variant == ConfirmationVariant.TIMED:
         # Should show [y/N] indicating NO is default
-        assert (
-            "[y/N]" in formatted_prompt or "y/N" in formatted_prompt
-        ), f"Variant {variant.value} should show [y/N] in prompt"
+        assert "[y/N]" in formatted_prompt or "y/N" in formatted_prompt, (
+            f"Variant {variant.value} should show [y/N] in prompt"
+        )
     # DESTRUCTIVE variant doesn't use yes/no, so we don't check it
 
 

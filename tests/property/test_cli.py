@@ -191,9 +191,9 @@ def test_quiet_mode_output_suppression(query, max_results):
     for line in lines:
         if line.strip():
             # Each non-empty line should be a URL
-            assert line.startswith("https://") or line.startswith(
-                "http://"
-            ), f"Quiet mode output should only contain URLs, found: {line}"
+            assert line.startswith("https://") or line.startswith("http://"), (
+                f"Quiet mode output should only contain URLs, found: {line}"
+            )
 
 
 @given(
@@ -279,9 +279,9 @@ def test_quiet_mode_vs_normal_mode_output(query, max_results):
     assert len(session_normal.results) == len(session_quiet.results)
 
     # Verify quiet mode output is shorter than normal mode
-    assert len(quiet_output) < len(
-        normal_output
-    ), "Quiet mode output should be shorter than normal mode output"
+    assert len(quiet_output) < len(normal_output), (
+        "Quiet mode output should be shorter than normal mode output"
+    )
 
     # Verify quiet mode has no UI elements
     assert "MUDHOUND" not in quiet_output
@@ -530,9 +530,9 @@ def test_stdin_query_reading(query):
 
         # Verify results contain the query (they should reference it)
         for result in session.results:
-            assert (
-                stdin_query in result.title or stdin_query in result.snippet
-            ), f"Results should reference the query from stdin: {stdin_query}"
+            assert stdin_query in result.title or stdin_query in result.snippet, (
+                f"Results should reference the query from stdin: {stdin_query}"
+            )
 
     finally:
         sys.stdin = original_stdin
@@ -582,14 +582,14 @@ def test_stdin_whitespace_handling(query, leading_whitespace, trailing_whitespac
         )
 
         # Verify no leading whitespace
-        assert not stdin_query.startswith(" ") and not stdin_query.startswith(
-            "\t"
-        ), "Stdin query should not have leading whitespace"
+        assert not stdin_query.startswith(" ") and not stdin_query.startswith("\t"), (
+            "Stdin query should not have leading whitespace"
+        )
 
         # Verify no trailing whitespace
-        assert not stdin_query.endswith(" ") and not stdin_query.endswith(
-            "\t"
-        ), "Stdin query should not have trailing whitespace"
+        assert not stdin_query.endswith(" ") and not stdin_query.endswith("\t"), (
+            "Stdin query should not have trailing whitespace"
+        )
 
         # Execute search with the cleaned query
         options = SearchOptions(max_results=10)
@@ -769,24 +769,24 @@ def test_interactive_session_state_preservation(queries, max_results):
         )
 
         # Verify has_results flag
-        assert current_state["has_results"] == (
-            expected_result_count > 0
-        ), "Session state has_results flag should match actual results"
+        assert current_state["has_results"] == (expected_result_count > 0), (
+            "Session state has_results flag should match actual results"
+        )
 
         # Verify session attributes directly
         assert session.last_search_query == query, "Session last_search_query should be preserved"
-        assert (
-            session.last_search_session is not None
-        ), "Session last_search_session should be preserved"
-        assert (
-            session.last_search_results is not None
-        ), "Session last_search_results should be preserved"
-        assert (
-            len(session.last_search_results) == expected_result_count
-        ), "Session last_search_results length should match"
-        assert (
-            session.operation_count == expected_operations
-        ), "Session operation_count should be incremented"
+        assert session.last_search_session is not None, (
+            "Session last_search_session should be preserved"
+        )
+        assert session.last_search_results is not None, (
+            "Session last_search_results should be preserved"
+        )
+        assert len(session.last_search_results) == expected_result_count, (
+            "Session last_search_results length should match"
+        )
+        assert session.operation_count == expected_operations, (
+            "Session operation_count should be incremented"
+        )
 
         # Store for verification
         previous_queries.append(query)
@@ -794,17 +794,17 @@ def test_interactive_session_state_preservation(queries, max_results):
 
     # Verify final state reflects the last operation
     final_state = session.get_state_summary()
-    assert (
-        final_state["last_query"] == queries[-1].strip()
-    ), "Final state should have the last query"
-    assert final_state["operations"] == len(
-        queries
-    ), f"Final state should have {len(queries)} operations"
+    assert final_state["last_query"] == queries[-1].strip(), (
+        "Final state should have the last query"
+    )
+    assert final_state["operations"] == len(queries), (
+        f"Final state should have {len(queries)} operations"
+    )
 
     # Verify state consistency: the last query should be the most recent one
-    assert (
-        session.last_search_query == queries[-1].strip()
-    ), "Session should preserve the most recent query"
+    assert session.last_search_query == queries[-1].strip(), (
+        "Session should preserve the most recent query"
+    )
 
     # Test state clearing
     session.clear_search_state()
@@ -814,9 +814,9 @@ def test_interactive_session_state_preservation(queries, max_results):
     assert cleared_state["result_count"] == 0, "Cleared state should have no results"
     assert not cleared_state["has_results"], "Cleared state should have no results flag"
     # Operation count should NOT be cleared (it's a session metric)
-    assert cleared_state["operations"] == len(
-        queries
-    ), "Operation count should persist after clearing search state"
+    assert cleared_state["operations"] == len(queries), (
+        "Operation count should persist after clearing search state"
+    )
 
 
 @given(
@@ -874,9 +874,9 @@ def test_interactive_session_state_isolation(query1, query2, max_results1, max_r
     results2_count = len(search_session2.results)
 
     # Verify state was replaced, not merged
-    assert (
-        state2["last_query"] == query2
-    ), f"Second operation should replace query. Expected: '{query2}', Got: '{state2['last_query']}'"
+    assert state2["last_query"] == query2, (
+        f"Second operation should replace query. Expected: '{query2}', Got: '{state2['last_query']}'"
+    )
     assert state2["last_query"] != query1, "Second operation should not preserve first query"
 
     # Verify result count is from second search only
@@ -884,24 +884,24 @@ def test_interactive_session_state_isolation(query1, query2, max_results1, max_r
         f"Second operation should replace result count. "
         f"Expected: {results2_count}, Got: {state2['result_count']}"
     )
-    assert (
-        state2["result_count"] != results1_count or results1_count == results2_count
-    ), "Result count should be from second search (unless they happen to be equal)"
+    assert state2["result_count"] != results1_count or results1_count == results2_count, (
+        "Result count should be from second search (unless they happen to be equal)"
+    )
 
     # Verify operation count is cumulative (not replaced)
     assert state2["operations"] == 2, "Operation count should be cumulative across operations"
-    assert (
-        state2["operations"] > state1["operations"]
-    ), "Operation count should increase with each operation"
+    assert state2["operations"] > state1["operations"], (
+        "Operation count should increase with each operation"
+    )
 
     # Verify session attributes reflect only the second search
     assert session.last_search_query == query2, "Session should only preserve the most recent query"
-    assert (
-        session.last_search_session == search_session2
-    ), "Session should only preserve the most recent session"
-    assert (
-        len(session.last_search_results) == results2_count
-    ), "Session should only preserve results from the most recent search"
+    assert session.last_search_session == search_session2, (
+        "Session should only preserve the most recent session"
+    )
+    assert len(session.last_search_results) == results2_count, (
+        "Session should only preserve results from the most recent search"
+    )
 
 
 @given(
@@ -948,12 +948,12 @@ def test_interactive_session_data_storage(query, max_results):
     session.update_search_state(query, search_session)
 
     # Verify custom data persists after search operation
-    assert (
-        "custom_key" in session.session_data
-    ), "Custom session data should persist across operations"
-    assert (
-        session.session_data["custom_key"] == "custom_value"
-    ), "Custom session data values should be preserved"
+    assert "custom_key" in session.session_data, (
+        "Custom session data should persist across operations"
+    )
+    assert session.session_data["custom_key"] == "custom_value", (
+        "Custom session data values should be preserved"
+    )
     assert session.session_data["user_preference"] is True
     assert session.session_data["counter"] == 42
 
@@ -967,9 +967,9 @@ def test_interactive_session_data_storage(query, max_results):
     session.clear_search_state()
 
     # Verify custom data still persists
-    assert (
-        "custom_key" in session.session_data
-    ), "Custom session data should persist after clearing search state"
+    assert "custom_key" in session.session_data, (
+        "Custom session data should persist after clearing search state"
+    )
     assert session.session_data["custom_key"] == "custom_value"
     assert session.session_data["counter"] == 43
 
@@ -1010,9 +1010,9 @@ def test_invalid_argument_handling(invalid_format, invalid_max_results, invalid_
         valid_formats = ["json", "csv", "txt", "urls"]
         is_valid_format = invalid_format in valid_formats
 
-        assert (
-            not is_valid_format
-        ), f"Format '{invalid_format}' should be invalid. Valid formats: {valid_formats}"
+        assert not is_valid_format, (
+            f"Format '{invalid_format}' should be invalid. Valid formats: {valid_formats}"
+        )
 
         # When the CLI is implemented, it should:
         # 1. Check if format is in valid_formats
@@ -1028,9 +1028,9 @@ def test_invalid_argument_handling(invalid_format, invalid_max_results, invalid_
 
             # Verify error message is informative
             assert "Invalid format" in error_message or "format" in error_message.lower()
-            assert any(
-                fmt in error_message for fmt in valid_formats
-            ), "Error message should list valid formats"
+            assert any(fmt in error_message for fmt in valid_formats), (
+                "Error message should list valid formats"
+            )
 
             # Verify non-zero exit code
             assert exit_code != 0, "CLI should exit with non-zero status for invalid format"
@@ -1083,9 +1083,9 @@ def test_invalid_argument_handling(invalid_format, invalid_max_results, invalid_
 
         # Verify error message is informative
         assert "Invalid engine" in error_message or "engine" in error_message.lower()
-        assert any(
-            eng in error_message for eng in valid_engines
-        ), "Error message should list available engines"
+        assert any(eng in error_message for eng in valid_engines), (
+            "Error message should list available engines"
+        )
 
         # Verify non-zero exit code
         assert exit_code != 0, "CLI should exit with non-zero status for invalid engine"
@@ -1195,9 +1195,9 @@ def test_argument_validation_comprehensive(query, max_results, region, safesearc
         except Exception as e:
             # If SearchOptions validation fails, that's also acceptable
             # It means the validation is happening at the model level
-            assert isinstance(
-                e, (ValueError, TypeError)
-            ), f"Expected validation error, got: {type(e).__name__}"
+            assert isinstance(e, (ValueError, TypeError)), (
+                f"Expected validation error, got: {type(e).__name__}"
+            )
 
 
 @given(

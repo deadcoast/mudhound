@@ -1,9 +1,11 @@
 # Error Log (Temporary)
 
-> Below is a json based temporary dump of errors from vscode.
+## 0.0.1
 
-- The file is a revolving door any and all data should be considered temporary and subject to change
-- Relevant data should be added to the CHANGELOG or VALIDATION files as appropriate
+> [!NOTE]
+> Below is a json based temporary dump of errors from vscode.
+> - The file is a revolving door any and all data should be considered temporary and subject to change
+> - Relevant data should be added to the CHANGELOG or VALIDATION files as appropriate
 
 ---
 

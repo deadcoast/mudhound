@@ -13,12 +13,7 @@ from typing import TYPE_CHECKING, Callable, List, Optional
 if TYPE_CHECKING:
     from mudhound.adapters.base import SearchAdapter
 
-from mudhound.core.exceptions import (
-    AdapterError,
-    NetworkError,
-    RateLimitError,
-    ValidationError,
-)
+from mudhound.core.exceptions import AdapterError, NetworkError, RateLimitError, ValidationError
 from mudhound.core.result import (
     SearchOptions,
     SearchQuery,

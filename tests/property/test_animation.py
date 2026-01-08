@@ -77,7 +77,10 @@ def test_infinite_loop_with_zero_duration(total_frames, fps):
     """
     # Create timing engine with zero duration (infinite loop)
     engine = TimingEngine(
-        fps=fps, total_frames=total_frames, duration=0.0, loop=True  # Zero duration = infinite loop
+        fps=fps,
+        total_frames=total_frames,
+        duration=0.0,
+        loop=True,  # Zero duration = infinite loop
     )
 
     # Start the engine
@@ -95,9 +98,9 @@ def test_infinite_loop_with_zero_duration(total_frames, fps):
 
         # Get current frame - should be valid
         current_frame = engine.get_current_frame()
-        assert (
-            0 <= current_frame < total_frames
-        ), f"Current frame {current_frame} should be within range [0, {total_frames})"
+        assert 0 <= current_frame < total_frames, (
+            f"Current frame {current_frame} should be within range [0, {total_frames})"
+        )
 
         # Wait a bit more and verify it continues looping
         time.sleep(0.1)
@@ -108,9 +111,9 @@ def test_infinite_loop_with_zero_duration(total_frames, fps):
 
         # Frame should still be valid (may have wrapped around)
         new_frame = engine.get_current_frame()
-        assert (
-            0 <= new_frame < total_frames
-        ), f"Frame {new_frame} should still be within range [0, {total_frames})"
+        assert 0 <= new_frame < total_frames, (
+            f"Frame {new_frame} should still be within range [0, {total_frames})"
+        )
 
         # Verify frames are cycling through the range
         elapsed = engine.get_elapsed_time()
@@ -154,9 +157,9 @@ def test_asset_caching_behavior(scheme):
     static_cache_key = "static:banner.txt"
 
     # Either animated or static should be cached
-    assert (
-        cache_key in CACHE or static_cache_key in CACHE
-    ), "Asset should be cached after first load"
+    assert cache_key in CACHE or static_cache_key in CACHE, (
+        "Asset should be cached after first load"
+    )
 
     # Get the cached value
     if cache_key in CACHE:
@@ -208,9 +211,9 @@ def test_ansi_metadata_stripping(metadata_lines, content_lines):
         assert meta_line not in stripped, f"Metadata line '{meta_line}' should be stripped"
 
     # Verify separator is removed
-    assert (
-        "---" not in stripped or stripped.strip() == "---"
-    ), "Separator should be stripped (or be the only content)"
+    assert "---" not in stripped or stripped.strip() == "---", (
+        "Separator should be stripped (or be the only content)"
+    )
 
     # Verify content is preserved
     for content_line in content:
@@ -246,9 +249,9 @@ def test_fallback_asset_provision(scheme):
     assert len(logo_frames) > 0, "Should return at least one logo frame"
 
     # Frames should be strings
-    assert all(
-        isinstance(frame, str) for frame in banner_frames
-    ), "All banner frames should be strings"
+    assert all(isinstance(frame, str) for frame in banner_frames), (
+        "All banner frames should be strings"
+    )
     assert all(isinstance(frame, str) for frame in logo_frames), "All logo frames should be strings"
 
     # Frames should not be empty strings
@@ -272,7 +275,10 @@ def test_animation_pause_and_resume_on_resize(total_frames, fps):
     """
     # Create timing engine with specified parameters
     timing_engine = TimingEngine(
-        fps=fps, total_frames=total_frames, duration=0.0, loop=True  # Infinite loop
+        fps=fps,
+        total_frames=total_frames,
+        duration=0.0,
+        loop=True,  # Infinite loop
     )
 
     # Create animation renderer with test output
@@ -318,7 +324,7 @@ def test_animation_pause_and_resume_on_resize(total_frames, fps):
 
         # Allow small tolerance for timing precision
         assert time_diff < 0.05, (
-            f"Elapsed time should not advance while paused " f"(diff: {time_diff:.3f}s)"
+            f"Elapsed time should not advance while paused (diff: {time_diff:.3f}s)"
         )
 
         # Resume animation (simulating resize complete)
@@ -337,15 +343,15 @@ def test_animation_pause_and_resume_on_resize(total_frames, fps):
 
         # The elapsed time after resume should be greater than before pause
         # (accounting for the time after resume, not the paused time)
-        assert (
-            elapsed_after_resume > elapsed_before_pause
-        ), "Animation should continue advancing after resume"
+        assert elapsed_after_resume > elapsed_before_pause, (
+            "Animation should continue advancing after resume"
+        )
 
         # Verify frames are still cycling correctly
         current_frame = timing_engine.get_current_frame()
-        assert (
-            0 <= current_frame < total_frames
-        ), f"Current frame {current_frame} should be within range [0, {total_frames})"
+        assert 0 <= current_frame < total_frames, (
+            f"Current frame {current_frame} should be within range [0, {total_frames})"
+        )
     finally:
         # Always stop the animation to prevent resource leaks
         renderer.stop()

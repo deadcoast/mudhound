@@ -123,9 +123,9 @@ def test_status_component_without_timestamp(message):
     # Should not start with a timestamp pattern
     # Timestamps typically start with year (4 digits)
     first_word = formatted.split()[0]
-    assert not (
-        len(first_word) >= 4 and first_word[:4].isdigit()
-    ), "Should not contain timestamp when show_timestamp=False"
+    assert not (len(first_word) >= 4 and first_word[:4].isdigit()), (
+        "Should not contain timestamp when show_timestamp=False"
+    )
 
     # Should still contain glyph and message
     assert "[*]" in formatted, "Should contain info glyph"
@@ -167,9 +167,9 @@ def test_log_level_color_coding(message, level):
     }
 
     # Verify the color name matches expected
-    assert (
-        expected_color_name == level_color_map[level]
-    ), f"Level {level} should use color {level_color_map[level]}"
+    assert expected_color_name == level_color_map[level], (
+        f"Level {level} should use color {level_color_map[level]}"
+    )
 
     # When color is enabled, formatted message should contain ANSI escape codes
     assert "\033[" in formatted, "Should contain ANSI escape codes when use_color=True"

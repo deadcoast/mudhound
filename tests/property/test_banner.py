@@ -134,9 +134,9 @@ def test_banner_responsive_scaling(terminal_width, banner_width):
         visible_line = banner._strip_ansi(line)
 
         # Each line should fit within terminal width
-        assert (
-            len(visible_line) <= terminal_width
-        ), f"Scaled line length {len(visible_line)} exceeds terminal width {terminal_width}"
+        assert len(visible_line) <= terminal_width, (
+            f"Scaled line length {len(visible_line)} exceeds terminal width {terminal_width}"
+        )
 
     # Verify we still have content (not completely empty)
     assert len(scaled_banner.strip()) > 0, "Scaled banner should not be empty"
@@ -167,23 +167,23 @@ def test_banner_scaling_preserves_structure(terminal_width):
 
     # Verify line count is preserved
     scaled_lines = scaled_banner.split("\n")
-    assert len(scaled_lines) == len(
-        lines
-    ), f"Line count should be preserved: expected {len(lines)}, got {len(scaled_lines)}"
+    assert len(scaled_lines) == len(lines), (
+        f"Line count should be preserved: expected {len(lines)}, got {len(scaled_lines)}"
+    )
 
     # Verify each line fits within terminal width
     for i, line in enumerate(scaled_lines):
         visible_line = banner._strip_ansi(line)
-        assert (
-            len(visible_line) <= terminal_width
-        ), f"Line {i} length {len(visible_line)} exceeds terminal width {terminal_width}"
+        assert len(visible_line) <= terminal_width, (
+            f"Line {i} length {len(visible_line)} exceeds terminal width {terminal_width}"
+        )
 
     # Verify empty lines remain empty
     for i, original_line in enumerate(lines):
         if original_line.strip() == "":
-            assert (
-                scaled_lines[i].strip() == ""
-            ), f"Empty line {i} should remain empty after scaling"
+            assert scaled_lines[i].strip() == "", (
+                f"Empty line {i} should remain empty after scaling"
+            )
 
 
 @given(

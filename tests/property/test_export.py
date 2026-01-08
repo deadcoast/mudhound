@@ -13,12 +13,7 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from mudhound.cli.commands.export import (
-    export_csv,
-    export_json,
-    export_txt,
-    export_urls,
-)
+from mudhound.cli.commands.export import export_csv, export_json, export_txt, export_urls
 from mudhound.core.exceptions import ExportError
 from mudhound.core.result import SearchResult
 

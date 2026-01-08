@@ -4,12 +4,7 @@ Unit tests for error handler component.
 Tests basic error display functionality.
 """
 
-from mudhound.core.exceptions import (
-    ConfigError,
-    NetworkError,
-    RateLimitError,
-    ValidationError,
-)
+from mudhound.core.exceptions import ConfigError, NetworkError, RateLimitError, ValidationError
 from mudhound.ui.components.error import ErrorHandler
 
 

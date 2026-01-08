@@ -11,12 +11,7 @@ from typing import Any, List, Optional, TextIO, cast
 
 from mudhound.ui.glyphs import get_glyph
 from mudhound.ui.theme import get_theme_engine
-from mudhound.utils.validators import (
-    EnumValidator,
-    PathValidator,
-    RangeValidator,
-    Validator,
-)
+from mudhound.utils.validators import EnumValidator, PathValidator, RangeValidator, Validator
 
 
 class PromptType:
