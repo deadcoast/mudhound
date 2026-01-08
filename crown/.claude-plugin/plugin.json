@@ -1,0 +1,21 @@
+{
+  "name": "crown",
+  "version": "0.1.0",
+  "description": "AI-optimized documentation ecosystem for Claude Code. Provides structured workflows for task tracking (TODO), codebase review (SD), and cross-referenced documentation with version and section tagging.",
+  "author": {
+    "name": "mudhound",
+    "email": "contact@mudhound.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deadcoast/mudhound"
+  },
+  "keywords": [
+    "documentation",
+    "workflow",
+    "task-tracking",
+    "codebase-review",
+    "cross-reference",
+    "version-control"
+  ]
+}

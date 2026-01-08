@@ -1,22 +1,25 @@
 # TODO.md
 
-## 0.0.9
+## 0.1.0
 
 ### PROTOCOL
 
 > [!NOTE]
 > versioning: canonical
 > dependencies: VALIDATION.md, CHANGELOG.md
-> status: 'tracking TODO items and outstanding work'
+> status: 'ready'
 
 ---
 
 - 2026-01-07
 
-> [!TIP]
-> All previous tasks complete. Ready for new work items.
-> Previous version: [docs/TODO/complete/0.0.8.md]
-> Completed versions: [docs/TODO/complete/](docs/TODO/complete/)
+*No pending tasks. Use `/crown:todo` to add new work items.*
 
 ---
 
+### Archive Reference
+
+Previous version archived:
+- [docs/TODO/complete/0.0.9.md] - Claude Code Plugin Conversion (22 tasks)
+
+---

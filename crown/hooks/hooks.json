@@ -1,0 +1,37 @@
+{
+  "hooks": [
+    {
+      "event": "PostToolUse",
+      "matcher": {
+        "toolName": "Write",
+        "filePath": "**/{TODO,CHANGELOG,VALIDATION,SD}.md"
+      },
+      "hook": {
+        "type": "prompt",
+        "prompt": "A crown document was modified. Quickly validate that any new cross-references follow the format [DOCUMENT.md], [ver:`X.X.X`, sect:`Y)`] and resolve to existing targets. Report any issues found."
+      }
+    },
+    {
+      "event": "PostToolUse", 
+      "matcher": {
+        "toolName": "Write",
+        "filePath": "**/TODO.md"
+      },
+      "hook": {
+        "type": "prompt",
+        "prompt": "TODO.md was updated. Check if all tasks are now complete (all [x]). If so, inform the user that version is ready for archiving with /crown:todo to archive."
+      }
+    },
+    {
+      "event": "PostToolUse",
+      "matcher": {
+        "toolName": "Write", 
+        "filePath": "**/SD.md"
+      },
+      "hook": {
+        "type": "prompt",
+        "prompt": "SD.md was updated. Check if the current quadrant scan is complete or if verification passed. Suggest next SD phase if appropriate."
+      }
+    }
+  ]
+}

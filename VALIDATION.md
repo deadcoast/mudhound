@@ -110,6 +110,58 @@
 
 ---
 
+## 0.1.3
+
+- 2026-01-07
+
+### A) Crown Plugin Conversion - VERIFIED
+
+> [!NOTE]
+> Full conversion from crowndoc-plugin to crown Claude Code plugin.
+> [TODO.md], [ver:`0.0.9`] - All 22 tasks complete
+> [CHANGELOG.md], [ver:`0.0.8`] - Completion record
+
+**Plugin Structure Verified:**
+
+| Component | Count | Status |
+|-----------|-------|--------|
+| .claude-plugin/plugin.json | 1 | ✅ |
+| commands/ | 6 | ✅ |
+| agents/ | 1 | ✅ |
+| skills/ | 3 | ✅ |
+| hooks/ | 1 | ✅ |
+| resources/ | 5 | ✅ |
+| templates/ | 4 | ✅ |
+| examples/ | 3 | ✅ |
+| README.md | 1 | ✅ |
+
+**Commands Verified:**
+
+| Command | File | Status |
+|---------|------|--------|
+| /crown:init | commands/init.md | ✅ |
+| /crown:status | commands/status.md | ✅ |
+| /crown:todo | commands/todo.md | ✅ |
+| /crown:sd | commands/sd.md | ✅ |
+| /crown:validate | commands/validate.md | ✅ |
+| /crown:continue | commands/continue.md | ✅ |
+
+**Documentation Verified:**
+
+| File | Purpose | Status |
+|------|---------|--------|
+| crown-specification.md | Main spec | ✅ |
+| cross-reference-syntax.md | Reference format | ✅ |
+| sd-workflow-guide.md | SD workflow | ✅ |
+| todo-workflow-guide.md | TODO workflow | ✅ |
+| blockquote-types.md | Blockquote usage | ✅ |
+
+**Cross-references:**
+- [TODO.md], [ver:`0.0.9`, sect:`A)`-`V)`] - All tasks
+- [CHANGELOG.md], [ver:`0.0.8`, sect:`A)`-`D)`] - Completion record
+
+---
+
 ## 0.1.2
 
 - 2026-01-07

@@ -320,3 +320,61 @@
 | AI optimization | ✅ | Structured for agent parsing |
 
 ---
+
+## 0.0.8
+
+- 2026-01-07
+
+> [!IMPORTANT]
+> Claude Code Plugin Conversion - Full Scope Implementation
+> Converting crowndoc to proper Claude Code plugin "crown"
+> [TODO.md], [ver:`0.0.9`] - Work items (COMPLETED)
+> [VALIDATION.md], [ver:`0.1.3`] - Validation findings
+
+### A) Plugin Conversion Scope
+
+| Task Category | Count | Description |
+| ------------- | ----- | ----------- |
+| Plugin Structure | 1 | [A] Restructure to Claude Code conventions |
+| Commands | 6 | [B]-[G] /crown:init, status, todo, sd, validate, continue |
+| Agent | 1 | [H] crown-agent with full workflow execution |
+| Skills | 3 | [I]-[K] format, workflow, context skills |
+| Tagging System | 3 | [L]-[N] cross-ref, version, section tags |
+| Hooks | 2 | [O]-[P] validation and archiving hooks |
+| Detection | 2 | [Q]-[R] repo structure and quadrant config |
+| Context | 1 | [S] codebase reference format |
+| Documentation | 1 | [T] comprehensive README |
+| Validation | 2 | [U]-[V] structure validation and testing |
+
+### B) Key Changes
+
+| Change | From | To |
+| ------ | ---- | -- |
+| Plugin name | crowndoc-plugin | crown |
+| Command format | `crowndoc: TODO` | `/crown:todo` |
+| Aliases | `cc`, `cp` | Removed |
+| Integration | Documentation only | Full Claude Code workflow |
+
+### C) Plugin Structure Delivered
+
+| Component | Count | Files |
+| --------- | ----- | ----- |
+| Commands | 6 | init.md, status.md, todo.md, sd.md, validate.md, continue.md |
+| Agents | 1 | crown.md |
+| Skills | 3 | crown-format, crown-workflow, crown-context |
+| Hooks | 3 | validation, archiving, todo-complete |
+| Resources | 5 | specification, cross-ref syntax, sd-guide, todo-guide, blockquotes |
+| Templates | 4 | TODO, CHANGELOG, VALIDATION, SD |
+| Examples | 3 | TODO-example, SD-pass-example, cross-reference-patterns |
+
+### D) Documentation Deliverables
+
+| File | Purpose |
+| ---- | ------- |
+| crown/resources/crown-specification.md | Main specification document |
+| crown/resources/references/cross-reference-syntax.md | Reference format details |
+| crown/resources/references/sd-workflow-guide.md | SD workflow documentation |
+| crown/resources/references/todo-workflow-guide.md | TODO workflow documentation |
+| crown/resources/references/blockquote-types.md | Blockquote usage patterns |
+
+---
