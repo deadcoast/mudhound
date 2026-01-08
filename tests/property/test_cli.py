@@ -223,7 +223,8 @@ def test_quiet_mode_vs_normal_mode_output(query, max_results):
     options = SearchOptions(max_results=max_results)
 
     # Create mock UI components
-    banner = MockUIComponent("╔═══ MUDHOUND ═══╗\n║  URL Extractor  ║\n╚═════════════════╝")
+    banner = MockUIComponent(
+        "╔═══ MUDHOUND ═══╗\n║  URL Extractor  ║\n╚═════════════════╝")
     progress = MockUIComponent("[*] Searching... 50%\n[*] Searching... 100%")
     status = MockUIComponent("[+] Search complete\n[+] Found 5 results")
 
@@ -301,7 +302,8 @@ def test_quiet_mode_vs_normal_mode_output(query, max_results):
     output_format=st.sampled_from(["json", "csv", "txt", "urls"]),
 )
 @settings(
-    suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
+    suppress_health_check=[HealthCheck.too_slow,
+                           HealthCheck.function_scoped_fixture],
     max_examples=100,
 )
 def test_output_file_writing(query, max_results, output_format, tmp_path):
@@ -360,7 +362,8 @@ def test_output_file_writing(query, max_results, output_format, tmp_path):
 
         elif output_format == "csv":
             # Write as CSV with headers
-            writer = csv.DictWriter(f, fieldnames=["rank", "url", "title", "snippet", "source"])
+            writer = csv.DictWriter(
+                f, fieldnames=["rank", "url", "title", "snippet", "source"])
             writer.writeheader()
             for r in session.results:
                 writer.writerow(
@@ -391,7 +394,8 @@ def test_output_file_writing(query, max_results, output_format, tmp_path):
                 f.write(f"{r.url}\n")
 
     # Verify the file was created
-    assert output_file.exists(), f"Output file should be created at {output_file}"
+    assert output_file.exists(
+    ), f"Output file should be created at {output_file}"
 
     # Verify the file is not empty
     assert output_file.stat().st_size > 0, "Output file should not be empty"
@@ -409,7 +413,8 @@ def test_output_file_writing(query, max_results, output_format, tmp_path):
         with open(output_file, encoding="utf-8") as f:
             data = json.load(f)
         assert isinstance(data, list), "JSON output should be a list"
-        assert len(data) == len(session.results), "JSON should contain all results"
+        assert len(data) == len(
+            session.results), "JSON should contain all results"
 
         # Verify each result has required fields
         for item in data:
@@ -424,7 +429,8 @@ def test_output_file_writing(query, max_results, output_format, tmp_path):
         with open(output_file, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             rows = list(reader)
-        assert len(rows) == len(session.results), "CSV should contain all results"
+        assert len(rows) == len(
+            session.results), "CSV should contain all results"
 
         # Verify each row has required fields
         for row in rows:
@@ -446,12 +452,14 @@ def test_output_file_writing(query, max_results, output_format, tmp_path):
     elif output_format == "urls":
         # Verify URLs format (one per line)
         lines = content.strip().split("\n")
-        assert len(lines) == len(session.results), "URLs output should have one URL per line"
+        assert len(lines) == len(
+            session.results), "URLs output should have one URL per line"
 
         # Verify each line is a URL from the results
         result_urls = [r.url for r in session.results]
         for line in lines:
-            assert line.strip() in result_urls, f"Each line should be a valid result URL: {line}"
+            assert line.strip(
+            ) in result_urls, f"Each line should be a valid result URL: {line}"
 
     # Verify all result URLs are in the file content
     for result in session.results:
@@ -542,8 +550,10 @@ def test_stdin_query_reading(query):
     query=st.text(
         min_size=1, max_size=100, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
     ),
-    leading_whitespace=st.text(max_size=10, alphabet=st.sampled_from([" ", "\t", "\n"])),
-    trailing_whitespace=st.text(max_size=10, alphabet=st.sampled_from([" ", "\t", "\n"])),
+    leading_whitespace=st.text(
+        max_size=10, alphabet=st.sampled_from([" ", "\t", "\n"])),
+    trailing_whitespace=st.text(
+        max_size=10, alphabet=st.sampled_from([" ", "\t", "\n"])),
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_stdin_whitespace_handling(query, leading_whitespace, trailing_whitespace):
@@ -659,7 +669,8 @@ def test_stdin_multiline_input(lines):
         stdin_query = full_input.replace("\n", " ").strip()
 
         # Verify the query is not empty
-        assert len(stdin_query) > 0, "Stdin query should not be empty after processing"
+        assert len(
+            stdin_query) > 0, "Stdin query should not be empty after processing"
 
         # Execute search
         options = SearchOptions(max_results=10)
@@ -975,9 +986,12 @@ def test_interactive_session_data_storage(query, max_results):
 
 
 @given(
-    invalid_format=st.sampled_from(["invalid", "xml", "yaml", "pdf", "doc", "123", ""]),
-    invalid_max_results=st.sampled_from([-1, -10, 0, 1001, 10000, "abc", "invalid"]),
-    invalid_engine=st.sampled_from(["invalid_engine", "google123", "", "   ", "not-an-engine"]),
+    invalid_format=st.sampled_from(
+        ["invalid", "xml", "yaml", "pdf", "doc", "123", ""]),
+    invalid_max_results=st.sampled_from(
+        [-1, -10, 0, 1001, 10000, "abc", "invalid"]),
+    invalid_engine=st.sampled_from(
+        ["invalid_engine", "google123", "", "   ", "not-an-engine"]),
 )
 @settings(suppress_health_check=[HealthCheck.too_slow], max_examples=100)
 def test_invalid_argument_handling(invalid_format, invalid_max_results, invalid_engine):
@@ -1132,9 +1146,11 @@ def test_argument_validation_comprehensive(query, max_results, region, safesearc
 
     # Validate max_results
     if max_results < 1:
-        validation_errors.append(f"max_results must be at least 1, got {max_results}")
+        validation_errors.append(
+            f"max_results must be at least 1, got {max_results}")
     elif max_results > 1000:
-        validation_errors.append(f"max_results must be at most 1000, got {max_results}")
+        validation_errors.append(
+            f"max_results must be at most 1000, got {max_results}")
 
     # Validate region (should be a valid region code)
     # Common region codes: wt-wt (worldwide), us-en, uk-en, etc.
@@ -1190,7 +1206,8 @@ def test_argument_validation_comprehensive(query, max_results, region, safesearc
             # Verify the options object was created successfully
             assert options.max_results == max_results
             assert options.region == (region if region else "wt-wt")
-            assert options.safesearch == (safesearch if safesearch else "moderate")
+            assert options.safesearch == (
+                safesearch if safesearch else "moderate")
 
         except Exception as e:
             # If SearchOptions validation fails, that's also acceptable
@@ -1229,12 +1246,14 @@ def test_output_path_validation(output_path):
             # Note: Windows paths can have : in drive letters (C:)
             # So we need to be more careful with validation
             path_without_drive = (
-                output_path[2:] if len(output_path) > 2 and output_path[1] == ":" else output_path
+                output_path[2:] if len(
+                    output_path) > 2 and output_path[1] == ":" else output_path
             )
 
             for char in invalid_chars:
                 if char in path_without_drive:
-                    validation_errors.append(f"Output path contains invalid character: {char}")
+                    validation_errors.append(
+                        f"Output path contains invalid character: {char}")
                     break
 
         # Check if path is too long (Windows has 260 char limit, Unix typically 4096)

@@ -65,7 +65,8 @@ def test_log_message_formatting(message, level):
 
     # Formatted message should contain:
     # 1. A timestamp (we'll check for date pattern)
-    assert any(char.isdigit() for char in formatted[:20]), "Should contain timestamp"
+    assert any(char.isdigit()
+               for char in formatted[:20]), "Should contain timestamp"
 
     # 2. The level-appropriate glyph
     assert expected_glyph in formatted, f"Should contain glyph {expected_glyph}"
@@ -99,9 +100,11 @@ def test_status_component_formatting(message, level):
     expected_glyph = style["glyph"]
 
     # Should contain timestamp, glyph, level name, and message
-    assert any(char.isdigit() for char in formatted[:20]), "Should contain timestamp"
+    assert any(char.isdigit()
+               for char in formatted[:20]), "Should contain timestamp"
     assert expected_glyph in formatted, f"Should contain glyph {expected_glyph}"
-    assert logging.getLevelName(level) in formatted, "Should contain level name"
+    assert logging.getLevelName(
+        level) in formatted, "Should contain level name"
     assert message in formatted, "Should contain the message"
 
 
@@ -225,7 +228,8 @@ def test_formatter_color_coding(message, level):
             min_size=1,
             max_size=100,
             alphabet=st.characters(
-                blacklist_categories=("Cc", "Cs")  # Exclude control and surrogate characters
+                # Exclude control and surrogate characters
+                blacklist_categories=("Cc", "Cs")
             ),
         ),
         min_size=1,

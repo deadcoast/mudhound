@@ -12,8 +12,10 @@ from mudhound.ui.animation.engine import AnimationRenderer
 from mudhound.ui.animation.timing import TimingEngine
 
 
-@given(fps=st.integers(min_value=5, max_value=60))  # Reduced range for more reliable timing
-@settings(max_examples=50, deadline=None)  # Reduced examples for faster execution
+# Reduced range for more reliable timing
+@given(fps=st.integers(min_value=5, max_value=60))
+# Reduced examples for faster execution
+@settings(max_examples=50, deadline=None)
 def test_frame_rate_timing_accuracy(fps):
     """
     Feature: mudhound-full-implementation, Property 5: Frame rate timing accuracy
@@ -63,7 +65,8 @@ def test_frame_rate_timing_accuracy(fps):
 
 @given(
     total_frames=st.integers(min_value=2, max_value=50),  # Reduced range
-    fps=st.integers(min_value=10, max_value=60),  # Higher minimum FPS for faster tests
+    # Higher minimum FPS for faster tests
+    fps=st.integers(min_value=10, max_value=60),
 )
 @settings(max_examples=50, deadline=5000)  # Added deadline to prevent hangs
 def test_infinite_loop_with_zero_duration(total_frames, fps):
@@ -242,7 +245,8 @@ def test_fallback_asset_provision(scheme):
         banner_frames = manager.get_banner_frames(scheme)
         logo_frames = manager.get_logo_frames(scheme)
     except Exception as e:
-        pytest.fail(f"Should provide fallback instead of raising exception: {e}")
+        pytest.fail(
+            f"Should provide fallback instead of raising exception: {e}")
 
     # Should return non-empty frames
     assert len(banner_frames) > 0, "Should return at least one banner frame"
@@ -252,18 +256,22 @@ def test_fallback_asset_provision(scheme):
     assert all(isinstance(frame, str) for frame in banner_frames), (
         "All banner frames should be strings"
     )
-    assert all(isinstance(frame, str) for frame in logo_frames), "All logo frames should be strings"
+    assert all(isinstance(frame, str)
+               for frame in logo_frames), "All logo frames should be strings"
 
     # Frames should not be empty strings
-    assert all(len(frame) > 0 for frame in banner_frames), "Banner frames should not be empty"
-    assert all(len(frame) > 0 for frame in logo_frames), "Logo frames should not be empty"
+    assert all(
+        len(frame) > 0 for frame in banner_frames), "Banner frames should not be empty"
+    assert all(
+        len(frame) > 0 for frame in logo_frames), "Logo frames should not be empty"
 
 
 @given(
     total_frames=st.integers(min_value=2, max_value=10),  # Reduced range
     fps=st.integers(min_value=10, max_value=30),  # Higher minimum FPS
 )
-@settings(max_examples=30, deadline=3000)  # Reduced examples and added deadline
+# Reduced examples and added deadline
+@settings(max_examples=30, deadline=3000)
 def test_animation_pause_and_resume_on_resize(total_frames, fps):
     """
     Feature: mudhound-full-implementation, Property 7: Animation pause and resume on resize

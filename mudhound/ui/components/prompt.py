@@ -11,7 +11,12 @@ from typing import Any, List, Optional, TextIO, cast
 
 from mudhound.ui.glyphs import get_glyph
 from mudhound.ui.theme import get_theme_engine
-from mudhound.utils.validators import EnumValidator, PathValidator, RangeValidator, Validator
+from mudhound.utils.validators import (
+    EnumValidator,
+    PathValidator,
+    RangeValidator,
+    Validator,
+)
 
 
 class PromptType:
@@ -214,7 +219,8 @@ class Prompt:
                     return value
                 else:
                     # Display error and allow re-entry
-                    error_msg = self._format_error(error_message or "Invalid input")
+                    error_msg = self._format_error(
+                        error_message or "Invalid input")
                     self.output.write(error_msg + "\n")
                     self.output.flush()
 
@@ -290,7 +296,8 @@ class Prompt:
         self.prompt_type = PromptType.PATH
 
         # Add path validator
-        self.validators.append(PathValidator(must_exist, must_be_file, must_be_dir))
+        self.validators.append(PathValidator(
+            must_exist, must_be_file, must_be_dir))
 
         return cast(Path, self.prompt())
 

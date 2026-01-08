@@ -20,7 +20,8 @@ from mudhound.utils.validators import (
     ),
     default_value=st.one_of(
         st.none(),
-        st.text(min_size=1, max_size=50, alphabet=st.characters(blacklist_categories=("Cs", "Cc"))),
+        st.text(min_size=1, max_size=50, alphabet=st.characters(
+            blacklist_categories=("Cs", "Cc"))),
     ),
 )
 @settings(max_examples=100, deadline=None)
@@ -126,9 +127,12 @@ def test_validation_error_feedback(prompt_text, invalid_input, min_length):
 
 
 @given(
-    min_value=st.floats(min_value=-1000, max_value=0, allow_nan=False, allow_infinity=False),
-    max_value=st.floats(min_value=1, max_value=1000, allow_nan=False, allow_infinity=False),
-    test_value=st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False),
+    min_value=st.floats(min_value=-1000, max_value=0,
+                        allow_nan=False, allow_infinity=False),
+    max_value=st.floats(min_value=1, max_value=1000,
+                        allow_nan=False, allow_infinity=False),
+    test_value=st.floats(min_value=-1000, max_value=1000,
+                         allow_nan=False, allow_infinity=False),
 )
 @settings(max_examples=100, deadline=None)
 def test_validation_rule_application_range(min_value, max_value, test_value):
@@ -181,7 +185,8 @@ def test_validation_rule_application_range(min_value, max_value, test_value):
 
 
 @given(
-    pattern=st.sampled_from([r"^\d+$", r"^[a-z]+$", r"^[A-Z][a-z]*$", r"^\w+@\w+\.\w+$"]),
+    pattern=st.sampled_from(
+        [r"^\d+$", r"^[a-z]+$", r"^[A-Z][a-z]*$", r"^\w+@\w+\.\w+$"]),
     test_input=st.text(
         min_size=1, max_size=50, alphabet=st.characters(blacklist_categories=("Cs", "Cc"))
     ),
@@ -291,7 +296,8 @@ def test_validation_rule_application_length(min_length, max_length, test_length)
 
 @given(
     choices=st.lists(
-        st.text(min_size=1, max_size=20, alphabet=st.characters(blacklist_categories=("Cs", "Cc"))),
+        st.text(min_size=1, max_size=20, alphabet=st.characters(
+            blacklist_categories=("Cs", "Cc"))),
         min_size=2,
         max_size=10,
         unique=True,
@@ -341,9 +347,11 @@ def test_validation_rule_application_enum(choices, choice_index, invalid_choice)
     assert error_message is None, "No error message should be provided for valid choice"
 
     # Test validation of invalid choice
-    is_valid_invalid, error_message_invalid = prompt._validate_input(invalid_choice)
+    is_valid_invalid, error_message_invalid = prompt._validate_input(
+        invalid_choice)
 
     assert not is_valid_invalid, f"Invalid choice '{invalid_choice}' should fail validation"
     assert error_message_invalid is not None, "Error message should be provided for invalid choice"
     # Error message should mention the allowed values
-    assert "one of" in error_message_invalid.lower(), "Error message should mention allowed values"
+    assert "one of" in error_message_invalid.lower(
+    ), "Error message should mention allowed values"
