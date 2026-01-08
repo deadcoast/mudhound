@@ -155,7 +155,8 @@ def test_banner_scaling_preserves_structure(terminal_width):
     basic structure after scaling.
     """
     # Create a multi-line test banner
-    lines = ["=" * 80, "MUDHOUND - URL Extraction Tool", "=" * 80, "", "Version 1.0.0"]
+    lines = ["=" * 80, "MUDHOUND - URL Extraction Tool",
+             "=" * 80, "", "Version 1.0.0"]
     test_banner = "\n".join(lines)
 
     # Create banner instance
@@ -188,7 +189,8 @@ def test_banner_scaling_preserves_structure(terminal_width):
 
 @given(
     style=st.sampled_from(
-        [BannerStyle.ANIMATED, BannerStyle.STATIC, BannerStyle.MINIMAL, BannerStyle.NONE]
+        [BannerStyle.ANIMATED, BannerStyle.STATIC,
+            BannerStyle.MINIMAL, BannerStyle.NONE]
     )
 )
 @settings(max_examples=100, deadline=None)
@@ -208,7 +210,8 @@ def test_banner_style_rendering(style):
     try:
         banner.render()
     except Exception as e:
-        pytest.fail(f"Banner rendering with style '{style}' should not raise exception: {e}")
+        pytest.fail(
+            f"Banner rendering with style '{style}' should not raise exception: {e}")
 
     # Get output
     rendered_output = output.getvalue()
@@ -224,4 +227,5 @@ def test_banner_style_rendering(style):
     else:
         # Static and animated should produce output (at least for single frame render)
         # Note: animated might fall back to static or minimal if frames aren't available
-        assert len(rendered_output) >= 0, "Style should produce output or handle gracefully"
+        assert len(
+            rendered_output) >= 0, "Style should produce output or handle gracefully"

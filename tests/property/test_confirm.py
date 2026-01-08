@@ -138,7 +138,8 @@ def test_destructive_variant_word_confirmation(message, confirmation_word, user_
         min_size=1, max_size=200, alphabet=st.characters(blacklist_categories=("Cs", "Cc"))
     ),
     variant=st.sampled_from(
-        [ConfirmationVariant.YESNO, ConfirmationVariant.DESTRUCTIVE, ConfirmationVariant.TIMED]
+        [ConfirmationVariant.YESNO, ConfirmationVariant.DESTRUCTIVE,
+            ConfirmationVariant.TIMED]
     ),
 )
 @settings(max_examples=100, deadline=None)
@@ -155,7 +156,8 @@ def test_destructive_action_default_no(message, variant):
     output = StringIO()
 
     # Create confirmation
-    confirmation = Confirmation(message=message, variant=variant, use_color=False, output=output)
+    confirmation = Confirmation(
+        message=message, variant=variant, use_color=False, output=output)
 
     # Get the default value
     default_value = confirmation._get_default_value()
@@ -194,7 +196,8 @@ def test_destructive_action_default_no(message, variant):
             ConfirmationVariant.YESNO_YES,
         ]
     ),
-    user_input=st.sampled_from(["y", "yes", "Y", "YES", "n", "no", "N", "NO", ""]),
+    user_input=st.sampled_from(
+        ["y", "yes", "Y", "YES", "n", "no", "N", "NO", ""]),
 )
 @settings(max_examples=100, deadline=None)
 def test_yesno_input_parsing(message, variant, user_input):
@@ -207,7 +210,8 @@ def test_yesno_input_parsing(message, variant, user_input):
     output = StringIO()
 
     # Create confirmation
-    confirmation = Confirmation(message=message, variant=variant, use_color=False, output=output)
+    confirmation = Confirmation(
+        message=message, variant=variant, use_color=False, output=output)
 
     # Test input parsing
     if user_input:

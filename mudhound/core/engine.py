@@ -13,7 +13,12 @@ from typing import TYPE_CHECKING, Callable, List, Optional
 if TYPE_CHECKING:
     from mudhound.adapters.base import SearchAdapter
 
-from mudhound.core.exceptions import AdapterError, NetworkError, RateLimitError, ValidationError
+from mudhound.core.exceptions import (
+    AdapterError,
+    NetworkError,
+    RateLimitError,
+    ValidationError,
+)
 from mudhound.core.result import (
     SearchOptions,
     SearchQuery,
@@ -113,7 +118,8 @@ class SearchEngine:
         # Validate options
         validation_errors = self.adapter.validate_options(options)
         if validation_errors:
-            raise ValidationError(f"Invalid search options: {', '.join(validation_errors)}")
+            raise ValidationError(
+                f"Invalid search options: {', '.join(validation_errors)}")
 
         # Create search query
         query_id = str(uuid.uuid4())
@@ -202,7 +208,8 @@ class SearchEngine:
                 search_query.status = SearchStatus.FAILED
                 session.completed_at = datetime.now()
                 session.error = f"Unexpected error: {str(e)}"
-                raise AdapterError(f"Unexpected error during search: {str(e)}") from e
+                raise AdapterError(
+                    f"Unexpected error during search: {str(e)}") from e
 
         # Should never reach here, but just in case
         search_query.status = SearchStatus.FAILED
@@ -258,6 +265,7 @@ class SearchEngine:
 
         except Exception as e:
             # Wrap unexpected errors in AdapterError
-            raise AdapterError(f"Unexpected error during search: {str(e)}") from e
+            raise AdapterError(
+                f"Unexpected error during search: {str(e)}") from e
 
         return results

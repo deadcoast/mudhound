@@ -10,7 +10,8 @@ from mudhound.ui.components.menu import Menu
 
 @given(
     options=st.lists(
-        st.text(min_size=1, max_size=50, alphabet=st.characters(blacklist_categories=("Cs", "Cc"))),
+        st.text(min_size=1, max_size=50, alphabet=st.characters(
+            blacklist_categories=("Cs", "Cc"))),
         min_size=1,
         max_size=20,
         unique=True,

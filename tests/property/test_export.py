@@ -13,7 +13,12 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from mudhound.cli.commands.export import export_csv, export_json, export_txt, export_urls
+from mudhound.cli.commands.export import (
+    export_csv,
+    export_json,
+    export_txt,
+    export_urls,
+)
 from mudhound.core.exceptions import ExportError
 from mudhound.core.result import SearchResult
 
@@ -24,7 +29,8 @@ def search_result_strategy(draw):
     """Generate random SearchResult instances."""
     # Exclude control characters and line breaks to avoid issues with file formats
     safe_chars = st.characters(
-        blacklist_categories=("Cc", "Cs"),  # Exclude control and surrogate characters
+        # Exclude control and surrogate characters
+        blacklist_categories=("Cc", "Cs"),
         blacklist_characters="\r\n\t",  # Explicitly exclude line breaks and tabs
     )
 

@@ -39,7 +39,8 @@ semantic_color_names = st.sampled_from(
 
 # Strategy for animation color schemes
 animation_schemes = st.one_of(
-    st.none(), st.sampled_from(["rainbow", "dark-rainbow", "light-rainbow", "white", "theme"])
+    st.none(), st.sampled_from(
+        ["rainbow", "dark-rainbow", "light-rainbow", "white", "theme"])
 )
 
 
@@ -47,7 +48,8 @@ animation_schemes = st.one_of(
     theme_name=st.text(
         min_size=1,
         max_size=50,
-        alphabet=st.characters(whitelist_categories=("Lu", "Ll", "Nd"), whitelist_characters="-_"),
+        alphabet=st.characters(whitelist_categories=(
+            "Lu", "Ll", "Nd"), whitelist_characters="-_"),
     ),
     colors=st.dictionaries(
         keys=semantic_color_names, values=ansi_color_names, min_size=1, max_size=15
@@ -121,7 +123,8 @@ def test_semantic_color_resolution(semantic_name):
     requested_theme=st.text(
         min_size=1,
         max_size=50,
-        alphabet=st.characters(whitelist_categories=("Lu", "Ll", "Nd"), whitelist_characters="-_"),
+        alphabet=st.characters(whitelist_categories=(
+            "Lu", "Ll", "Nd"), whitelist_characters="-_"),
     )
 )
 def test_theme_fallback_behavior(requested_theme):
@@ -156,17 +159,20 @@ def test_theme_fallback_behavior(requested_theme):
 
 @given(
     content_lines=st.lists(
-        st.text(min_size=1, max_size=50, alphabet=st.characters(blacklist_categories=("Cc", "Cs"))),
+        st.text(min_size=1, max_size=50, alphabet=st.characters(
+            blacklist_categories=("Cc", "Cs"))),
         min_size=1,
         max_size=10,
     ),
     title=st.one_of(
         st.none(),
-        st.text(min_size=1, max_size=30, alphabet=st.characters(blacklist_categories=("Cc", "Cs"))),
+        st.text(min_size=1, max_size=30, alphabet=st.characters(
+            blacklist_categories=("Cc", "Cs"))),
     ),
     status=st.one_of(
         st.none(),
-        st.text(min_size=1, max_size=30, alphabet=st.characters(blacklist_categories=("Cc", "Cs"))),
+        st.text(min_size=1, max_size=30, alphabet=st.characters(
+            blacklist_categories=("Cc", "Cs"))),
     ),
     border_style=st.sampled_from(list(BorderStyle)),
 )
