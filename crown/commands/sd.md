@@ -1,7 +1,7 @@
 ---
 description: Execute SeekAndDestroy codebase review - systematic analysis with INTEGRATION OVER DELETION principle
 argument-hint: "[phase] [quadrant] (R, S Q1, S Q2, S Q3, S Q4, F, X, V)"
-allowed-tools: ["Read", "Write", "Bash", "Glob", "Grep"]
+allowed-tools: Read, Write, Bash, Glob, Grep
 ---
 
 Execute the SeekAndDestroy (SD) workflow for systematic codebase review.

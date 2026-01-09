@@ -1,41 +1,45 @@
 ---
-identifier: crown
-whenToUse: |
-  Use this agent when the user wants to:
-  - Track work using structured TODO, CHANGELOG, VALIDATION documents
-  - Review codebase systematically with SeekAndDestroy workflow
-  - Maintain cross-references between documentation
-  - Understand current project state and progress
-  - Continue interrupted documentation workflow
-  - Initialize crown documentation in a repository
-  - Validate cross-reference integrity
+name: crown
+description: Use this agent when the user wants to track work, review codebase, or maintain structured documentation. Examples:
 
-  <example>
-  User: What's the current project state?
-  Agent: Reads crown documents (TODO.md, CHANGELOG.md, VALIDATION.md, SD.md), parses versions and status, reports current state with pending tasks and suggested actions.
-  </example>
+<example>
+Context: User wants to know project status
+user: "What's the current project state?"
+assistant: "I'll use the crown agent to read the documentation ecosystem and report status."
+<commentary>
+Project state questions trigger the crown agent to parse TODO.md, CHANGELOG.md, VALIDATION.md, SD.md.
+</commentary>
+</example>
 
-  <example>
-  User: I need to track this feature work
-  Agent: Creates TODO entry with proper format, section, cross-references to CHANGELOG and VALIDATION. Maintains crowndoc format throughout.
-  </example>
+<example>
+Context: User needs to track feature work
+user: "I need to track this feature work"
+assistant: "I'll use the crown agent to create a TODO entry with proper cross-references."
+<commentary>
+Work tracking requests trigger crown to create structured TODO entries.
+</commentary>
+</example>
 
-  <example>
-  User: Let's review the codebase for unused code
-  Agent: Initiates SD workflow, maps quadrants, scans for unused/disconnected code. INVESTIGATES findings before flagging. Documents integration paths. NEVER suggests deletion first.
-  </example>
+<example>
+Context: User wants to review codebase for unused code
+user: "Let's review the codebase for unused code"
+assistant: "I'll use the crown agent to initiate the SD workflow with INTEGRATION OVER DELETION principle."
+<commentary>
+Codebase review requests trigger SD workflow. Crown investigates before flagging.
+</commentary>
+</example>
 
-  <example>
-  User: Continue where we left off
-  Agent: Reads all crown documents, detects active workflow (SD or TODO), identifies current phase, resumes from exactly that point.
-  </example>
+<example>
+Context: User wants to continue interrupted work
+user: "Continue where we left off"
+assistant: "I'll use the crown agent to detect the active workflow and resume."
+<commentary>
+Continue requests trigger crown to read state and resume from current phase.
+</commentary>
+</example>
 
-  <example>
-  User: Are all the documentation references valid?
-  Agent: Scans all crown files, extracts cross-references, validates each resolves to existing document/version/section, reports broken and orphaned references.
-  </example>
-
-model: opus
+model: inherit
+color: green
 tools:
   - Read
   - Write
@@ -144,12 +148,12 @@ Track codebase review with:
 
 ## Commands Reference
 
-- `/crown:init` - Initialize crown in repository
-- `/crown:status` - Show current ecosystem state
-- `/crown:todo [letter]` - Execute TODO workflow
-- `/crown:sd [phase] [quadrant]` - Execute SD workflow
-- `/crown:validate` - Validate cross-references
-- `/crown:continue` - Resume from current state
+- `/init` - Initialize crown in repository
+- `/status` - Show current ecosystem state
+- `/todo [letter]` - Execute TODO workflow
+- `/sd [phase] [quadrant]` - Execute SD workflow
+- `/validate` - Validate cross-references
+- `/continue` - Resume from current state
 
 ## Output Standards
 

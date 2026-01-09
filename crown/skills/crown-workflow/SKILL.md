@@ -1,3 +1,9 @@
+---
+name: crown-workflow
+description: This skill should be used when the user asks to "execute TODO workflow", "run SD codebase review", "archive completed version", "continue crown workflow", "mark task complete", or asks about SeekAndDestroy phases or task tracking.
+version: 0.1.0
+---
+
 # crown-workflow
 
 When executing crown workflows, managing TODO tasks, running SD codebase reviews, archiving versions, or understanding cross-reference flow, this skill provides complete workflow execution patterns and step-by-step guides.

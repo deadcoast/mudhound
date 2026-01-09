@@ -1,6 +1,6 @@
 ---
 description: Continue crown workflow from current state - auto-detect active workflow and resume
-allowed-tools: ["Read", "Write", "Bash", "Glob", "Grep"]
+allowed-tools: Read, Write, Bash, Glob, Grep
 ---
 
 Resume the crown workflow from the current state, automatically detecting what work is in progress.

@@ -10,6 +10,7 @@
     "type": "git",
     "url": "https://github.com/deadcoast/mudhound"
   },
+  "license": "MIT",
   "keywords": [
     "documentation",
     "workflow",
@@ -17,5 +18,8 @@
     "codebase-review",
     "cross-reference",
     "version-control"
-  ]
+  ],
+  "commands": "./commands",
+  "agents": "./agents",
+  "hooks": "./hooks/hooks.json"
 }

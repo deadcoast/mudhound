@@ -1,7 +1,7 @@
 ---
 description: Initialize crown documentation ecosystem - creates TODO.md, CHANGELOG.md, VALIDATION.md, SD.md with cross-reference system
 argument-hint: "[project-name]"
-allowed-tools: ["Read", "Write", "Bash", "Glob"]
+allowed-tools: Read, Write, Bash, Glob
 ---
 
 Initialize the crown AI-optimized documentation ecosystem in this repository.

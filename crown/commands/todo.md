@@ -1,7 +1,7 @@
 ---
 description: Execute crown TODO workflow - work on tasks, update cross-references, archive completed versions
 argument-hint: "[task-letter]"
-allowed-tools: ["Read", "Write", "Bash", "Glob", "Grep"]
+allowed-tools: Read, Write, Bash, Glob, Grep
 ---
 
 Execute the crown TODO workflow for task tracking and completion.

@@ -1,3 +1,9 @@
+---
+name: crown-context
+description: This skill should be used when the user asks to "reference code locations", "organize into quadrants", "trace integration paths", "map codebase context", or asks about how crown tracks codebase references.
+version: 0.1.0
+---
+
 # crown-context
 
 When mapping codebase context, referencing specific code locations, understanding quadrant organization, tracing integration paths, or feeding repository information into crown documents, this skill provides the context management specification.

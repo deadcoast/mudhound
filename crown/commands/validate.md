@@ -1,6 +1,6 @@
 ---
 description: Validate crown cross-references - ensure all references resolve to existing documents, versions, sections
-allowed-tools: ["Read", "Glob", "Grep"]
+allowed-tools: Read, Glob, Grep
 ---
 
 Validate the integrity of all cross-references in the crown ecosystem.

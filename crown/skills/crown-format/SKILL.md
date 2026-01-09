@@ -1,3 +1,9 @@
+---
+name: crown-format
+description: This skill should be used when the user asks to "format a crown document", "create cross-references", "add a PROTOCOL block", "use section identifiers", "format version numbers", "use blockquote types", or asks about crown document structure and syntax.
+version: 0.1.0
+---
+
 # crown-format
 
 When asked about crown document format, cross-reference syntax, PROTOCOL blocks, section identifiers, version numbering, or blockquote types, this skill provides the complete specification for crown's AI-optimized documentation structure.

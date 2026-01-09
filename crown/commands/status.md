@@ -1,6 +1,6 @@
 ---
 description: Display crown ecosystem state - versions, pending tasks, active workflows, suggested actions
-allowed-tools: ["Read", "Glob"]
+allowed-tools: Read, Glob
 ---
 
 Display the complete current state of the crown documentation ecosystem.
