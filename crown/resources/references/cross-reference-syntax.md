@@ -17,7 +17,7 @@ This is the ONLY valid cross-reference format in crown documents.
 Specifies which document is being referenced.
 
 | Document | Purpose |
-|----------|---------|
+| ---------- | --------- |
 | `[TODO.md]` | Task tracking |
 | `[CHANGELOG.md]` | Completion records |
 | `[VALIDATION.md]` | Verification |

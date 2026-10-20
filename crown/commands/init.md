@@ -144,7 +144,7 @@ mkdir -p templates
 Scan project directories and categorize into quadrants:
 
 | Pattern | Quadrant | Description |
-|---------|----------|-------------|
+| --------- | ---------- | ------------- |
 | core/, lib/, adapters/, models/ | Q1 | Core business logic |
 | cli/, commands/, cmd/, api/ | Q2 | User interfaces |
 | ui/, components/, views/, frontend/ | Q3 | Visual elements |

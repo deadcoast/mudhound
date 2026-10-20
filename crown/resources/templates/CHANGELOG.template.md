@@ -22,14 +22,14 @@
 
 | Component | Status | Reference |
 | --------- | ------ | --------- |
-| Component name | ✅ | [VALIDATION.md], [ver:`X.X.X`, sect:`Y)`] |
-| Component name | ❌ | [TODO.md], [ver:`X.X.X`, sect:`Y)`] |
+| Component name | [x] | [VALIDATION.md], [ver:`X.X.X`, sect:`Y)`] |
+| Component name | [ ] | [TODO.md], [ver:`X.X.X`, sect:`Y)`] |
 
 ### B) Category Name - STATUS
 
 | Component | Status | Reference |
 | --------- | ------ | --------- |
-| Component name | ✅ | [VALIDATION.md], [ver:`X.X.X`, sect:`Y)`] |
-| Component name | ⚠️ | [VALIDATION.md], [ver:`X.X.X`, sect:`Y)`] |
+| Component name | [ ] | [VALIDATION.md], [ver:`X.X.X`, sect:`Y)`] |
+| Component name | [?] | [VALIDATION.md], [ver:`X.X.X`, sect:`Y)`] |
 
 ---

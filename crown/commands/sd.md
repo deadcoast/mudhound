@@ -8,7 +8,7 @@ Execute the SeekAndDestroy (SD) workflow for systematic codebase review.
 
 > [!CAUTION]
 > **INTEGRATION OVER DELETION**
-> 
+>
 > NEVER delete unused code first.
 > Investigate origin and design intent.
 > Find integration path.

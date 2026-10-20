@@ -23,25 +23,25 @@
 
 | Component | Status |
 | --------- | ------ |
-| Component name | ✅ |
-| Component name | ⚠️ |
-| Component name | ❌ |
+| Component name | [x] |
+| Component name | [?] |
+| Component name | [ ] |
 
 ### B) Module/Component Name (`path/to/module`)
 
 | Feature | Status | Integration |
 | ------- | ------ | ----------- |
-| Feature name | ✅ | Fully integrated |
-| Feature name | ⚠️ | Not used in CLI |
-| Feature name | ❌ | [TODO.md], [ver:`X.X.X`, sect:`Y)`] |
+| Feature name | [x] | Fully integrated |
+| Feature name | [?] | Not used in CLI |
+| Feature name | [ ] | [TODO.md], [ver:`X.X.X`, sect:`Y)`] |
 
 ### C) Summary
 
 | Component | Status |
 | --------- | ------ |
-| **Category** | ✅ |
-| **Category** | ⚠️ |
-| **Category** | ❌ |
+| **Category** | [x] |
+| **Category** | [?] |
+| **Category** | [ ] |
 
 ### D) Issues Identified
 

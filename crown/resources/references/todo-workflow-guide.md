@@ -14,7 +14,7 @@ The TODO workflow manages the complete lifecycle of task tracking:
 ## Commands
 
 | Command | Purpose |
-|---------|---------|
+| --------- | --------- |
 | `/crown:todo` | Work on next pending task |
 | `/crown:todo A` | Work on specific task A |
 | `/crown:continue` | Resume TODO if active |

@@ -217,7 +217,7 @@ The ONLY valid cross-reference format:
 ### Components
 
 | Component | Syntax | Example |
-|-----------|--------|---------|
+| ----------- | -------- | --------- |
 | Document | `[NAME.md]` | `[TODO.md]` |
 | Version | `[ver:\`X.X.X\`]` | `[ver:\`0.0.1\`]` |
 | Section | `[sect:\`Y)\`]` | `[sect:\`A)\`]` |
@@ -325,7 +325,7 @@ PROJECT_ROOT/
 ### Phases
 
 | Phase | Command | Purpose |
-|-------|---------|---------|
+| ------- | --------- | --------- |
 | R | `/crown:sd R` | Recon - map quadrants |
 | S | `/crown:sd S Q1` | Scan - analyze quadrant |
 | F | `/crown:sd F` | Flag - organize findings |
@@ -335,7 +335,7 @@ PROJECT_ROOT/
 ### Finding Types
 
 | Type | Name | Resolution |
-|------|------|------------|
+| ------ | ------ | ------------ |
 | U | UNUSED | Find integration point |
 | I | INTEGRATION | Add missing connections |
 | T | TYPE | Add type annotations |
@@ -344,7 +344,7 @@ PROJECT_ROOT/
 ### Severity Levels
 
 | Level | Criteria |
-|-------|----------|
+| ------- | ---------- |
 | HIGH | Core functionality, user-facing |
 | MEDIUM | Internal quality, incomplete feature |
 | LOW | Minor, documentation |
@@ -366,7 +366,7 @@ PROJECT_ROOT/
 ### Default Configuration
 
 | Quadrant | Purpose | Patterns |
-|----------|---------|----------|
+| ---------- | --------- | ---------- |
 | Q1 | Core Logic | core/, lib/, adapters/, models/ |
 | Q2 | User Interfaces | cli/, commands/, cmd/, api/ |
 | Q3 | Visual Elements | ui/, components/, views/, frontend/ |
@@ -379,7 +379,7 @@ Quadrants are auto-detected by `/crown:init` and stored in SD.md.
 ## Commands
 
 | Command | Description |
-|---------|-------------|
+| --------- | ------------- |
 | `/crown:init [name]` | Initialize crown in repository |
 | `/crown:status` | Display ecosystem state |
 | `/crown:todo [letter]` | Execute TODO workflow |

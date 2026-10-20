@@ -22,15 +22,12 @@ Parse current state from:
 1. **SD Workflow Active**
    - SD.md status is NOT "ready" or "complete"
    - Resume at current phase
-   
 2. **TODO Workflow Active**
    - Pending tasks exist (unchecked `[ ]`)
    - Work on next task
-   
 3. **TODO Ready to Archive**
    - All tasks complete (`[x]`)
    - Archive version
-   
 4. **Nothing Active**
    - No pending work
    - Offer choices
@@ -105,7 +102,7 @@ After resuming:
 ## State Detection Logic
 
 | SD Status | TODO Status | Action |
-|-----------|-------------|--------|
+| ----------- | ------------- | -------- |
 | ready | pending tasks | Resume TODO |
 | scanning Q2 | any | Resume SD:S Q2 |
 | flagging | any | Resume SD:F |
